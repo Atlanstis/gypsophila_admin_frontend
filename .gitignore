@@ -26,3 +26,6 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# unplugin-vue-components 组件定义文件
+src/typings/components.d.ts

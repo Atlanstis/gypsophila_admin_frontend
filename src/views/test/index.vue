@@ -1,3 +1,5 @@
 <template>
-  <div>test</div>
+  <div>
+    <NButton>测试</NButton>
+  </div>
 </template>
