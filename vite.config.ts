@@ -7,11 +7,15 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
+import UnoCSS from 'unocss/vite'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    // https://unocss.dev/guide/
+    UnoCSS(),
     // https://github.com/antfu/unplugin-vue-components
     Components({
       dts: 'src/typings/components.d.ts',
