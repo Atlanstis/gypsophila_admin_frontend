@@ -1,0 +1,34 @@
+/* @type */
+
+.layout-header {
+  z-index: var(--admin-header-z-index);
+  height: var(--admin-header-height);
+}
+
+.layout-tab {
+  height: var(--admin-tab-height);
+  z-index: var(--admin-tab-z-index);
+}
+
+.layout-sider {
+  width: var(--admin-sider-width);
+  z-index: var(--admin-sider-z-index);
+}
+
+.layout-sider_collapsed {
+  width: var(--admin-sider-collapsed-width);
+  z-index: var(--admin-sider-z-index);
+}
+
+.layout-footer {
+  z-index: var(--admin-footer-z-index);
+  height: var(--admin-footer-height);
+}
+
+.left-gap {
+  padding-left: var(--admin-sider-width);
+}
+
+.left-gap_collapsed {
+  padding-left: var(--admin-sider-collapsed-width);
+}
