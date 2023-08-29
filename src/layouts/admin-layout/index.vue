@@ -1,5 +1,5 @@
 <template>
-  <div class="relative h-full" :style="cssVars">
+  <div class="relative h-full bg-#f6f9f8" :style="cssVars">
     <div class="flex-col h-full">
       <!-- 头部 -->
       <header :class="[style['layout-header'], 'flex-shrink-0', leftGapClass, commonClass]">

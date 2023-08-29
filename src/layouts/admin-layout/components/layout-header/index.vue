@@ -1,6 +1,9 @@
 <template>
   <div :class="['layout-header', 'h-full flex-y-center bg-white']">
-    <NButton @click="btnClick">{{ btnText }}</NButton>
+    <HoverContainer class="h-full w-40px" @click="app.toggleAdminSiderCollapse">
+      <icon-line-md-menu-unfold-left v-if="app.adminSiderCollapse" class="text-16px" />
+      <icon-line-md-menu-fold-left v-else class="text-16px" />
+    </HoverContainer>
   </div>
 </template>
 
@@ -9,18 +12,9 @@ defineOptions({
   name: 'AdminLayoutHeader',
 });
 
-import { computed } from 'vue';
 import { useAppStore } from '@/stores';
 
-const appStore = useAppStore();
-
-const btnText = computed(() => {
-  return appStore.adminSiderCollapse ? '展开' : '折叠';
-});
-
-const btnClick = () => {
-  appStore.toggleAdminSiderCollapse();
-};
+const app = useAppStore();
 </script>
 
 <style lang="scss" scoped>
