@@ -1,13 +1,13 @@
-import { fileURLToPath, URL } from 'node:url'
+import { fileURLToPath, URL } from 'node:url';
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 
-import Components from 'unplugin-vue-components/vite'
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite';
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers';
 
-import UnoCSS from 'unocss/vite'
+import UnoCSS from 'unocss/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -20,12 +20,19 @@ export default defineConfig({
     Components({
       dts: 'src/typings/components.d.ts',
       types: [{ from: 'vue-router', names: ['RouterLink', 'RouterView'] }],
-      resolvers: [NaiveUiResolver()]
-    })
+      resolvers: [NaiveUiResolver()],
+    }),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "./src/styles/scss/global.scss" as *;`,
+      },
+    },
+  },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
-})
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+});

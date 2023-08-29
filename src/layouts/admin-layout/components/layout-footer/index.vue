@@ -1,5 +1,5 @@
 <template>
-  <div>底部</div>
+  <div class="bg-white h-full">底部</div>
 </template>
 
 <script lang="ts" setup>

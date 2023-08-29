@@ -20,7 +20,10 @@
         <LayoutSider />
       </aside>
       <!-- 主体内容 -->
-      <main :class="['flex-grow', leftGapClass, commonClass]">
+      <main
+        id="__SCROLL_EL_ID__"
+        :class="['flex-grow overflow-y-scroll', leftGapClass, commonClass]"
+      >
         <LayoutContent />
       </main>
       <!-- 底部 -->
@@ -61,3 +64,9 @@ const leftGapClass = computed(() => {
 
 const commonClass = ref('transition-all-300');
 </script>
+
+<style lang="scss" scoped>
+#__SCROLL_EL_ID__ {
+  @include scrollbar(8px, #e1e1e1);
+}
+</style>

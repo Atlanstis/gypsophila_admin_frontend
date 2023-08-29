@@ -10,5 +10,8 @@ export default defineConfig({
   presets: [presetUno()],
   shortcuts: {
     'flex-col': 'flex flex-col',
+    'flex-x-center': 'flex justify-center',
+    'flex-y-center': 'flex items-center',
+    'flex-center': 'flex items-center justify-center',
   },
 });
