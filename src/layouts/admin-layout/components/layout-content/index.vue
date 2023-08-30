@@ -1,7 +1,7 @@
 <template>
-  <div class="p-16px bg-#f6f9f8">
-    <RouterView />
-  </div>
+  <ScrollContainer>
+    <RouterView class="p-16px" />
+  </ScrollContainer>
 </template>
 
 <script lang="ts" setup>

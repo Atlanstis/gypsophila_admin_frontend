@@ -4,6 +4,7 @@
     <p v-for="i in 100" :key="i">
       {{ i }}
     </p>
+    <n-back-top :right="40" :bottom="100" />
   </div>
 </template>
 
