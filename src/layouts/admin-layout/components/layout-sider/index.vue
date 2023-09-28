@@ -1,5 +1,14 @@
 <template>
-  <div :class="['layout-sider', 'h-full bg-white']">侧边栏</div>
+  <div :class="['layout-sider', 'h-full bg-white']">
+    <ScrollContainer>
+      <div class="flex-col">
+        <div class="h-56px flex-center">
+          <icon-local-logo class="text-32px color-primary" />
+        </div>
+        <div class="flex-shrink-0"></div>
+      </div>
+    </ScrollContainer>
+  </div>
 </template>
 
 <script lang="ts" setup>

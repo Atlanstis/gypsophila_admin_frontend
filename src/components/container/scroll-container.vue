@@ -1,9 +1,6 @@
 <template>
   <div
-    :class="[
-      'h-full ',
-      useDefaultScroll ? '__SCROLL_EL__ overflow-y-scroll' : ' overflow-y-hidden',
-    ]"
+    :class="['h-full', useDefaultScroll ? '__SCROLL_EL__ overflow-y-scroll' : ' overflow-y-hidden']"
   >
     <slot v-if="useDefaultScroll"></slot>
     <n-scrollbar v-else class="h-full">
@@ -19,7 +16,7 @@ defineOptions({
 
 import { ref } from 'vue';
 
-const useDefaultScroll = ref(true);
+const useDefaultScroll = ref(false);
 </script>
 
 <style lang="scss" scoped>

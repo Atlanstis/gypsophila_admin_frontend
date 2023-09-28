@@ -11,7 +11,10 @@ import UnoCSS from 'unocss/vite';
 
 import Icons from 'unplugin-icons/vite';
 import IconsResolver from 'unplugin-icons/resolver';
+import { FileSystemIconLoader } from 'unplugin-icons/loaders';
+
 const ICON_PREFIX = 'icon';
+const ICON_LOCAL_COLLECTION = 'local';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -20,14 +23,28 @@ export default defineConfig({
     vueJsx(),
     // https://unocss.dev/guide/
     UnoCSS(),
+
+    // https://github.com/antfu/unplugin-icons
+    Icons({
+      compiler: 'vue3',
+      scale: 1,
+      defaultClass: 'inline-block',
+      customCollections: {
+        [ICON_LOCAL_COLLECTION]: FileSystemIconLoader('src/assets/icons', (svg) =>
+          svg.replace(/^<svg\s/, '<svg width="1em" height="1em" '),
+        ),
+      },
+    }),
+
     // https://github.com/antfu/unplugin-vue-components
     Components({
       dts: 'src/typings/components.d.ts',
       types: [{ from: 'vue-router', names: ['RouterLink', 'RouterView'] }],
-      resolvers: [NaiveUiResolver(), IconsResolver({ componentPrefix: ICON_PREFIX })],
+      resolvers: [
+        NaiveUiResolver(),
+        IconsResolver({ customCollections: [ICON_LOCAL_COLLECTION], componentPrefix: ICON_PREFIX }),
+      ],
     }),
-    // https://github.com/antfu/unplugin-icons
-    Icons({ compiler: 'vue3', scale: 1, defaultClass: 'inline-block' }),
   ],
   css: {
     preprocessorOptions: {
