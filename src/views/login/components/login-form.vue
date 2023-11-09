@@ -3,7 +3,7 @@
     <div class="mb-20px flex flex-center">
       <icon-local-logo class="text-40px color-primary" />
     </div>
-    <NForm ref="formRef" :model="form" :rules="rules" :show-label="false">
+    <NForm ref="formRef" :model="form" :rules="rules" :disabled="formDisabled" :show-label="false">
       <NFormItem path="username">
         <NInput v-model:value="form.username" placeholder="请输入用户名">
           <template #prefix>
@@ -25,25 +25,32 @@
       </NFormItem>
       <div class="justify-between flex-y-center">
         <n-checkbox v-model:checked="rememberMe">记住我</n-checkbox>
-        <n-button type="primary" @click="goLoginHandle">登录</n-button>
+        <n-button type="primary" :loading="auth.loginLoading" @click="goLoginHandle">登录</n-button>
       </div>
     </NForm>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import type { FormInst, FormRules } from 'naive-ui';
+import { useAuthStore } from '@/stores';
 
 defineOptions({
   name: 'LoginForm',
+});
+
+const auth = useAuthStore();
+
+const formDisabled = computed(() => {
+  return auth.loginLoading;
 });
 
 const formRef = ref<FormInst | null>(null);
 
 const form = reactive({
   username: 'admin',
-  password: 'gypsophila',
+  password: '2wsxVFR_',
 });
 
 const rules: FormRules = {
@@ -62,11 +69,8 @@ const rules: FormRules = {
 const rememberMe = ref(false);
 
 async function goLoginHandle() {
-  formRef.value
-    ?.validate((valid) => {
-      console.log(valid);
-    })
-    .catch(() => {});
+  await formRef.value?.validate();
+  auth.login(form.username, form.password);
 }
 </script>
 
