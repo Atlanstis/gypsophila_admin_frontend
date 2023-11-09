@@ -18,6 +18,17 @@ const ICON_LOCAL_COLLECTION = 'local';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    port: 1108,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        changeOrigin: true,
+      },
+    },
+  },
+
   plugins: [
     vue(),
     vueJsx(),
