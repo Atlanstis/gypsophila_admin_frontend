@@ -1,13 +1,11 @@
 <template>
-  <div :class="['layout-sider', 'h-full bg-white']">
-    <ScrollContainer>
-      <div class="flex-col">
-        <div class="h-56px flex-center">
-          <icon-local-logo class="text-32px color-primary" />
-        </div>
-        <div class="flex-shrink-0"></div>
-      </div>
-    </ScrollContainer>
+  <div :class="['layout-sider', 'flex-col h-full bg-white']">
+    <div class="h-56px flex-center flex-shrink-0">
+      <icon-local-logo class="text-32px color-primary" />
+    </div>
+    <div class="flex-grow-1 overflow-hidden">
+      <ScrollContainer> 菜单 </ScrollContainer>
+    </div>
   </div>
 </template>
 

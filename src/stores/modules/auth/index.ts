@@ -1,7 +1,9 @@
 import { authLogin } from '@/service';
 import { LocalKeyEnum, localStorage } from '@/utils';
 import { defineStore } from 'pinia';
+import { useRouteStore } from '@/stores';
 import { getToken } from './helper';
+import { useRouterPush } from '@/composables';
 
 interface AuthState {
   /** 登录加载中 */
@@ -15,6 +17,13 @@ export const useAuthStore = defineStore('auth-store', {
     loginLoading: false,
     token: getToken(),
   }),
+
+  getters: {
+    /** 是否登录 */
+    isLogin(): boolean {
+      return !!this.token;
+    },
+  },
 
   actions: {
     /**
@@ -38,6 +47,14 @@ export const useAuthStore = defineStore('auth-store', {
     async handleActionAfterLogin(token: string) {
       localStorage.set(LocalKeyEnum.Token, token);
       this.token = token;
+
+      // 获取授权路由
+      const route = useRouteStore();
+      await route.initAuthRoute();
+
+      const { toLoginRedirect } = useRouterPush(false);
+      // 跳转登录后的地址
+      toLoginRedirect();
     },
   },
 });
