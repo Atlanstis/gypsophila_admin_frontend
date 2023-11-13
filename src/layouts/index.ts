@@ -1,14 +1,8 @@
-import type { RouteComponent } from 'vue-router';
+import { LayoutEnum } from '@/enums';
 
-/** 布局枚举 */
-export enum LayoutEnum {
-  /** Admin 布局 */
-  Admin = 'Admin',
-}
-
-export const Layouts: Record<
-  LayoutEnum,
-  RouteComponent | (() => Promise<{ default: RouteComponent }>)
-> = {
+/**
+ * 布局组件映射
+ */
+export const Layouts: Record<LayoutEnum, Common.Component> = {
   [LayoutEnum.Admin]: () => import('./admin-layout/index.vue'),
 };

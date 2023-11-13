@@ -5,4 +5,9 @@ declare namespace Common {
    * [状态, 为true时执行的回调函数]
    */
   type StrategyAction = [boolean, () => void];
+
+  /** 组件/异步组件 */
+  type Component =
+    | import('vue-router').RouteComponent
+    | (() => Promise<{ default: import('vue-router').RouteComponent }>);
 }

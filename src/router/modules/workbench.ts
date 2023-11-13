@@ -1,23 +1,17 @@
-import type { RouteRecordRaw } from 'vue-router';
-import { RouteNameEnum, Views } from '@/views';
+import { Views } from '@/views';
 import { Layouts } from '@/layouts';
-import { LayoutEnum } from '@/layouts';
+import { RouteEnum, LayoutEnum } from '@/enums';
 
 /** 工作台路由 */
-export const workbenchRoutes: RouteRecordRaw[] = [
+export const workbenchRoutes: AuthRoute.Route[] = [
   {
-    name: RouteNameEnum.Workbench,
+    name: RouteEnum.Workbench,
     path: '/workbench',
-    component: Layouts[LayoutEnum.Admin],
+    component: Views[RouteEnum.Workbench],
     meta: {
       title: '工作台',
       icon: 'icon-park-outline:workbench',
+      layout: Layouts[LayoutEnum.Admin],
     },
-    children: [
-      {
-        path: '/',
-        component: Views[RouteNameEnum.Workbench],
-      },
-    ],
   },
 ];

@@ -1,30 +1,31 @@
-import type { RouteRecordRaw } from 'vue-router';
-import { RouteNameEnum, Views } from '@/views';
+import { Views } from '@/views';
+import { LayoutEnum, RouteEnum } from '@/enums';
+import { Layouts } from '@/layouts';
 
 /** PlayStation 路由 */
-export const playStationRoutes: RouteRecordRaw[] = [
+export const playStationRoutes: AuthRoute.Route[] = [
   {
-    name: RouteNameEnum.PlayStation,
+    name: RouteEnum.PlayStation,
     path: '/play-station',
-    component: Views[RouteNameEnum.PlayStation],
     meta: {
       title: 'PlayStation',
       iconLocal: 'playstation',
+      layout: Layouts[LayoutEnum.Admin],
     },
     children: [
       {
-        name: RouteNameEnum.PlayStation_Game,
-        path: 'game',
-        component: Views[RouteNameEnum.PlayStation_Game],
+        name: RouteEnum.PlayStation_Game,
+        path: '/play-station/game',
+        component: Views[RouteEnum.PlayStation_Game],
         meta: {
           title: 'PS 游戏',
           iconLocal: 'psgame',
         },
       },
       {
-        name: RouteNameEnum.PlayStation_Trophy,
-        path: '/trophy',
-        component: Views[RouteNameEnum.PlayStation_Trophy],
+        name: RouteEnum.PlayStation_Trophy,
+        path: '/play-station/trophy',
+        component: Views[RouteEnum.PlayStation_Trophy],
         meta: {
           title: '奖杯信息',
           iconLocal: 'trophy',
@@ -32,9 +33,9 @@ export const playStationRoutes: RouteRecordRaw[] = [
         },
       },
       {
-        name: RouteNameEnum.PlayStation_Search,
+        name: RouteEnum.PlayStation_Search,
         path: '/play-station/search',
-        component: Views[RouteNameEnum.PlayStation_Search],
+        component: Views[RouteEnum.PlayStation_Search],
         meta: {
           title: '查找',
           iconLocal: 'psnine',

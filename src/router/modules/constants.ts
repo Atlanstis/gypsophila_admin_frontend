@@ -1,24 +1,30 @@
-import type { RouteRecordRaw } from 'vue-router';
-import { RouteNameEnum, Views } from '@/views';
+import { Views } from '@/views';
+import { RouteEnum } from '@/enums';
 
 /** 根路由 */
-export const ROOT_ROUTE: RouteRecordRaw = {
+export const ROOT_ROUTE: AuthRoute.Route = {
   path: '/',
-  name: RouteNameEnum.Root,
+  name: RouteEnum.Root,
   redirect: '/login',
+  meta: {
+    title: '根路由',
+  },
 };
 
-export const constantRoutes: RouteRecordRaw[] = [
+export const constantRoutes: AuthRoute.Route[] = [
   ROOT_ROUTE,
   {
     path: '/login',
-    name: RouteNameEnum.Login,
-    component: Views[RouteNameEnum.Login],
+    name: RouteEnum.Login,
+    component: Views[RouteEnum.Login],
+    meta: {
+      title: '登录',
+    },
   },
   {
     path: '/:pathMatch(.*)*',
-    name: RouteNameEnum.NotFound,
-    component: Views[RouteNameEnum.NotFound],
+    name: RouteEnum.NotFound,
+    component: Views[RouteEnum.NotFound],
     meta: {
       title: '未匹配路径',
     },

@@ -1,5 +1,5 @@
 import { useAuthStore, useRouteStore } from '@/stores';
-import { RouteNameEnum } from '@/views';
+import { RouteEnum } from '@/enums';
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 
 /**
@@ -18,11 +18,11 @@ export async function createDynamicRouteGuard(
   if (!route.isInitAuthRoute) {
     // 未登录情况下直接回到登录页，登录成功后再加载权限路由
     if (!isLogin) {
-      if (to.name === RouteNameEnum.Login) {
+      if (to.name === RouteEnum.Login) {
         next();
       } else {
         const redirect = to.fullPath;
-        next({ name: RouteNameEnum.Login, query: { redirect } });
+        next({ name: RouteEnum.Login, query: { redirect } });
       }
       return false;
     }
@@ -30,10 +30,10 @@ export async function createDynamicRouteGuard(
     // 加载权限路由
     await route.initAuthRoute();
 
-    if (to.name === RouteNameEnum.NotFound) {
+    if (to.name === RouteEnum.NotFound) {
       // 动态路由没有加载导致被not-found路由捕获，等待权限路由加载好了，回到之前的路由
       // 若路由是从根路由重定向过来的，重新回到根路由
-      const path = to.redirectedFrom?.name === RouteNameEnum.Root ? '/' : to.fullPath;
+      const path = to.redirectedFrom?.name === RouteEnum.Root ? '/' : to.fullPath;
       next({ path, replace: true, query: to.query, hash: to.hash });
       return false;
     }

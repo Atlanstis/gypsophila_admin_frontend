@@ -1,18 +1,19 @@
 import { defineStore } from 'pinia';
 import { routes, router, ROOT_ROUTE } from '@/router';
-import { RouteNameEnum } from '@/views';
+import { RouteEnum } from '@/enums';
 import type { RouteRecordRaw } from 'vue-router';
+import { transformAuthRoute } from './helper';
 
 interface RouteState {
   /** 路由权限是否已初始化 */
   isInitAuthRoute: boolean;
-  adminMenus: AdminLayout.MenuOption[];
+  // adminMenus: AdminLayout.MenuOption[];
 }
 
 export const useRouteStore = defineStore('route-store', {
   state: (): RouteState => ({
     isInitAuthRoute: false,
-    adminMenus: [],
+    // adminMenus: [],
   }),
 
   actions: {
@@ -26,7 +27,8 @@ export const useRouteStore = defineStore('route-store', {
      */
     async handleAuthRoute() {
       // TODO 将授权路由改为接口获取
-      const authRoutes = await [...routes];
+      const authMenu: PageRoute.AllRouteName[] = ['Workbench', 'PlayStation', 'PlayStation_Search'];
+      const authRoutes = await transformAuthRoute(routes, authMenu);
 
       // 添加动态路由
       authRoutes.forEach((route) => {
@@ -49,7 +51,7 @@ export const useRouteStore = defineStore('route-store', {
         name: ROOT_ROUTE.name,
         redirect: rootPath,
       };
-      router.removeRoute(RouteNameEnum.Root);
+      router.removeRoute(RouteEnum.Root);
       router.addRoute(rootRoute);
     },
   },

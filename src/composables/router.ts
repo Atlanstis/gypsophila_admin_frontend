@@ -1,13 +1,13 @@
 import { useRouter, type RouteLocationRaw } from 'vue-router';
 import { router as globalRouter } from '@/router';
-import { RouteNameEnum } from '@/views';
+import { RouteEnum } from '@/enums';
 
 /**
  * 路由跳转
- * @param inSetup - 是否在 vue 页面/组件的 setup 里面调用，例如在 axios 里面使用 useRouter 和 useRoute 将返回 undefined
+ * @param isInSetup - 是否在 vue 页面/组件的 setup 里面调用，例如在 axios 里面使用 useRouter 和 useRoute 将返回 undefined
  */
-export function useRouterPush(isSetup = true) {
-  const router = isSetup ? useRouter() : globalRouter;
+export function useRouterPush(isInSetup = true) {
+  const router = isInSetup ? useRouter() : globalRouter;
   const route = router.currentRoute;
 
   /**
@@ -29,7 +29,7 @@ export function useRouterPush(isSetup = true) {
    * @param newTab - 是否在新的浏览器标签中打开
    */
   function toHome(newTab = false) {
-    routerPush({ name: RouteNameEnum.Root }, newTab);
+    routerPush({ name: RouteEnum.Root }, newTab);
   }
 
   /**

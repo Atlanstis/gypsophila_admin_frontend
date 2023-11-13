@@ -1,7 +1,7 @@
 import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router';
 import { createDynamicRouteGuard } from './dynamic';
 import { useAuthStore } from '@/stores';
-import { RouteNameEnum } from '@/views';
+import { RouteEnum } from '@/enums';
 import { exeStrategyActions } from '@/utils';
 
 /** 处理路由页面的权限 */
@@ -20,7 +20,7 @@ export async function createPermissionGuard(
   // 处理特定条件下的跳转
   const actions: Common.StrategyAction[] = [
     /** 已登录时前往登录页，跳转至首页 */
-    [isLogin && to.name === RouteNameEnum.Login, () => next({ name: RouteNameEnum.Root })],
+    [isLogin && to.name === RouteEnum.Login, () => next({ name: RouteEnum.Root })],
     /** 已登录，前往其他页面，放行 */
     [isLogin, () => next()],
   ];
