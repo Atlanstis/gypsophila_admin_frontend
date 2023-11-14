@@ -1,6 +1,7 @@
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
-import { LocalKeyEnum, localStorage } from '@/utils';
+import { localStorage } from '@/utils';
+import { LocalKeyEnum } from '@/enums';
 
 /**
  * 自定义 axios 实例

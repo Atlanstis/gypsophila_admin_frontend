@@ -1,5 +1,6 @@
 import { authLogin } from '@/service';
-import { LocalKeyEnum, localStorage } from '@/utils';
+import { localStorage } from '@/utils';
+import { LocalKeyEnum } from '@/enums';
 import { defineStore } from 'pinia';
 import { useRouteStore } from '@/stores';
 import { getToken } from './helper';

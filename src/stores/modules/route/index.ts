@@ -2,33 +2,35 @@ import { defineStore } from 'pinia';
 import { routes, router, ROOT_ROUTE } from '@/router';
 import { RouteEnum } from '@/enums';
 import type { RouteRecordRaw } from 'vue-router';
-import { transformAuthRoute } from './helper';
+import { transformAuthRoute, transformAuthRouteToMenus } from './helper';
 
 interface RouteState {
   /** 路由权限是否已初始化 */
   isInitAuthRoute: boolean;
-  // adminMenus: AdminLayout.MenuOption[];
+  /**后台页菜单 */
+  adminMenus: Layout.AdminMenuOption[];
 }
 
 export const useRouteStore = defineStore('route-store', {
   state: (): RouteState => ({
     isInitAuthRoute: false,
-    // adminMenus: [],
+    adminMenus: [],
   }),
 
   actions: {
     async initAuthRoute() {
-      await this.handleAuthRoute();
-    },
-
-    /**
-     * 处理权限路由
-     * @param routes - 权限路由
-     */
-    async handleAuthRoute() {
       // TODO 将授权路由改为接口获取
-      const authMenu: PageRoute.AllRouteName[] = ['Workbench', 'PlayStation', 'PlayStation_Search'];
+      const authMenu: PageRoute.AllRouteName[] = [
+        'Workbench',
+        'PlayStation',
+        'PlayStation_Game',
+        'PlayStation_Trophy',
+        'PlayStation_Search',
+      ];
       const authRoutes = await transformAuthRoute(routes, authMenu);
+
+      // 生成后台菜单
+      (this.adminMenus as Layout.AdminMenuOption[]) = transformAuthRouteToMenus(routes, authMenu);
 
       // 添加动态路由
       authRoutes.forEach((route) => {

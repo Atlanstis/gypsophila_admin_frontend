@@ -1,17 +1,6 @@
 import { decrypt, encrypt } from '../crypto';
 
-/** 本地存储的键值类型 */
-interface Local {
-  token: string;
-}
-
-/** Local 键值枚举 */
-export const enum LocalKeyEnum {
-  /** 认证 token */
-  Token = 'token',
-}
-
-function createLocalStorage<T extends Local = Local, K extends LocalKeyEnum = LocalKeyEnum>() {
+function createLocalStorage<T extends StorageSpace.Local = StorageSpace.Local>() {
   /** 默认缓存期限为7天 */
   const DEFAULT_CACHE_TIME = 60 * 60 * 24 * 7;
 
@@ -21,7 +10,7 @@ function createLocalStorage<T extends Local = Local, K extends LocalKeyEnum = Lo
    * @param value 值
    * @param expire 过期时间，单位：秒
    */
-  function set(key: K, value: T[K], expire: number | null = DEFAULT_CACHE_TIME) {
+  function set<K extends keyof T>(key: K, value: T[K], expire: number | null = DEFAULT_CACHE_TIME) {
     const storageData: StorageSpace.Data<T[K]> = {
       value,
       expire: expire !== null ? new Date().getTime() + expire * 1000 : null,
@@ -34,20 +23,20 @@ function createLocalStorage<T extends Local = Local, K extends LocalKeyEnum = Lo
    * @param key 键
    * @returns localstorage 相应键中的值
    */
-  function get(key: K) {
+  function get<K extends keyof T>(key: K) {
     const str = window.localStorage.getItem(key as string);
     if (str) {
       let storageData: StorageSpace.Data<T[K]> | null = null;
       try {
         storageData = decrypt(str);
       } catch {
-        window.console.error(`[localStorage：${key}] 解密失败：${str}`);
+        window.console.error(`[localStorage：] 解密失败：${str}`);
         return null;
       }
       if (storageData) {
         const { value, expire } = storageData;
         if (expire === null || expire >= Date.now()) {
-          return value;
+          return value as T[K];
         }
       }
     }
@@ -59,7 +48,7 @@ function createLocalStorage<T extends Local = Local, K extends LocalKeyEnum = Lo
    * 从 localstorage 中删除键相对应的值
    * @param key 键
    */
-  function remove(key: K) {
+  function remove(key: keyof T) {
     window.localStorage.removeItem(key as string);
   }
 

@@ -1,4 +1,5 @@
-import { LocalKeyEnum, localStorage } from '@/utils';
+import { localStorage } from '@/utils';
+import { LocalKeyEnum } from '@/enums';
 
 /** 获取存储在本地的 token */
 export function getToken() {
