@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { useIconRender } from '@/composables';
+import { constantRoutes } from '@/router';
 
 /**
  * 转换权限路由
@@ -93,6 +94,14 @@ function getAuthMap(authArr: PageRoute.AllRouteName[]) {
     authMap[name] = true;
   });
   return authMap;
+}
+
+/**
+ * 获取固定路由路由名
+ * @returns 路由名
+ */
+export function getConstantRouteName() {
+  return constantRoutes.map((route) => route.name);
 }
 
 function hasComponent(component: Common.Component | undefined): component is Common.Component {

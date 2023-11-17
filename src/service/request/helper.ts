@@ -1,78 +1,152 @@
-import type { AxiosInstance, AxiosRequestConfig } from 'axios';
-import CustomAxiosInstance from './instance';
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { exeStrategyActions, localStorage } from '@/utils';
+import { authRefresh } from '../api';
+import { LocalKeyEnum } from '@/enums';
+import { useAuthStore } from '@/stores';
+import { ResponseCode } from '@/typings';
+import {
+  DEFAULT_REQUEST_ERROR_CODE,
+  DEFAULT_REQUEST_ERROR_MSG,
+  ERROR_STATUS,
+  NETWORK_ERROR_CODE,
+  NETWORK_ERROR_MSG,
+  REQUEST_TIMEOUT_CODE,
+  REQUEST_TIMEOUT_MSG,
+} from './config';
 
-type RequestMethod = 'get' | 'post';
+type ErrorStatus = keyof typeof ERROR_STATUS;
 
-interface RequestParam {
-  /** 请求地址 */
-  url: string;
-  /** 请求方法(默认 get) */
-  method?: RequestMethod;
-  /** 请求的 body 的 data */
-  data?: any;
-  /** axios配置 */
-  axiosConfig?: AxiosRequestConfig;
+/**
+ * 刷新token
+ * @param axiosConfig - token 失效时的请求配置
+ */
+export async function handleRefreshToken(axiosConfig: AxiosRequestConfig) {
+  const { resetAuthStore } = useAuthStore();
+  const refreshToken = localStorage.get(LocalKeyEnum.RefreshToken) || '';
+  const { data, error } = await authRefresh(refreshToken);
+  // 重签成功，将缓存的请求再次发送
+  if (!error) {
+    localStorage.set(LocalKeyEnum.Token, data.accessToken);
+    localStorage.set(LocalKeyEnum.RefreshToken, data.refreshToken);
+
+    if (axiosConfig.headers) {
+      axiosConfig.headers.Authorization = data.accessToken;
+    }
+    return axiosConfig;
+  }
+  // 重签失败
+  // 当 code 为 Unauthorized 时，相应的操作在之前的拦截器中已处理，不在再次进行重置数据处理
+  // 为其它时，则进行数据的重置
+  if (error.code !== ResponseCode.Unauthorized) {
+    resetAuthStore();
+  }
+  return null;
 }
 
-export function createRequest(axiosConfig: AxiosRequestConfig) {
-  const customInstance = new CustomAxiosInstance(axiosConfig);
-
-  /**
-   * 异步promise请求
-   * @param param - 请求参数
-   */
-  async function asyncRequest<T>(param: RequestParam): Promise<Service.RequestResult<T>> {
-    const { url } = param;
-    const method = param.method || 'get';
-    const { instance } = customInstance;
-    const res = (await getRequestResponse({
-      instance,
-      method,
-      url,
-      data: param.data,
-      config: param.axiosConfig,
-    })) as Service.RequestResult<T>;
-
-    return res;
+/** 统一失败和成功的请求结果的数据类型 */
+export async function handleServiceResult<T = any>(
+  error: Service.RequestError | null,
+  data: any,
+  msg: string | null,
+) {
+  if (error) {
+    const fail: Service.FailedResult = {
+      error,
+      data: null,
+    };
+    return fail;
   }
-  /**
-   * get请求
-   * @param url - 请求地址
-   * @param config - axios配置
-   */
-  function get<T>(url: string, config?: AxiosRequestConfig) {
-    return asyncRequest<T>({ url, method: 'get', axiosConfig: config });
-  }
-
-  /**
-   * post请求
-   * @param url - 请求地址
-   * @param data - 请求的body的data
-   * @param config - axios配置
-   */
-  function post<T>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return asyncRequest<T>({ url, method: 'post', data, axiosConfig: config });
-  }
-  return {
-    get,
-    post,
+  const success: Service.SuccessResult<T> = {
+    error: null,
+    data,
+    msg: msg as string,
   };
+  return success;
 }
 
-async function getRequestResponse(params: {
-  instance: AxiosInstance;
-  method: RequestMethod;
-  url: string;
-  data?: any;
-  config?: AxiosRequestConfig;
-}) {
-  const { instance, method, url, data, config } = params;
+/**
+ * 处理后端返回的错误(业务错误)
+ * @param data - 后端接口的响应数据
+ */
+export function handleBackendError(data: Record<string, any>) {
+  const error: Service.RequestError = {
+    type: 'backend',
+    code: data.code,
+    msg: data.msg,
+  };
 
-  let res: any;
-  if (method === 'get') {
-    res = await instance[method](url, config);
+  // showErrorMsg(error);
+  console.log(error);
+  return error;
+}
+
+/**
+ * 处理请求成功后的错误
+ * @param response - 请求的响应
+ */
+export function handleResponseError(response: AxiosResponse) {
+  const error: Service.RequestError = {
+    type: 'axios',
+    code: DEFAULT_REQUEST_ERROR_CODE,
+    msg: DEFAULT_REQUEST_ERROR_MSG,
+  };
+
+  if (!window.navigator.onLine) {
+    // 网路错误
+    Object.assign(error, { code: NETWORK_ERROR_CODE, msg: NETWORK_ERROR_MSG });
   } else {
-    res = await instance[method](url, data, config);
+    // 请求成功的状态码非200的错误
+    const errorCode: ErrorStatus = response.status as ErrorStatus;
+    const msg = ERROR_STATUS[errorCode] || DEFAULT_REQUEST_ERROR_MSG;
+    Object.assign(error, { type: 'http', code: errorCode, msg });
   }
-  return res;
+
+  // showErrorMsg(error);
+  console.log(error);
+  return error;
+}
+
+/**
+ * 处理axios请求失败的错误
+ * @param axiosError - 错误
+ */
+export function handleAxiosError(axiosError: AxiosError) {
+  const error: Service.RequestError = {
+    type: 'axios',
+    code: DEFAULT_REQUEST_ERROR_CODE,
+    msg: DEFAULT_REQUEST_ERROR_MSG,
+  };
+
+  const actions: Common.StrategyAction[] = [
+    [
+      // 网路错误
+      !window.navigator.onLine || axiosError.message === 'Network Error',
+      () => {
+        Object.assign(error, { code: NETWORK_ERROR_CODE, msg: NETWORK_ERROR_MSG });
+      },
+    ],
+    [
+      // 超时错误
+      axiosError.code === REQUEST_TIMEOUT_CODE && axiosError.message.includes('timeout'),
+      () => {
+        Object.assign(error, { code: REQUEST_TIMEOUT_CODE, msg: REQUEST_TIMEOUT_MSG });
+      },
+    ],
+    [
+      // 请求不成功的错误
+      Boolean(axiosError.response),
+      () => {
+        const errorCode: ErrorStatus = (axiosError.response?.status as ErrorStatus) || 'DEFAULT';
+        const msg = ERROR_STATUS[errorCode];
+        Object.assign(error, { code: errorCode, msg });
+      },
+    ],
+  ];
+
+  exeStrategyActions(actions);
+
+  // showErrorMsg(error);
+  console.log(error);
+
+  return error;
 }

@@ -3,8 +3,9 @@ import { localStorage } from '@/utils';
 import { LocalKeyEnum } from '@/enums';
 import { defineStore } from 'pinia';
 import { useRouteStore } from '@/stores';
-import { getToken } from './helper';
+import { clearAuthStorage, getToken } from './helper';
 import { useRouterPush } from '@/composables';
+import { nextTick } from 'vue';
 
 interface AuthState {
   /** 登录加载中 */
@@ -27,6 +28,21 @@ export const useAuthStore = defineStore('auth-store', {
   },
 
   actions: {
+    /** 重置认证信息 */
+    resetAuthStore() {
+      const { toLogin } = useRouterPush(false);
+      const { resetRouteStore } = useRouteStore();
+
+      clearAuthStorage();
+      this.$reset();
+
+      toLogin();
+
+      nextTick(() => {
+        resetRouteStore();
+      });
+    },
+
     /**
      * 用户名密码登录
      * @param username - 用户名
@@ -36,7 +52,7 @@ export const useAuthStore = defineStore('auth-store', {
       this.loginLoading = true;
       const { data } = await authLogin(username, password);
       if (data) {
-        await this.handleActionAfterLogin(data.token);
+        await this.handleActionAfterLogin(data);
       }
       this.loginLoading = false;
     },
@@ -45,9 +61,10 @@ export const useAuthStore = defineStore('auth-store', {
      * 处理登录后成功或失败的逻辑
      * @param token 认证 token
      */
-    async handleActionAfterLogin(token: string) {
-      localStorage.set(LocalKeyEnum.Token, token);
-      this.token = token;
+    async handleActionAfterLogin(data: ApiAuth.Token) {
+      localStorage.set(LocalKeyEnum.Token, data.accessToken);
+      localStorage.set(LocalKeyEnum.RefreshToken, data.refreshToken);
+      this.token = data.accessToken;
 
       // 获取授权路由
       const route = useRouteStore();

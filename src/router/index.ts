@@ -1,11 +1,11 @@
 import type { App } from 'vue';
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
 import { createRouterGuard } from './guard';
 import { constantRoutes } from './modules';
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [...constantRoutes],
+  routes: [...constantRoutes] as RouteRecordRaw[],
 });
 
 /**

@@ -30,7 +30,7 @@ function createLocalStorage<T extends StorageSpace.Local = StorageSpace.Local>()
       try {
         storageData = decrypt(str);
       } catch {
-        window.console.error(`[localStorage：] 解密失败：${str}`);
+        window.console.error(`[localStorage：${key as string}] 解密失败：${str}`);
         return null;
       }
       if (storageData) {

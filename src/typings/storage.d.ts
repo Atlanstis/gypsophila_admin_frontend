@@ -4,6 +4,8 @@ declare namespace StorageSpace {
   interface Local {
     /** 认证 token */
     token: string;
+    /** 刷新 token */
+    refreshToken: string;
     /** admin 菜单折叠状态 */
     adminMenuCollapsed: boolean;
   }

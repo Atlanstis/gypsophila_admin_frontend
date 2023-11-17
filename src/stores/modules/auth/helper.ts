@@ -5,3 +5,9 @@ import { LocalKeyEnum } from '@/enums';
 export function getToken() {
   return localStorage.get(LocalKeyEnum.Token) || '';
 }
+
+/** 去除用户相关的本地缓存 */
+export function clearAuthStorage() {
+  localStorage.remove(LocalKeyEnum.Token);
+  localStorage.remove(LocalKeyEnum.RefreshToken);
+}

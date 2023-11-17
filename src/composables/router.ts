@@ -44,8 +44,22 @@ export function useRouterPush(isInSetup = true) {
     }
   }
 
+  /**
+   * 跳转登录页面
+   * @param redirectUrl - 重定向地址(登录成功后跳转的地址),默认 undefined 表示取当前地址为重定向地址
+   */
+  function toLogin(redirectUrl?: string) {
+    const routeLocation: RouteLocationRaw = {
+      name: RouteEnum.Login,
+    };
+    const redirect = redirectUrl || route.value.fullPath;
+    Object.assign(routeLocation, { query: { redirect } });
+    routerPush(routeLocation);
+  }
+
   return {
     routerPush,
+    toLogin,
     toLoginRedirect,
   };
 }
