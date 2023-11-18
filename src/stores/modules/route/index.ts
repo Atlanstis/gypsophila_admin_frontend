@@ -71,12 +71,13 @@ export const useRouteStore = defineStore('route-store', {
       routes.forEach((route) => {
         const name = route.name as PageRoute.AllRouteName;
         const isConstant = constantNameArr.includes(name);
-        if (isConstant) {
+        if (!isConstant) {
           router.removeRoute(name);
-          if (name === RouteEnum.Root) {
-            const rootRoute = ROOT_ROUTE as RouteRecordRaw;
-            router.addRoute(rootRoute);
-          }
+        } else if (name === RouteEnum.Root) {
+          // 将 Root 路由重新指定到登录页
+          router.removeRoute(name);
+          const rootRoute = ROOT_ROUTE as RouteRecordRaw;
+          router.addRoute(rootRoute);
         }
       });
     },
