@@ -3,6 +3,8 @@ import { routes, router, ROOT_ROUTE } from '@/router';
 import { RouteEnum } from '@/enums';
 import type { RouteRecordRaw } from 'vue-router';
 import { transformAuthRoute, transformAuthRouteToMenus, getConstantRouteName } from './helper';
+import { authInfo } from '@/service';
+import { useAuthStore } from '@/stores';
 
 interface RouteState {
   /** 路由权限是否已初始化 */
@@ -19,28 +21,27 @@ export const useRouteStore = defineStore('route-store', {
 
   actions: {
     async initAuthRoute() {
-      // TODO 将授权路由改为接口获取
-      const authMenu: PageRoute.AllRouteName[] = [
-        'Workbench',
-        'PlayStation',
-        'PlayStation_Game',
-        'PlayStation_Trophy',
-        'PlayStation_Search',
-      ];
-      const authRoutes = await transformAuthRoute(routes, authMenu);
+      const { setUserInfo } = useAuthStore();
+      const { data, error } = await authInfo();
+      if (!error) {
+        setUserInfo(data);
+        // 生成权限路由
+        const authRoutes = await transformAuthRoute(routes, data.menus);
+        // 生成后台菜单
+        (this.adminMenus as Layout.AdminMenuOption[]) = transformAuthRouteToMenus(
+          routes,
+          data.menus,
+        );
+        // 添加动态路由
+        authRoutes.forEach((route) => {
+          router.addRoute(route);
+        });
+        // 替换 Root 路由 path
+        const rootPath = authRoutes[0]?.path || '/login';
+        this.handleUpdateRootRedirect(rootPath);
 
-      // 生成后台菜单
-      (this.adminMenus as Layout.AdminMenuOption[]) = transformAuthRouteToMenus(routes, authMenu);
-
-      // 添加动态路由
-      authRoutes.forEach((route) => {
-        router.addRoute(route);
-      });
-      // TODO rootPath 从接口获取
-      const rootPath = '/workbench';
-      this.handleUpdateRootRedirect(rootPath);
-
-      this.isInitAuthRoute = true;
+        this.isInitAuthRoute = true;
+      }
     },
 
     /**

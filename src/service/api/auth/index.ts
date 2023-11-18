@@ -16,3 +16,10 @@ export function authLogin(username: string, password: string) {
 export function authRefresh(refreshToken: string) {
   return request.post<ApiAuth.Token>('/auth/refresh', { refreshToken });
 }
+
+/**
+ * 获取已登录用户信息
+ */
+export function authInfo() {
+  return request.get<ApiAuth.UserInfo>('/auth/info');
+}

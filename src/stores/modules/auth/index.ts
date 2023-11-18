@@ -12,18 +12,20 @@ interface AuthState {
   loginLoading: boolean;
   /** 认证 token */
   token: string;
+  userInfo?: ApiAuth.UserInfo;
 }
 
 export const useAuthStore = defineStore('auth-store', {
   state: (): AuthState => ({
     loginLoading: false,
     token: getToken(),
+    userInfo: undefined,
   }),
 
   getters: {
     /** 是否登录 */
-    isLogin(): boolean {
-      return !!this.token;
+    isLogin(state): boolean {
+      return !!state.token;
     },
   },
 
@@ -73,6 +75,11 @@ export const useAuthStore = defineStore('auth-store', {
       const { toLoginRedirect } = useRouterPush(false);
       // 跳转登录后的地址
       toLoginRedirect();
+    },
+
+    /** 设置用户信息 */
+    setUserInfo(userInfo: ApiAuth.UserInfo) {
+      this.userInfo = userInfo;
     },
   },
 });
