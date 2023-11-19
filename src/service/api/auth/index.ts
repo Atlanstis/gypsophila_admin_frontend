@@ -23,3 +23,10 @@ export function authRefresh(refreshToken: string) {
 export function authInfo() {
   return request.get<ApiAuth.UserInfo>('/auth/info');
 }
+
+/**
+ * 退出登录
+ */
+export function authLogout() {
+  return request.get<null>('/auth/logout');
+}

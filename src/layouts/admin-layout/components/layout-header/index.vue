@@ -1,20 +1,20 @@
 <template>
   <div :class="['layout-header', 'h-full flex-y-center bg-white']">
-    <HoverContainer class="h-full w-40px" @click="app.toggleAdminSiderCollapse">
-      <icon-line-md-menu-fold-right v-if="app.adminSiderCollapse" class="text-16px" />
-      <icon-line-md-menu-fold-left v-else class="text-16px" />
-    </HoverContainer>
+    <div class="flex-1-hidden h-full">
+      <BtnCollapse />
+    </div>
+    <div class="flex justify-end h-full">
+      <UserAvatar />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { BtnCollapse, UserAvatar } from './components';
+
 defineOptions({
   name: 'AdminLayoutHeader',
 });
-
-import { useAppStore } from '@/stores';
-
-const app = useAppStore();
 </script>
 
 <style lang="scss" scoped>
