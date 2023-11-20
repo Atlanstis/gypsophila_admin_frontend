@@ -26,7 +26,7 @@ export async function createDynamicRouteGuard(
       }
       return false;
     }
-
+    route.setRedirect(to.fullPath);
     // 加载权限路由
     await route.initAuthRoute();
 

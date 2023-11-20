@@ -63,9 +63,10 @@ function filterAuthRoute(routes: AuthRoute.Route[], authMap: Record<string, bool
       if (hasLayout(route.meta.layout)) {
         if (hasComponent(route.component)) {
           const parentRoute: RouteRecordRaw = {
-            path: `${itemRoute.path}-parent`,
+            name: `${route.name}-parent`,
+            path: `${route.path}-parent`,
             component: route.meta.layout,
-            redirect: itemRoute.path,
+            redirect: route.path,
             children: [itemRoute],
           };
           return authRoutes.push(parentRoute);

@@ -1,6 +1,7 @@
 import { useRouter, type RouteLocationRaw } from 'vue-router';
 import { router as globalRouter } from '@/router';
 import { RouteEnum } from '@/enums';
+import { useRouteStore } from '@/stores';
 
 /**
  * 路由跳转
@@ -52,7 +53,12 @@ export function useRouterPush(isInSetup = true) {
     const routeLocation: RouteLocationRaw = {
       name: RouteEnum.Login,
     };
-    const redirect = redirectUrl || route.value.fullPath;
+    let redirect = redirectUrl || route.value.fullPath;
+    const routeStore = useRouteStore();
+    if (redirect === '/') {
+      redirect = routeStore.redirect;
+      routeStore.setRedirect('');
+    }
     Object.assign(routeLocation, { query: { redirect } });
     routerPush(routeLocation);
   }

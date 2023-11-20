@@ -39,12 +39,20 @@ const options: DropdownOption[] = [
   },
 ];
 
-async function handleDropdown(key: string) {
+function handleDropdown(key: string) {
   if (key === DropKey.logout) {
-    const { error } = await authLogout();
-    if (!error) {
-      auth.resetAuthStore();
-    }
+    window.$dialog?.info({
+      title: '确认',
+      content: '确定要退出登录吗？',
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: async () => {
+        const { error } = await authLogout();
+        if (!error) {
+          auth.resetAuthStore();
+        }
+      },
+    });
   }
 }
 </script>

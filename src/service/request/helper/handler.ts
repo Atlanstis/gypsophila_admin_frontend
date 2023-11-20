@@ -1,9 +1,6 @@
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { exeStrategyActions, localStorage } from '@/utils';
-import { authRefresh } from '../api';
-import { LocalKeyEnum } from '@/enums';
-import { useAuthStore } from '@/stores';
-import { ResponseCode } from '@/typings';
+import type { AxiosError, AxiosResponse } from 'axios';
+import { exeStrategyActions } from '@/utils';
+import { showErrorMsg } from './msg';
 import {
   DEFAULT_REQUEST_ERROR_CODE,
   DEFAULT_REQUEST_ERROR_MSG,
@@ -15,33 +12,6 @@ import {
 } from './config';
 
 type ErrorStatus = keyof typeof ERROR_STATUS;
-
-/**
- * 刷新token
- * @param axiosConfig - token 失效时的请求配置
- */
-export async function handleRefreshToken(axiosConfig: AxiosRequestConfig) {
-  const { resetAuthStore } = useAuthStore();
-  const refreshToken = localStorage.get(LocalKeyEnum.RefreshToken) || '';
-  const { data, error } = await authRefresh(refreshToken);
-  // 重签成功，将缓存的请求再次发送
-  if (!error) {
-    localStorage.set(LocalKeyEnum.Token, data.accessToken);
-    localStorage.set(LocalKeyEnum.RefreshToken, data.refreshToken);
-
-    if (axiosConfig.headers) {
-      axiosConfig.headers.Authorization = data.accessToken;
-    }
-    return axiosConfig;
-  }
-  // 重签失败
-  // 当 code 为 Unauthorized 时，相应的操作在之前的拦截器中已处理，不在再次进行重置数据处理
-  // 为其它时，则进行数据的重置
-  if (error.code !== ResponseCode.Unauthorized) {
-    resetAuthStore();
-  }
-  return null;
-}
 
 /** 统一失败和成功的请求结果的数据类型 */
 export async function handleServiceResult<T = any>(
@@ -74,9 +44,7 @@ export function handleBackendError(data: Record<string, any>) {
     code: data.code,
     msg: data.msg,
   };
-
-  // showErrorMsg(error);
-  console.log(error);
+  showErrorMsg(error);
   return error;
 }
 
@@ -101,8 +69,7 @@ export function handleResponseError(response: AxiosResponse) {
     Object.assign(error, { type: 'http', code: errorCode, msg });
   }
 
-  // showErrorMsg(error);
-  console.log(error);
+  showErrorMsg(error);
   return error;
 }
 
@@ -145,8 +112,7 @@ export function handleAxiosError(axiosError: AxiosError) {
 
   exeStrategyActions(actions);
 
-  // showErrorMsg(error);
-  console.log(error);
+  showErrorMsg(error);
 
   return error;
 }

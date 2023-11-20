@@ -15,7 +15,7 @@ export const useThemeStore = defineStore('theme-store', {
   state: (): ThereState => ({
     themeColor: '#646cff',
     otherColor: {
-      info: '#0099ad',
+      info: '#646cff',
       success: '#52c41a',
       warning: '#faad14',
       error: '#f5222d',
