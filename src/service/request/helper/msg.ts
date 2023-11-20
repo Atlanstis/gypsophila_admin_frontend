@@ -1,4 +1,4 @@
-import { ERROR_MSG_DURATION } from './config';
+import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 /** 错误消息栈，防止同一错误同时出现 */
 const errorMsgStack = new Map<string | number, string>([]);
@@ -22,9 +22,8 @@ export function showErrorMsg(error: Service.RequestError) {
 
   addErrorMsg(error);
   window.console.warn(error.code, error.msg);
-  console.log(window.$message);
-  window.$message?.error(error.msg, { duration: ERROR_MSG_DURATION });
+  window.$message?.error(error.msg, { duration: DEFAULT_MESSAGE_DURATION });
   setTimeout(() => {
     removeErrorMsg(error);
-  }, ERROR_MSG_DURATION);
+  }, DEFAULT_MESSAGE_DURATION);
 }

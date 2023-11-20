@@ -6,6 +6,7 @@ import { useRouteStore } from '@/stores';
 import { clearAuthStorage, getToken } from './helper';
 import { useRouterPush } from '@/composables';
 import { nextTick } from 'vue';
+import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 interface AuthState {
   /** 登录加载中 */
@@ -52,8 +53,8 @@ export const useAuthStore = defineStore('auth-store', {
      */
     async login(username: string, password: string) {
       this.loginLoading = true;
-      const { data } = await authLogin(username, password);
-      if (data) {
+      const { error, data } = await authLogin(username, password);
+      if (!error) {
         await this.handleActionAfterLogin(data);
       }
       this.loginLoading = false;
@@ -75,6 +76,11 @@ export const useAuthStore = defineStore('auth-store', {
       const { toLoginRedirect } = useRouterPush(false);
       // 跳转登录后的地址
       toLoginRedirect();
+
+      // 登录成功弹出提示
+      if (route.isInitAuthRoute) {
+        window.$message?.success('登录成功', { duration: DEFAULT_MESSAGE_DURATION });
+      }
     },
 
     /** 设置用户信息 */

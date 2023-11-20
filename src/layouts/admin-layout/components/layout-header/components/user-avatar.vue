@@ -17,6 +17,7 @@ import { type DropdownOption } from 'naive-ui';
 import { useIconRender } from '@/composables';
 import { useAuthStore } from '@/stores';
 import { authLogout } from '@/service';
+import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
   name: 'UserAvatar',
@@ -50,6 +51,7 @@ function handleDropdown(key: string) {
         const { error } = await authLogout();
         if (!error) {
           auth.resetAuthStore();
+          window.$message?.success('退出成功', { duration: DEFAULT_MESSAGE_DURATION });
         }
       },
     });
