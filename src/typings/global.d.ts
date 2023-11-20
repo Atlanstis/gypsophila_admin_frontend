@@ -1,3 +1,11 @@
+/** 给 window 对象增加 naive 组件相关调用 */
+interface Window {
+  $loadingBar?: import('naive-ui').LoadingBarProviderInst;
+  $dialog?: import('naive-ui').DialogProviderInst;
+  $message?: import('naive-ui').MessageProviderInst;
+  $notification?: import('naive-ui').NotificationProviderInst;
+}
+
 /** 通用类型 */
 declare namespace Common {
   /**
