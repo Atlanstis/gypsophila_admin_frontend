@@ -66,6 +66,7 @@ export function useRouterPush(isInSetup = true) {
   return {
     routerPush,
     toLogin,
+    toHome,
     toLoginRedirect,
   };
 }

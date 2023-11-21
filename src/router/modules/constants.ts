@@ -26,7 +26,7 @@ export const constantRoutes: AuthRoute.Route[] = [
     name: RouteEnum.NotFound,
     component: Views[RouteEnum.NotFound],
     meta: {
-      title: '未匹配路径',
+      title: '404',
     },
   },
 ];
