@@ -38,10 +38,11 @@ export function createRequest(axiosConfig: AxiosRequestConfig) {
   /**
    * get请求
    * @param url - 请求地址
+   * @param data = 请求参数
    * @param config - axios配置
    */
-  function get<T>(url: string, config?: AxiosRequestConfig) {
-    return asyncRequest<T>({ url, method: 'get', axiosConfig: config });
+  function get<T>(url: string, data?: any, config?: AxiosRequestConfig) {
+    return asyncRequest<T>({ url, method: 'get', data, axiosConfig: config });
   }
 
   /**
@@ -91,7 +92,7 @@ async function getRequestResponse(params: {
 
   let res: any;
   if (method === 'get') {
-    res = await instance[method](url, config);
+    res = await instance[method](url, { ...config, params: data || {} });
   } else {
     res = await instance[method](url, data, config);
   }

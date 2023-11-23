@@ -8,4 +8,5 @@ export const Views: Record<PageRoute.HasPageRoute, Common.Component> = {
   [RouteEnum.PlayStation_Game]: () => import('./play-station/game/index.vue'),
   [RouteEnum.PlayStation_Trophy]: () => import('./play-station/trophy/index.vue'),
   [RouteEnum.PlayStation_Search]: () => import('./play-station/search/index.vue'),
+  [RouteEnum.Management_User]: () => import('./management/user/index.vue'),
 };

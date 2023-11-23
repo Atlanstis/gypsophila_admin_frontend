@@ -15,4 +15,8 @@ export enum RouteEnum {
   PlayStation_Trophy = 'PlayStation_Trophy',
   /** PlayStation 游戏查找 */
   PlayStation_Search = 'PlayStation_Search',
+  /** 系统管理 */
+  Management = 'Management',
+  /** 用户管理 */
+  Management_User = 'Management_User',
 }

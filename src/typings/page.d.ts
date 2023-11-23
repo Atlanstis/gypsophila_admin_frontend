@@ -23,9 +23,18 @@ declare namespace PageRoute {
   /** PlayStation 路由名 */
   type AllPlayStationName = PlayStationNoPageName | PlayStationName;
 
+  type ManagementNoPageName = 'Management';
+
+  type ManagementName = 'Management_User';
+
+  type AllManagementName = ManagementNoPageName | ManagementName;
+
   /** 全部路由名 */
-  type AllRouteName = FunctionName | WorkbenchName | AllPlayStationName;
+  type AllRouteName = FunctionName | WorkbenchName | AllPlayStationName | AllManagementName;
 
   /** 全部有对应页面的路由名  */
-  type HasPageRoute = Exclude<AllRouteName, RootName | PlayStationNoPageName>;
+  type HasPageRoute = Exclude<
+    AllRouteName,
+    RootName | PlayStationNoPageName | ManagementNoPageName
+  >;
 }

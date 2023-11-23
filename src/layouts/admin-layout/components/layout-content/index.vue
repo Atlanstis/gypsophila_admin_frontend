@@ -1,7 +1,7 @@
 <template>
-  <ScrollContainer>
-    <RouterView class="p-16px" />
-  </ScrollContainer>
+  <!-- <ScrollContainer> -->
+  <RouterView class="p-16px h-full" />
+  <!-- </ScrollContainer> -->
 </template>
 
 <script lang="ts" setup>
