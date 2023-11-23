@@ -25,7 +25,7 @@ declare namespace PageRoute {
 
   type ManagementNoPageName = 'Management';
 
-  type ManagementName = 'Management_User';
+  type ManagementName = 'Management_User' | 'Management_Role';
 
   type AllManagementName = ManagementNoPageName | ManagementName;
 

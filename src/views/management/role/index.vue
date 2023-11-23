@@ -4,7 +4,7 @@
       <div class="h-full flex-col">
         <NSpace class="pb-12px" justify="space-between">
           <NSpace>
-            <nButton type="primary" @click="handleUserAdd">
+            <nButton type="primary" @click="handleRoleAdd">
               <icon-ic-round-plus class="mr-4px text-20px" />
               新增
             </nButton>
@@ -18,61 +18,57 @@
           :loading="loading"
           :columns="columns"
           :data="tableData"
-          :rowKey="(user) => user.id"
+          :rowKey="(role) => role.id"
           :pagination="pagination"
         ></NDataTable>
       </div>
-      <UserModal
+      <RoleModal
         v-model:visible="visible"
         :type="modalType"
         :edit-data="editData"
         @on-success="getTableData"
-      ></UserModal>
+      ></RoleModal>
     </NCard>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { NTag, type DataTableColumns, NSpace, NButton, NPopconfirm } from 'naive-ui';
-import { onMounted, ref, type Ref } from 'vue';
-import { userDelete, userList } from '@/service';
-import { h } from 'vue';
-import { BusinessRoleEnum } from '@/enums';
-import UserModal from './components/user-modal.vue';
-import type { ModalType } from './components/user-modal.vue';
-import { useBoolean } from '@/hooks';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { usePagination } from '@/composables';
+import { RoleIsDefaultEnum } from '@/enums';
+import { useBoolean } from '@/hooks';
+import { NTag, type DataTableColumns, NPopconfirm, NButton, NSpace } from 'naive-ui';
+import { onMounted } from 'vue';
+import { h, ref, type Ref } from 'vue';
+import { roleDelete, roleList } from '@/service';
+import RoleModal from './components/role-modal.vue';
+import type { ModalType } from './components/role-modal.vue';
+import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
-  name: 'UserManagementView',
+  name: 'RoleManagementView',
 });
 
 const { bool: visible, setTrue: openModal } = useBoolean(false);
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false);
-
 const modalType = ref<ModalType>('add');
 
-const columns: Ref<DataTableColumns<ApiManagement.User>> = ref([
+const columns: Ref<DataTableColumns<ApiManagement.Role>> = ref([
   {
-    key: 'username',
-    title: '用户名',
+    key: 'name',
+    title: '角色名',
     align: 'center',
   },
   {
-    key: 'nickname',
-    title: '昵称',
-    align: 'center',
-  },
-  {
-    key: 'roles',
-    title: '角色',
+    key: 'isDefault',
+    title: '是否内置角色',
     align: 'center',
     render: (row) => {
-      const roleName = row.roles.map((role) =>
-        h(NTag, { type: 'info' }, { default: () => role.name }),
-      );
-      return h('div', roleName);
+      if (row.isDefault === RoleIsDefaultEnum.YES) {
+        return h(NTag, { type: 'success' }, { default: () => '是' });
+      } else if (row.isDefault === RoleIsDefaultEnum.NO) {
+        return h(NTag, { type: 'warning' }, { default: () => '否' });
+      }
+      return null;
     },
   },
   {
@@ -93,7 +89,7 @@ const columns: Ref<DataTableColumns<ApiManagement.User>> = ref([
           trigger: () => h(NButton, { size: 'small', type: 'error' }, () => '删除'),
         },
       );
-      const canDel = !row.roles.some((role) => role.id === BusinessRoleEnum.SuperAdmin);
+      const canDel = row.isDefault === RoleIsDefaultEnum.NO;
       return h(
         NSpace,
         { justify: 'center' },
@@ -112,9 +108,13 @@ const columns: Ref<DataTableColumns<ApiManagement.User>> = ref([
   },
 ]);
 
-const editData = ref<ApiManagement.User | null>(null);
+const tableData = ref<ApiManagement.Role[]>([]);
 
-function setEditData(data: ApiManagement.User | null) {
+const { pagination, getPageParams } = usePagination(getTableData);
+
+const editData = ref<ApiManagement.Role | null>(null);
+
+function setEditData(data: ApiManagement.Role | null) {
   editData.value = data;
 }
 
@@ -122,28 +122,27 @@ function setModalType(val: ModalType) {
   modalType.value = val;
 }
 
-function handleUserAdd() {
+function handleRoleAdd() {
   setModalType('add');
   openModal();
 }
 
-function handleEdit(row: ApiManagement.User) {
+function handleEdit(row: ApiManagement.Role) {
   setModalType('edit');
   setEditData(row);
   openModal();
 }
 
-async function handleDelete(id: string) {
-  await userDelete({ id });
+async function handleDelete(id: number) {
+  await roleDelete({ id });
   window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
   getTableData();
 }
-const tableData = ref<ApiManagement.User[]>([]);
 
 async function getTableData() {
   startLoading();
   const { page, size } = getPageParams();
-  const { data, error } = await userList(page, size);
+  const { data, error } = await roleList(page, size);
   if (!error) {
     const { list, total } = data;
     tableData.value = list;
@@ -151,8 +150,6 @@ async function getTableData() {
   }
   endLoading();
 }
-
-const { pagination, getPageParams } = usePagination(getTableData);
 
 onMounted(() => {
   getTableData();

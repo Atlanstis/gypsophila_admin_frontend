@@ -19,4 +19,6 @@ export enum RouteEnum {
   Management = 'Management',
   /** 用户管理 */
   Management_User = 'Management_User',
+  /** 角色管理 */
+  Management_Role = 'Management_Role',
 }

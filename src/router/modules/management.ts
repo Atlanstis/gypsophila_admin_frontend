@@ -22,6 +22,15 @@ export const managementRoutes: AuthRoute.Route[] = [
           icon: 'ic:outline-manage-accounts',
         },
       },
+      {
+        name: RouteEnum.Management_Role,
+        path: '/management/role',
+        component: Views[RouteEnum.Management_Role],
+        meta: {
+          title: '角色管理',
+          icon: 'carbon:user-role',
+        },
+      },
     ],
   },
 ];

@@ -2,6 +2,7 @@ declare namespace ApiManagement {
   interface Role {
     id: number;
     name: string;
+    isDefault: 1 | 0;
   }
 
   interface User {
