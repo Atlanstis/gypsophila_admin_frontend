@@ -15,6 +15,7 @@
           flex-height
           striped
           remote
+          :loading="loading"
           :columns="columns"
           :data="tableData"
           :rowKey="(user) => user.id"
@@ -54,6 +55,7 @@ defineOptions({
 });
 
 const { bool: visible, setTrue: openModal } = useBoolean(false);
+const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false);
 
 const modalType = ref<ModalType>('add');
 
@@ -149,6 +151,7 @@ async function handleDelete(id: string) {
 const tableData = ref<ApiManagement.User[]>([]);
 
 async function getTableData() {
+  startLoading();
   const { page, pageSize } = pagination;
   const { data, error } = await userList(page as number, pageSize as number);
   if (!error) {
@@ -156,6 +159,7 @@ async function getTableData() {
     tableData.value = list;
     pagination.itemCount = total;
   }
+  endLoading();
 }
 
 const pagination: PaginationProps = reactive({
