@@ -1,35 +1,35 @@
 <template>
-  <div class="overflow-hidden">
-    <NCard :bordered="false" class="h-full rounded-8px shadow-sm">
-      <div class="h-full flex-col">
-        <NSpace class="pb-12px" justify="space-between">
-          <NSpace>
-            <nButton type="primary" @click="handleRoleAdd">
-              <icon-ic-round-plus class="mr-4px text-20px" />
-              新增
-            </nButton>
-          </NSpace>
+  <TableContainer>
+    <template #header>
+      <NSpace class="pb-12px" justify="space-between">
+        <NSpace>
+          <nButton type="primary" @click="handleRoleAdd">
+            <icon-ic-round-plus class="mr-4px text-20px" />
+            新增
+          </nButton>
         </NSpace>
-        <NDataTable
-          class="flex-1-hidden"
-          flex-height
-          striped
-          remote
-          :loading="loading"
-          :columns="columns"
-          :data="tableData"
-          :rowKey="(role) => role.id"
-          :pagination="pagination"
-        ></NDataTable>
-      </div>
-      <RoleModal
-        v-model:visible="visible"
-        :type="modalType"
-        :edit-data="editData"
-        @on-success="getTableData"
-      ></RoleModal>
-    </NCard>
-  </div>
+      </NSpace>
+    </template>
+    <template #content>
+      <NDataTable
+        class="flex-1-hidden"
+        flex-height
+        striped
+        remote
+        :loading="loading"
+        :columns="columns"
+        :data="tableData"
+        :rowKey="(role) => role.id"
+        :pagination="pagination"
+      ></NDataTable>
+    </template>
+    <RoleModal
+      v-model:visible="visible"
+      :type="modalType"
+      :edit-data="editData"
+      @on-success="getTableData"
+    ></RoleModal>
+  </TableContainer>
 </template>
 
 <script lang="ts" setup>

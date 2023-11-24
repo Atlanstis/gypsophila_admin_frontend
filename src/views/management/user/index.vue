@@ -1,35 +1,34 @@
 <template>
-  <div class="overflow-hidden">
-    <NCard :bordered="false" class="h-full rounded-8px shadow-sm">
-      <div class="h-full flex-col">
-        <NSpace class="pb-12px" justify="space-between">
-          <NSpace>
-            <nButton type="primary" @click="handleUserAdd">
-              <icon-ic-round-plus class="mr-4px text-20px" />
-              新增
-            </nButton>
-          </NSpace>
+  <TableContainer>
+    <template #header>
+      <NSpace class="pb-12px" justify="space-between">
+        <NSpace>
+          <nButton type="primary" @click="handleUserAdd">
+            <icon-ic-round-plus class="mr-4px text-20px" />
+            新增
+          </nButton>
         </NSpace>
-        <NDataTable
-          class="flex-1-hidden"
-          flex-height
-          striped
-          remote
-          :loading="loading"
-          :columns="columns"
-          :data="tableData"
-          :rowKey="(user) => user.id"
-          :pagination="pagination"
-        ></NDataTable>
-      </div>
-      <UserModal
-        v-model:visible="visible"
-        :type="modalType"
-        :edit-data="editData"
-        @on-success="getTableData"
-      ></UserModal>
-    </NCard>
-  </div>
+      </NSpace>
+    </template>
+    <template #content>
+      <NDataTable
+        flex-height
+        striped
+        remote
+        :loading="loading"
+        :columns="columns"
+        :data="tableData"
+        :rowKey="(user) => user.id"
+        :pagination="pagination"
+      ></NDataTable>
+    </template>
+    <UserModal
+      v-model:visible="visible"
+      :type="modalType"
+      :edit-data="editData"
+      @on-success="getTableData"
+    ></UserModal>
+  </TableContainer>
 </template>
 
 <script lang="ts" setup>
