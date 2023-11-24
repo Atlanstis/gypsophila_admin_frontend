@@ -21,4 +21,6 @@ export enum RouteEnum {
   Management_User = 'Management_User',
   /** 角色管理 */
   Management_Role = 'Management_Role',
+  /** 菜单管理 */
+  Management_Menu = 'Management_Menu',
 }

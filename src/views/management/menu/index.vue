@@ -4,10 +4,10 @@
       <template #header>
         <NSpace class="pb-12px" justify="space-between">
           <NSpace>
-            <nButton type="primary" @click="handleUserAdd">
+            <NButton type="primary" @click="handleAdd()">
               <icon-ic-round-plus class="mr-4px text-20px" />
               新增
-            </nButton>
+            </NButton>
           </NSpace>
         </NSpace>
       </template>
@@ -24,69 +24,73 @@
         ></NDataTable>
       </template>
     </TableContainer>
-    <UserModal
+    <MenuModal
       v-model:visible="visible"
       :type="modalType"
       :edit-data="editData"
+      :parent-id="defaultParentId"
       @on-success="getTableData"
-    ></UserModal>
+    ></MenuModal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { NTag, type DataTableColumns, NSpace, NButton, NPopconfirm } from 'naive-ui';
+import { type DataTableColumns, NSpace, NButton, NPopconfirm, NTag } from 'naive-ui';
 import { onMounted, ref, type Ref } from 'vue';
-import { userDelete, userList } from '@/service';
+import { menuDelete, menuList } from '@/service';
 import { h } from 'vue';
-import { BusinessRoleEnum } from '@/enums';
-import UserModal from './components/user-modal.vue';
-import type { ModalType } from './components/user-modal.vue';
+import MenuModal from './components/menu-modal.vue';
+import type { ModalType } from './components/menu-modal.vue';
 import { useBoolean } from '@/hooks';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { usePagination } from '@/composables';
+import { PARENT_FLAG } from './constants';
 
 defineOptions({
   name: 'UserManagementView',
 });
 
 const { bool: visible, setTrue: openModal } = useBoolean(false);
-const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false);
+const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
 
 const modalType = ref<ModalType>('add');
 
-const columns: Ref<DataTableColumns<ApiManagement.User>> = ref([
+const { pagination, getPageParams } = usePagination(getTableData);
+
+const columns: Ref<DataTableColumns<ApiManagement.Menu>> = ref([
   {
-    key: 'username',
-    title: '用户名',
+    key: 'name',
+    title: '菜单名称',
+    align: 'left',
+    titleAlign: 'center',
+  },
+  {
+    key: 'key',
+    title: '菜单 Key',
     align: 'center',
   },
   {
-    key: 'nickname',
-    title: '昵称',
-    align: 'center',
-  },
-  {
-    key: 'roles',
-    title: '角色',
+    key: 'isParent',
+    title: '类型',
     align: 'center',
     render: (row) => {
-      const roleName = row.roles.map((role) =>
-        h(NTag, { type: 'info' }, { default: () => role.name }),
+      const isParent = row.parentId === PARENT_FLAG;
+      const isMenu = isParent && row.children;
+      return h(
+        NTag,
+        { type: isMenu ? 'warning' : 'success' },
+        { default: () => (isMenu ? '菜单' : '页面') },
       );
-      return h('div', roleName);
     },
-  },
-  {
-    key: 'createTime',
-    title: '创建时间',
-    align: 'center',
   },
   {
     key: 'actions',
     title: '操作',
     align: 'center',
     render: (row) => {
-      const delConfirm = h(
+      const hasDel = !row.children;
+      const hasAdd = row.parentId === PARENT_FLAG;
+      const delBtn = h(
         NPopconfirm,
         { onPositiveClick: () => handleDelete(row.id) },
         {
@@ -94,18 +98,25 @@ const columns: Ref<DataTableColumns<ApiManagement.User>> = ref([
           trigger: () => h(NButton, { size: 'small', type: 'error' }, () => '删除'),
         },
       );
-      const canDel = !row.roles.some((role) => role.id === BusinessRoleEnum.SuperAdmin);
+      const addBtn = h(
+        NButton,
+        { type: 'primary', size: 'small', onClick: () => handleAdd(row.id) },
+        {
+          default: () => '新增',
+        },
+      );
       return h(
         NSpace,
         { justify: 'center' },
         {
           default: () => [
+            hasAdd ? addBtn : null,
             h(
               NButton,
               { size: 'small', onClick: () => handleEdit(row) },
               { default: () => '编辑' },
             ),
-            canDel ? delConfirm : null,
+            hasDel ? delBtn : null,
           ],
         },
       );
@@ -113,9 +124,9 @@ const columns: Ref<DataTableColumns<ApiManagement.User>> = ref([
   },
 ]);
 
-const editData = ref<ApiManagement.User | null>(null);
+const editData = ref<ApiManagement.Menu | null>(null);
 
-function setEditData(data: ApiManagement.User | null) {
+function setEditData(data: ApiManagement.Menu | null) {
   editData.value = data;
 }
 
@@ -123,29 +134,33 @@ function setModalType(val: ModalType) {
   modalType.value = val;
 }
 
-function handleUserAdd() {
+function handleAdd(parentId?: number) {
   setModalType('add');
+
+  setDefaultParentId(parentId);
   openModal();
 }
 
-function handleEdit(row: ApiManagement.User) {
+function handleEdit(row: ApiManagement.Menu) {
   setModalType('edit');
   setEditData(row);
+  setDefaultParentId(row.parentId);
   openModal();
 }
 
-async function handleDelete(id: string) {
-  const { error } = await userDelete({ id });
-  if (error) return;
-  window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
-  getTableData();
+async function handleDelete(id: number) {
+  const { error } = await menuDelete({ id });
+  if (!error) {
+    window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
+    getTableData();
+  }
 }
-const tableData = ref<ApiManagement.User[]>([]);
+const tableData = ref<ApiManagement.Menu[]>([]);
 
 async function getTableData() {
   startLoading();
   const { page, size } = getPageParams();
-  const { data, error } = await userList(page, size);
+  const { data, error } = await menuList(page, size);
   if (!error) {
     const { list, total } = data;
     tableData.value = list;
@@ -154,7 +169,11 @@ async function getTableData() {
   endLoading();
 }
 
-const { pagination, getPageParams } = usePagination(getTableData);
+const defaultParentId = ref<number>(PARENT_FLAG);
+
+function setDefaultParentId(val: number | undefined) {
+  defaultParentId.value = val !== undefined ? val : PARENT_FLAG;
+}
 
 onMounted(() => {
   getTableData();

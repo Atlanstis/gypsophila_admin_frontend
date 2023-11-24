@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-hidden">
+  <div class="overflow-hidden h-full">
     <NCard :bordered="false" class="h-full rounded-8px shadow-sm">
       <div class="h-full flex-col">
         <slot name="header"></slot>
@@ -18,7 +18,7 @@ defineOptions({
 </script>
 
 <style lang="scss" scoped>
-.table-wrap :deep > div {
+.table-wrap :deep(> div) {
   height: 100%;
 }
 </style>

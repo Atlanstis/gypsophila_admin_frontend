@@ -13,4 +13,12 @@ declare namespace ApiManagement {
     roles: Role[];
     createTime: string;
   }
+
+  interface Menu {
+    id: number;
+    key: string;
+    name: string;
+    parentId: number;
+    children: Menu[];
+  }
 }

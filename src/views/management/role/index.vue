@@ -1,35 +1,37 @@
 <template>
-  <TableContainer>
-    <template #header>
-      <NSpace class="pb-12px" justify="space-between">
-        <NSpace>
-          <nButton type="primary" @click="handleRoleAdd">
-            <icon-ic-round-plus class="mr-4px text-20px" />
-            新增
-          </nButton>
+  <div>
+    <TableContainer>
+      <template #header>
+        <NSpace class="pb-12px" justify="space-between">
+          <NSpace>
+            <nButton type="primary" @click="handleRoleAdd">
+              <icon-ic-round-plus class="mr-4px text-20px" />
+              新增
+            </nButton>
+          </NSpace>
         </NSpace>
-      </NSpace>
-    </template>
-    <template #content>
-      <NDataTable
-        class="flex-1-hidden"
-        flex-height
-        striped
-        remote
-        :loading="loading"
-        :columns="columns"
-        :data="tableData"
-        :rowKey="(role) => role.id"
-        :pagination="pagination"
-      ></NDataTable>
-    </template>
+      </template>
+      <template #content>
+        <NDataTable
+          class="flex-1-hidden"
+          flex-height
+          striped
+          remote
+          :loading="loading"
+          :columns="columns"
+          :data="tableData"
+          :rowKey="(role) => role.id"
+          :pagination="pagination"
+        ></NDataTable>
+      </template>
+    </TableContainer>
     <RoleModal
       v-model:visible="visible"
       :type="modalType"
       :edit-data="editData"
       @on-success="getTableData"
     ></RoleModal>
-  </TableContainer>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -134,7 +136,8 @@ function handleEdit(row: ApiManagement.Role) {
 }
 
 async function handleDelete(id: number) {
-  await roleDelete({ id });
+  const { error } = await roleDelete({ id });
+  if (error) return;
   window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
   getTableData();
 }

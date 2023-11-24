@@ -31,6 +31,15 @@ export const managementRoutes: AuthRoute.Route[] = [
           icon: 'carbon:user-role',
         },
       },
+      {
+        name: RouteEnum.Management_Menu,
+        path: '/management/menu',
+        component: Views[RouteEnum.Management_Menu],
+        meta: {
+          title: '菜单管理',
+          icon: 'material-symbols-light:route',
+        },
+      },
     ],
   },
 ];
