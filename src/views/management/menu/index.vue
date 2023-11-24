@@ -150,10 +150,9 @@ function handleEdit(row: ApiManagement.Menu) {
 
 async function handleDelete(id: number) {
   const { error } = await menuDelete({ id });
-  if (!error) {
-    window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
-    getTableData();
-  }
+  if (error) return;
+  window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
+  getTableData();
 }
 const tableData = ref<ApiManagement.Menu[]>([]);
 
