@@ -13,11 +13,27 @@ function hasErrorMsg(error: Service.RequestError) {
   return errorMsgStack.has(error.code);
 }
 
+const cacheMsgArr: Service.RequestError[] = [];
+
+// 刷新时，如获取授权失败，等待 message 实例，加载完成后，显示错误信息
+export function showCacheErrorMsg() {
+  if (cacheMsgArr.length) {
+    showErrorMsg(cacheMsgArr[0]);
+    cacheMsgArr.length = 0;
+  }
+}
+
 /**
  * 显示错误信息
  * @param error
  */
 export function showErrorMsg(error: Service.RequestError) {
+  // 刷新时，如获取授权失败，此时 message 时未完成加载，此处做缓存
+  if (!window.$message) {
+    cacheMsgArr.push(error);
+    return;
+  }
+
   if (!error.msg || hasErrorMsg(error)) return;
 
   addErrorMsg(error);
