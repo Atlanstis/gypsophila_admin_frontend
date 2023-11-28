@@ -13,7 +13,7 @@ export function userList(page: number, size: number) {
  * 新增用户
  * @param user 用户数据
  */
-export function userAdd(user: Pick<BusinessManagement.User, 'nickname' | 'password' | 'username'>) {
+export function userAdd(user: BusinessManagement.UserModel) {
   return request.post<null>('/user/add', user);
 }
 
@@ -21,7 +21,7 @@ export function userAdd(user: Pick<BusinessManagement.User, 'nickname' | 'passwo
  * 编辑用户
  * @param user 用户数据
  */
-export function userEdit(user: Pick<BusinessManagement.User, 'nickname' | 'username' | 'id'>) {
+export function userEdit(user: BusinessManagement.UserModel) {
   return request.post<null>('/user/edit', user);
 }
 
@@ -30,6 +30,6 @@ export function userEdit(user: Pick<BusinessManagement.User, 'nickname' | 'usern
  * @param user 用户信息
  * @returns
  */
-export function userDelete(user: Pick<BusinessManagement.User, 'id'>) {
+export function userDelete(user: Pick<BusinessManagement.UserModel, 'id'>) {
   return request.get<null>('/user/delete', user);
 }

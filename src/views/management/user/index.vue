@@ -113,10 +113,17 @@ const columns: Ref<DataTableColumns<ApiManagement.User>> = ref([
   },
 ]);
 
-const editData = ref<ApiManagement.User | null>(null);
+const editData = ref<BusinessManagement.UserModel | null>(null);
 
-function setEditData(data: ApiManagement.User | null) {
-  editData.value = data;
+function setEditData(data: ApiManagement.User) {
+  const { id, username, nickname, roles } = data;
+  const role = roles[0].id;
+  editData.value = {
+    id: id,
+    username: username,
+    nickname: nickname,
+    role,
+  };
 }
 
 function setModalType(val: ModalType) {

@@ -28,8 +28,15 @@ export function roleEdit(role: Pick<ApiManagement.Role, 'name' | 'id'>) {
 /**
  * 删除角色
  * @param role 角色数据
- * @returns
  */
 export function roleDelete(role: Pick<ApiManagement.Role, 'id'>) {
   return request.get('/role/delete', role);
+}
+
+/**
+ * 获取除超级管理员外的角色
+ * @returns 角色列表
+ */
+export function roleListAssignable() {
+  return request.get<ApiManagement.Role[]>('/role/list/assignable');
 }

@@ -15,10 +15,17 @@
       :rules="formRules"
     >
       <NFormItem label="用户名" path="username">
-        <NInput v-model:value="formModel.username" placeholder="请输入用户名" />
+        <NInput
+          v-model:value="formModel.username"
+          :disabled="type === 'edit'"
+          placeholder="请输入用户名"
+        />
       </NFormItem>
       <NFormItem label="昵称" path="nickname">
         <NInput v-model:value="formModel.nickname" placeholder="请输入昵称" />
+      </NFormItem>
+      <NFormItem v-if="formModel.role !== BusinessRoleEnum.SuperAdmin" label="角色" path="role">
+        <NSelect v-model:value="formModel.role" :options="roleList" placeholder="请选择角色" />
       </NFormItem>
       <NFormItem v-if="type === 'add'" label="密码" path="password">
         <NInput
@@ -40,10 +47,11 @@
 
 <script lang="ts" setup>
 import { useBoolean } from '@/hooks';
-import type { FormInst, FormItemRule } from 'naive-ui';
+import type { FormInst, FormItemRule, SelectOption } from 'naive-ui';
 import { computed, ref, reactive, watch } from 'vue';
-import { userAdd, userEdit } from '@/service';
+import { roleListAssignable, userAdd, userEdit } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
+import { BusinessRoleEnum } from '@/enums';
 
 defineOptions({
   name: 'UserModal',
@@ -52,7 +60,7 @@ defineOptions({
 export interface Props {
   visible: boolean;
   type?: 'add' | 'edit';
-  editData?: ApiManagement.User | null;
+  editData?: BusinessManagement.UserModel | null;
 }
 
 export type ModalType = NonNullable<Props['type']>;
@@ -89,16 +97,19 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-type FormModel = Pick<BusinessManagement.User, 'username' | 'nickname' | 'password' | 'id'>;
+type FormModel = BusinessManagement.UserModel;
 
 function createFormModel(): FormModel {
   return {
     username: '',
     nickname: '',
-    password: '',
     id: '',
+    password: '',
+    role: null,
   };
 }
+
+const roleList = ref<SelectOption[]>([]);
 
 const formModel = reactive<FormModel>(createFormModel());
 
@@ -106,6 +117,7 @@ const formRules: Record<string, FormItemRule | FormItemRule[]> = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+  role: [{ required: true, type: 'number', message: '请选择角色', trigger: 'change' }],
 };
 
 function handleUpdateFormModelByFormType() {
@@ -124,10 +136,7 @@ function handleUpdateFormModelByFormType() {
 }
 
 function handleUpdateFormModel(model: Partial<FormModel>) {
-  Object.keys(formModel).forEach((key) => {
-    const cKey = key as keyof FormModel;
-    formModel[cKey] = model[cKey] || '';
-  });
+  Object.assign(formModel, model);
 }
 
 const { bool: submitLoading, setTrue: showLoading, setFalse: closeLoading } = useBoolean(false);
@@ -154,10 +163,23 @@ function closeModal() {
   modalVisible.value = false;
 }
 
+/** 获取可以分配的角色 */
+async function getRoleList() {
+  roleList.value = [];
+  const { data, error } = await roleListAssignable();
+  if (!error) {
+    roleList.value = data.map((role) => ({
+      label: role.name,
+      value: role.id,
+    }));
+  }
+}
+
 watch(
   () => props.visible,
   (visible) => {
     if (visible) {
+      getRoleList();
       handleUpdateFormModelByFormType();
     } else {
       formRef.value?.restoreValidation();
