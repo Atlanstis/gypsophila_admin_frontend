@@ -44,6 +44,9 @@ export const useRouteStore = defineStore('route-store', {
         this.handleUpdateRootRedirect(rootPath);
 
         this.isInitAuthRoute = true;
+      } else {
+        const { resetAuthStore } = useAuthStore();
+        resetAuthStore();
       }
     },
 
