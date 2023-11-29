@@ -50,7 +50,7 @@ function handleDropdown(key: string) {
       onPositiveClick: async () => {
         const { error } = await authLogout();
         if (!error) {
-          auth.resetAuthStore();
+          auth.resetAuthStore('');
           window.$message?.success('退出成功', { duration: DEFAULT_MESSAGE_DURATION });
         }
       },

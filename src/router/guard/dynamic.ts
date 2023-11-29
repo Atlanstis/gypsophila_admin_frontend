@@ -26,6 +26,8 @@ export async function createDynamicRouteGuard(
       }
       return false;
     }
+    // 当用户认证信息过期后，访问受权限控制的路由，会无法进行成功跳转，
+    // 导致返回登录页时，redirect 携带的信息为 /，此处进行记录，当跳转至登录页时，读取
     route.setRedirect(to.fullPath);
     // 加载权限路由
     await route.initAuthRoute();

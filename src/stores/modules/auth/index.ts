@@ -31,15 +31,18 @@ export const useAuthStore = defineStore('auth-store', {
   },
 
   actions: {
-    /** 重置认证信息 */
-    resetAuthStore() {
+    /**
+     * 重置认证信息
+     * @param redirect 返回登录页时附加的跳转地址，空字符串代表不附带地址
+     */
+    resetAuthStore(redirect?: string) {
       const { toLogin } = useRouterPush(false);
       const { resetRouteStore } = useRouteStore();
 
       clearAuthStorage();
       this.$reset();
 
-      toLogin();
+      toLogin(redirect);
 
       nextTick(() => {
         resetRouteStore();

@@ -47,19 +47,23 @@ export function useRouterPush(isInSetup = true) {
 
   /**
    * 跳转登录页面
-   * @param redirectUrl - 重定向地址(登录成功后跳转的地址),默认 undefined 表示取当前地址为重定向地址
+   * @param redirectUrl - 重定向地址(登录成功后跳转的地址)，默认 undefined 表示取当前地址为重定向地址
    */
   function toLogin(redirectUrl?: string) {
     const routeLocation: RouteLocationRaw = {
       name: RouteEnum.Login,
     };
-    let redirect = redirectUrl || route.value.fullPath;
+    let redirect = redirectUrl === undefined ? route.value.fullPath : redirectUrl;
     const routeStore = useRouteStore();
+    // 读取因认证失败，未能正确获取 redirect 的值
     if (redirect === '/') {
       redirect = routeStore.redirect;
       routeStore.setRedirect('');
     }
-    Object.assign(routeLocation, { query: { redirect } });
+    // 添加跳转信息
+    if (redirect) {
+      Object.assign(routeLocation, { query: { redirect } });
+    }
     routerPush(routeLocation);
   }
 

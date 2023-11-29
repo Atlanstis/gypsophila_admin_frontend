@@ -31,6 +31,10 @@
       :edit-data="editData"
       @on-success="getTableData"
     ></RoleModal>
+    <AllocationMenuModal
+      v-model:visible="visibleAllocationMenu"
+      :role-id="allocationRoleId"
+    ></AllocationMenuModal>
   </div>
 </template>
 
@@ -43,6 +47,7 @@ import { onMounted } from 'vue';
 import { h, ref, type Ref } from 'vue';
 import { roleDelete, roleList } from '@/service';
 import RoleModal from './components/role-modal.vue';
+import AllocationMenuModal from './components/allocation-menu-modal.vue';
 import type { ModalType } from './components/role-modal.vue';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
@@ -51,6 +56,7 @@ defineOptions({
 });
 
 const { bool: visible, setTrue: openModal } = useBoolean(false);
+const { bool: visibleAllocationMenu, setTrue: openAllocationMenuModal } = useBoolean(false);
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false);
 const modalType = ref<ModalType>('add');
 
@@ -91,7 +97,12 @@ const columns: Ref<DataTableColumns<ApiManagement.Role>> = ref([
           trigger: () => h(NButton, { size: 'small', type: 'error' }, () => '删除'),
         },
       );
-      const canDel = row.isDefault === RoleIsDefaultEnum.NO;
+      const allocationMenuBtn = h(
+        NButton,
+        { size: 'small', onClick: () => handleallocation(row) },
+        { default: () => '分配菜单' },
+      );
+      const isDefault = row.isDefault === RoleIsDefaultEnum.NO;
       return h(
         NSpace,
         { justify: 'center' },
@@ -102,7 +113,7 @@ const columns: Ref<DataTableColumns<ApiManagement.Role>> = ref([
               { size: 'small', onClick: () => handleEdit(row) },
               { default: () => '编辑' },
             ),
-            canDel ? delConfirm : null,
+            isDefault ? [allocationMenuBtn, delConfirm] : null,
           ],
         },
       );
@@ -152,6 +163,13 @@ async function getTableData() {
     pagination.itemCount = total;
   }
   endLoading();
+}
+
+const allocationRoleId = ref<number | null>(null);
+
+function handleallocation(row: ApiManagement.Role) {
+  allocationRoleId.value = row.id;
+  openAllocationMenuModal();
 }
 
 onMounted(() => {

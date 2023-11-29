@@ -34,6 +34,22 @@ export function roleDelete(role: Pick<ApiManagement.Role, 'id'>) {
 }
 
 /**
+ * 获取该角色可以访问的菜单
+ * @param role 角色
+ * @returns 可以访问的菜单
+ */
+export function roleMenu(role: Pick<ApiManagement.Role, 'id'>) {
+  return request.post<string[]>('/role/menu', role);
+}
+
+/**
+ * 编辑该角色可以访问的菜单
+ * @param params 角色id 及 菜单
+ */
+export function roleMenuEdit(params: Pick<ApiManagement.Role, 'id'> & { menus: string[] }) {
+  return request.post('/role/menu/edit', params);
+}
+/**
  * 获取除超级管理员外的角色
  * @returns 角色列表
  */
