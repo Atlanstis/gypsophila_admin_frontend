@@ -31,6 +31,10 @@
       :parent-id="defaultParentId"
       @on-success="getTableData"
     ></MenuModal>
+    <PermissionModal
+      v-model:visible="permissionModalVisible"
+      :menuId="permissionMenuId"
+    ></PermissionModal>
   </div>
 </template>
 
@@ -40,15 +44,20 @@ import { onMounted, ref, type Ref } from 'vue';
 import { menuDelete, menuList } from '@/service';
 import { h } from 'vue';
 import MenuModal from './components/menu-modal.vue';
+import { PermissionModal } from './components';
 import type { ModalType } from './components/menu-modal.vue';
 import { useBoolean } from '@/hooks';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { usePagination } from '@/composables';
 import { PARENT_FLAG } from './constants';
+import { usePermission } from './hooks';
 
 defineOptions({
-  name: 'UserManagementView',
+  name: 'MenuManagementView',
 });
+
+const { permissionModalVisible, permissionMenuId, openPermissionModal, setPermissionMenuId } =
+  usePermission();
 
 const { bool: visible, setTrue: openModal } = useBoolean(false);
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
@@ -90,6 +99,7 @@ const columns: Ref<DataTableColumns<ApiManagement.Menu>> = ref([
     render: (row) => {
       const hasDel = !row.children;
       const hasAdd = row.parentId === PARENT_FLAG;
+      const hasPermission = !row.children;
       const delBtn = h(
         NPopconfirm,
         { onPositiveClick: () => handleDelete(row.id) },
@@ -105,6 +115,19 @@ const columns: Ref<DataTableColumns<ApiManagement.Menu>> = ref([
           default: () => '新增',
         },
       );
+      const permissionBtn = h(
+        NButton,
+        {
+          size: 'small',
+          onClick: () => {
+            setPermissionMenuId(row.id);
+            openPermissionModal();
+          },
+        },
+        {
+          default: () => '编辑权限',
+        },
+      );
       return h(
         NSpace,
         { justify: 'center' },
@@ -116,6 +139,7 @@ const columns: Ref<DataTableColumns<ApiManagement.Menu>> = ref([
               { size: 'small', onClick: () => handleEdit(row) },
               { default: () => '编辑' },
             ),
+            hasPermission ? permissionBtn : null,
             hasDel ? delBtn : null,
           ],
         },

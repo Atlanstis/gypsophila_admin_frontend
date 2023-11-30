@@ -21,4 +21,10 @@ declare namespace ApiManagement {
     parentId: number;
     children: Menu[];
   }
+
+  interface Permission {
+    id: number;
+    key: string;
+    name: string;
+  }
 }

@@ -47,3 +47,45 @@ export function menuEdit(menu: Pick<ApiManagement.Menu, 'name' | 'key' | 'parent
 export function menuDelete(menu: Pick<ApiManagement.Role, 'id'>) {
   return request.get('/menu/delete', menu);
 }
+
+/**
+ * 获取菜单下所有可供操作的权限列表
+ * @param menuId 菜单 id
+ * @returns 权限列表
+ */
+export function menuPermissionList(menuId: number) {
+  return request.post<ApiManagement.Permission[]>('/menu/permission/list', { menuId });
+}
+/**
+ * 新增菜单下的权限
+ * @param permission 权限
+ */
+export function menuPermissionAdd(
+  permission: Pick<ApiManagement.Permission, 'name' | 'key'> & {
+    id: number | null;
+    menuId: number;
+  },
+) {
+  return request.post('/menu/permission/add', permission);
+}
+
+/**
+ * 编辑菜单下的权限
+ * @param permission 权限
+ */
+export function menuPermissionEdit(
+  permission: Pick<ApiManagement.Permission, 'name' | 'key'> & {
+    id: number | null;
+    menuId: number;
+  },
+) {
+  return request.post('/menu/permission/edit', permission);
+}
+
+/**
+ * 删除菜单下的权限
+ * @param id 权限 id
+ */
+export function menuPermissionDelete(id: number) {
+  return request.get('/menu/permission/delete', { id });
+}

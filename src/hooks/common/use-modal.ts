@@ -9,11 +9,11 @@ export type ModalEmits = {
   (e: 'update:visible', visible: boolean): void;
 };
 /**
- *
+ * 模态框的相关操作
  * @param props 组件 props
  * @param emits 组件 emits
- * @param visibleTrue modal 打开时执行的操作
- * @param visibleFalse modal 关闭时执行的操作
+ * @param visibleTrue 模态框打开时执行的操作
+ * @param visibleFalse  模态框关闭时执行的操作
  */
 export function useModal(
   props: ModalProps,
@@ -49,10 +49,15 @@ export function useModal(
   );
 
   return {
+    /** 模态框显示状态 */
     modalVisible,
+    /** 关闭模态框 */
     closeModal,
+    /** 提交加载状态 */
     submitLoading,
+    /** 显示提交加载状态 */
     showLoading,
+    /** 关闭提交加载状态 */
     closeLoading,
   };
 }
