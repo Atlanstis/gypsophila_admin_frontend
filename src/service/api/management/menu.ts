@@ -10,14 +10,6 @@ export function menuList(page: number, size: number) {
 }
 
 /**
- * 获取所有菜单
- * @returns 菜单
- */
-export function menuListAll() {
-  return request.post<ApiManagement.Menu[]>('/menu/list/all');
-}
-
-/**
  * 获取所有顶级菜单
  */
 export function menuListTop() {

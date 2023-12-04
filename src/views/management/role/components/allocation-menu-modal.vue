@@ -1,10 +1,10 @@
 <template>
   <NModal
     v-model:show="modalVisible"
-    title="分配菜单"
+    title="权限控制"
     preset="card"
     :segmented="true"
-    class="w-600px"
+    class="w-720px"
   >
     <NDataTable
       striped
@@ -28,8 +28,8 @@
 <script lang="ts" setup>
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { useModal, type ModalProps, type ModalEmits, useBoolean } from '@/hooks';
-import { menuListAll, roleMenu, roleMenuEdit } from '@/service';
-import { NCheckbox, type DataTableColumns, NSpace } from 'naive-ui';
+import { roleMenuPermission, roleMenuPermissionEdit } from '@/service';
+import { NCheckbox, type DataTableColumns, NSpace, NCheckboxGroup } from 'naive-ui';
 import { computed, h, ref } from 'vue';
 
 type Props = {
@@ -48,60 +48,117 @@ defineOptions({
 });
 
 const columns = computed(() => {
-  const columns: DataTableColumns<ApiManagement.Menu> = [
+  const columns: DataTableColumns<BusinessManagement.RoleMenuPermission> = [
     {
-      key: 'one',
+      key: 'Primary',
       title: '一级菜单',
       align: 'center',
+      width: '140px',
       rowSpan: (rowData, rowIndex) => rowSpanArr.value[rowIndex],
       render: (row) => {
         return h(NSpace, () => [
-          h(NCheckbox, {
-            checked: checked.value[row.key],
-            'on-update:checked': (val: boolean) => handleMenuCheck(row.key, val),
-          }),
-          h('span', row.name),
+          h(
+            NCheckbox,
+            {
+              checked: menuChecked.value[row.key],
+              'on-update:checked': (val: boolean) => handleMenuCheck(row.key, val),
+            },
+            {
+              default: () => row.name,
+            },
+          ),
         ]);
       },
     },
     {
-      key: 'two',
+      key: 'Secondary',
       title: '二级菜单',
       align: 'center',
+      width: '140px',
       render: (row) => {
         if (!row.children) return null;
         const item = row.children[0];
         return h(NSpace, () => [
-          h(NCheckbox, {
-            disabled: !checked.value[row.key],
-            checked: checked.value[item.key],
-            'on-update:checked': (val: boolean) => handleMenuCheck(item.key, val),
-          }),
-          h('span', item.name),
+          h(
+            NCheckbox,
+            {
+              disabled: !menuChecked.value[row.key],
+              checked: menuChecked.value[item.key],
+              'on-update:checked': (val: boolean) => handleMenuCheck(item.key, val),
+            },
+            {
+              default: () => item.name,
+            },
+          ),
         ]);
+      },
+    },
+    {
+      key: 'permission',
+      title: '权限',
+      align: 'center',
+      render: (row) => {
+        const item = row.children ? row.children[0] : row;
+        return h(NSpace, () =>
+          h(
+            NCheckboxGroup,
+            {
+              value: permissionMap.value[item.key],
+              disabled: !menuChecked.value[row.key] || !menuChecked.value[item.key],
+              'on-update:value': (val: string[]) => handlePermission(item.key, val),
+            },
+            () =>
+              item.permissions.map((permission) =>
+                h(NCheckbox, { value: permission.key }, () => permission.name),
+              ),
+          ),
+        );
       },
     },
   ];
   return columns;
 });
 
+/** 记录行合并数量 */
 const rowSpanArr = ref<number[]>([]);
 
-const checked = ref<Record<string, boolean>>({});
+/** 记录菜单选中状态 */
+const menuChecked = ref<Record<string, boolean>>({});
 
+/** 处理菜单选中状体啊  */
 function handleMenuCheck(key: string, val: boolean) {
-  checked.value[key] = val;
+  menuChecked.value[key] = val;
 }
 
-const tableData = ref<ApiManagement.Menu[]>([]);
+/** 记录各级菜单权限选中状态 */
+const permissionMap = ref<Record<string, string[]>>({});
 
-async function getMenuList() {
+/** 处理权限是否被选中 */
+function handlePermission(key: string, val: string[]) {
+  permissionMap.value[key] = val;
+}
+
+/** 列表数据 */
+const tableData = ref<BusinessManagement.RoleMenuPermission[]>([]);
+
+/** 获取菜单及其权限 */
+async function getRoleMenuPermission() {
+  if (!props.roleId) return;
   startLoading();
-  const { data, error } = await menuListAll();
+
+  const { error, data } = await roleMenuPermission({ id: props.roleId });
   if (!error) {
-    const arr: ApiManagement.Menu[] = [];
+    const { menus, permissions, list } = data;
+    /** 处理菜单选中状态 */
+    menus.forEach((key) => {
+      menuChecked.value[key] = true;
+    });
+    /** 处理权限选中状态 */
+    permissionMap.value = permissions;
+    /** 处理表单数据 */
+    const arr: BusinessManagement.RoleMenuPermission[] = [];
     const rowArr: number[] = [];
-    data.forEach((menu) => {
+    list.forEach((menu) => {
       const childrenLength = menu.children ? menu.children.length : 1;
       if (menu.children) {
         for (let i = 0; i < childrenLength; i++) {
@@ -119,40 +176,36 @@ async function getMenuList() {
   endLoading();
 }
 
-async function getRoleMenu() {
-  if (!props.roleId) return;
-  const { error, data } = await roleMenu({ id: props.roleId });
-  if (!error) {
-    data.forEach((key) => {
-      checked.value[key] = true;
-    });
-  }
-}
-
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false);
 
 function handleModalOpen() {
   clearData();
-  getMenuList();
-  getRoleMenu();
+  getRoleMenuPermission();
 }
 
+/** 清理数据 */
 function clearData() {
   rowSpanArr.value = [];
   tableData.value = [];
-  checked.value = {};
+  menuChecked.value = {};
+  permissionMap.value = {};
 }
 
+/** 表单提交 */
 async function formSubmit() {
   if (!props.roleId) return;
   showLoading();
   const menus: string[] = [];
-  Object.keys(checked.value).forEach((key) => {
-    if (checked.value[key]) {
+  Object.keys(menuChecked.value).forEach((key) => {
+    if (menuChecked.value[key]) {
       menus.push(key);
     }
   });
-  const { error } = await roleMenuEdit({ id: props.roleId, menus });
+  const { error } = await roleMenuPermissionEdit({
+    id: props.roleId,
+    menus,
+    permissions: permissionMap.value,
+  });
   if (!error) {
     window.$message?.success('保存成功', { duration: DEFAULT_MESSAGE_DURATION });
     closeModal();

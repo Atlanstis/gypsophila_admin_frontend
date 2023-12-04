@@ -100,7 +100,7 @@ const columns: Ref<DataTableColumns<ApiManagement.Role>> = ref([
       const allocationMenuBtn = h(
         NButton,
         { size: 'small', onClick: () => handleallocation(row) },
-        { default: () => '分配菜单' },
+        { default: () => '权限控制' },
       );
       const isDefault = row.isDefault === RoleIsDefaultEnum.NO;
       return h(

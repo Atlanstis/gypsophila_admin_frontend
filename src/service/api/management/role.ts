@@ -34,20 +34,29 @@ export function roleDelete(role: Pick<ApiManagement.Role, 'id'>) {
 }
 
 /**
- * 获取该角色可以访问的菜单
+ * 获取该角色的菜单及权限
  * @param role 角色
- * @returns 可以访问的菜单
+ * @returns 可以角色的菜单及权限
  */
-export function roleMenu(role: Pick<ApiManagement.Role, 'id'>) {
-  return request.post<string[]>('/role/menu', role);
+export function roleMenuPermission(role: Pick<ApiManagement.Role, 'id'>) {
+  return request.post<{
+    menus: string[];
+    permissions: Record<string, string[]>;
+    list: BusinessManagement.RoleMenuPermission[];
+  }>('/role/menu/permission', role);
 }
 
 /**
- * 编辑该角色可以访问的菜单
+ * 编辑该角色可以访问的菜单及权限
  * @param params 角色id 及 菜单
  */
-export function roleMenuEdit(params: Pick<ApiManagement.Role, 'id'> & { menus: string[] }) {
-  return request.post('/role/menu/edit', params);
+export function roleMenuPermissionEdit(
+  params: Pick<ApiManagement.Role, 'id'> & {
+    menus: string[];
+    permissions: Record<string, string[]>;
+  },
+) {
+  return request.post('/role/menu/permission/edit', params);
 }
 /**
  * 获取除超级管理员外的角色
