@@ -97,11 +97,6 @@ const columns: Ref<DataTableColumns<ApiManagement.Role>> = ref([
           trigger: () => h(NButton, { size: 'small', type: 'error' }, () => '删除'),
         },
       );
-      const allocationMenuBtn = h(
-        NButton,
-        { size: 'small', onClick: () => handleallocation(row) },
-        { default: () => '权限控制' },
-      );
       const isDefault = row.isDefault === RoleIsDefaultEnum.NO;
       return h(
         NSpace,
@@ -110,10 +105,15 @@ const columns: Ref<DataTableColumns<ApiManagement.Role>> = ref([
           default: () => [
             h(
               NButton,
+              { size: 'small', onClick: () => handleallocation(row) },
+              { default: () => '权限控制' },
+            ),
+            h(
+              NButton,
               { size: 'small', onClick: () => handleEdit(row) },
               { default: () => '编辑' },
             ),
-            isDefault ? [allocationMenuBtn, delConfirm] : null,
+            isDefault ? delConfirm : null,
           ],
         },
       );
