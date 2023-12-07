@@ -52,15 +52,22 @@ const emits = defineEmits<ModalEmits>();
 
 /** 处理数据的编辑 */
 function handleEdit(editData: ApiManagement.Permission) {
-  setOperationEditData({ id: editData.id, name: editData.name, key: editData.key });
+  setOperationEditData({
+    id: editData.id,
+    name: editData.name,
+    key: editData.key,
+    type: editData.type,
+  });
   setOperationModalType('edit');
   openOpetationModal();
 }
 
 /** 处理数据的删除 */
 async function handleDelete(id: number) {
-  await menuPermissionDelete(id);
-  getTableData();
+  const { error } = await menuPermissionDelete(id);
+  if (!error) {
+    getTableData();
+  }
 }
 
 const { columns, tableData, getTableData, loading } = useTable(props, handleEdit, handleDelete);

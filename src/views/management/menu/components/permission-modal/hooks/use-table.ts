@@ -1,9 +1,9 @@
 import { menuPermissionList } from '@/service';
-import { NSpace, type DataTableColumns, NButton, NPopconfirm } from 'naive-ui';
+import { NSpace, type DataTableColumns, NButton, NPopconfirm, NTag } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
 import type { Props } from '../index.vue';
 import { useBoolean } from '@/hooks';
-
+import { PermissionTypeOpts } from '@/views/management/menu/constants';
 /**
  * 列表的相关操作
  * @param props 组件 props
@@ -27,6 +27,15 @@ export function useTable(
       key: 'key',
       title: '权限 Key',
       align: 'center',
+    },
+    {
+      key: 'type',
+      title: '类型',
+      align: 'center',
+      render: ({ type }) => {
+        const item = PermissionTypeOpts.find((opt) => opt.value === type);
+        return item ? h(NTag, { bordered: false, type: 'primary' }, () => item.label) : null;
+      },
     },
     {
       key: 'actions',

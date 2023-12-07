@@ -26,5 +26,6 @@ declare namespace ApiManagement {
     id: number;
     key: string;
     name: string;
+    type: number;
   }
 }

@@ -20,6 +20,9 @@
       <NFormItem label="权限 Key" path="key">
         <NInput v-model:value="formModel.key" placeholder="请输入权限 Key" />
       </NFormItem>
+      <NFormItem label="类型" path="type">
+        <NSelect v-model:value="formModel.type" :options="PermissionTypeOpts" />
+      </NFormItem>
     </NForm>
     <template #footer>
       <NSpace justify="end">
@@ -36,6 +39,7 @@ import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
 import { menuPermissionAdd, menuPermissionEdit } from '@/service';
 import type { FormInst, FormItemRule } from 'naive-ui';
 import { computed, reactive, ref } from 'vue';
+import { PermissionTypeMenu, PermissionTypeOpts } from '@/views/management/menu/constants';
 
 defineOptions({
   name: 'PermissionOperateModal',
@@ -76,15 +80,16 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-type FormModel = Pick<ApiManagement.Permission, 'name' | 'key'> & {
+type FormModel = Omit<ApiManagement.Permission, 'id'> & {
   id: number | null;
 };
 
-function createFormModel() {
+function createFormModel(): FormModel {
   return {
     id: null,
     name: '',
     key: '',
+    type: PermissionTypeMenu.Other,
   };
 }
 
