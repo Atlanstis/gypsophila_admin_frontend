@@ -34,52 +34,48 @@
 </template>
 
 <script lang="ts" setup>
-import { useBoolean } from '@/hooks';
 import type { FormInst, FormItemRule, SelectOption } from 'naive-ui';
-import { computed, ref, reactive, watch } from 'vue';
+import { computed, ref, reactive } from 'vue';
 import { menuAdd, menuEdit, menuListTop } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import type { Ref } from 'vue';
 import { PARENT_FLAG } from '../constants';
+import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
 
 defineOptions({
-  name: 'UserModal',
+  name: 'MenuModal',
 });
 
+type FormModel = BusinessManagement.MenuFormModal;
+
 export interface Props {
-  visible: boolean;
-  type?: 'add' | 'edit';
-  editData?: ApiManagement.Menu | null;
+  type?: Modal.Type;
+  editData?: FormModel | null;
   parentId: number;
 }
 
-export type ModalType = NonNullable<Props['type']>;
-
 interface Emits {
-  (e: 'update:visible', visible: boolean): void;
   (e: 'on-success'): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props & ModalProps>(), {
+  visible: false,
   type: 'add',
   editData: null,
   parentId: PARENT_FLAG,
 });
 
-const emit = defineEmits<Emits>();
+const emits = defineEmits<Emits & ModalEmits>();
 
-const modalVisible = computed({
-  get() {
-    return props.visible;
-  },
-
-  set(visible) {
-    emit('update:visible', visible);
-  },
-});
+const { modalVisible, submitLoading, showLoading, closeLoading, closeModal } = useModal(
+  props,
+  emits,
+  afterOpenModal,
+  afterCloseModal,
+);
 
 const title = computed(() => {
-  const titleMap: Record<ModalType, string> = {
+  const titleMap: Record<Modal.Type, string> = {
     add: '添加菜单',
     edit: '编辑菜单',
   };
@@ -87,8 +83,6 @@ const title = computed(() => {
 });
 
 const formRef = ref<HTMLElement & FormInst>();
-
-type FormModel = { [P in Exclude<keyof ApiManagement.Menu, 'children'>]: ApiManagement.Menu[P] };
 
 function createFormModel(): FormModel {
   return {
@@ -107,7 +101,7 @@ const formRules: Record<string, FormItemRule | FormItemRule[]> = {
 };
 
 function handleUpdateFormModelByFormType() {
-  const handlers: Record<ModalType, () => void> = {
+  const handlers: Record<Modal.Type, () => void> = {
     add: () => {
       const defaultFormModal = createFormModel();
       handleUpdateFormModel(defaultFormModal);
@@ -121,12 +115,12 @@ function handleUpdateFormModelByFormType() {
   handlers[props.type]();
 }
 
-function handleUpdateFormModel(model: Partial<FormModel>) {
+/** 更新表单数据 */
+function handleUpdateFormModel(model: FormModel) {
   Object.assign(formModel, model);
 }
 
-const { bool: submitLoading, setTrue: showLoading, setFalse: closeLoading } = useBoolean(false);
-
+/** 提交表单 */
 async function formSubmit() {
   await formRef.value?.validate();
   showLoading();
@@ -141,12 +135,9 @@ async function formSubmit() {
   closeLoading();
 }
 
+/** 执行成功后，通知上层组件 */
 function emitSucess() {
-  emit('on-success');
-}
-
-function closeModal() {
-  modalVisible.value = false;
+  emits('on-success');
 }
 
 const menuTopOpt: Ref<SelectOption[]> = ref([]);
@@ -164,17 +155,20 @@ async function getMenuTop() {
   menuListTop;
 }
 
-watch(
-  () => props.visible,
-  (visible) => {
-    if (visible) {
-      handleUpdateFormModelByFormType();
-      getMenuTop();
-    } else {
-      formRef.value?.restoreValidation();
-    }
-  },
-);
+/**
+ * modal 打开后处理
+ */
+function afterOpenModal() {
+  handleUpdateFormModelByFormType();
+  getMenuTop();
+}
+
+/**
+ * modal 关闭后处理
+ */
+function afterCloseModal() {
+  formRef.value?.restoreValidation();
+}
 </script>
 
 <style lang="scss" scoped></style>

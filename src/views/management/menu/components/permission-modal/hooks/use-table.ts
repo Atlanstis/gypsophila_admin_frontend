@@ -80,6 +80,10 @@ export function useTable(
     endLoading();
   }
 
+  function clearTableData() {
+    tableData.value = [];
+  }
+
   return {
     /** 列表字段 */
     columns,
@@ -89,5 +93,7 @@ export function useTable(
     loading,
     /** 获取列表数据 */
     getTableData,
+    /** 清除列表数据 */
+    clearTableData,
   };
 }

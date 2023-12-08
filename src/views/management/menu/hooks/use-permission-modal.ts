@@ -1,8 +1,8 @@
 import { useBoolean } from '@/hooks';
 import { ref } from 'vue';
 
-/** 有关权限的操作 */
-export function usePermission() {
+/** 有关权限 modal 的操作 */
+export function usePermissionModal() {
   const { bool: permissionModalVisible, setTrue: openPermissionModal } = useBoolean(false);
 
   const permissionMenuId = ref<number | null>(null);

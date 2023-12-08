@@ -70,7 +70,11 @@ async function handleDelete(id: number) {
   }
 }
 
-const { columns, tableData, getTableData, loading } = useTable(props, handleEdit, handleDelete);
+const { columns, tableData, getTableData, clearTableData, loading } = useTable(
+  props,
+  handleEdit,
+  handleDelete,
+);
 const { modalVisible } = useModal(props, emits, openHandle, closeHandle);
 const {
   operationModalVisible,
@@ -92,7 +96,9 @@ function openHandle() {
 }
 
 /** 模态框关闭，执行的操作 */
-function closeHandle() {}
+function closeHandle() {
+  clearTableData();
+}
 </script>
 
 <style lang="scss" scoped></style>

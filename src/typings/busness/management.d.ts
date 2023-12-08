@@ -12,4 +12,7 @@ declare namespace BusinessManagement {
     permissions: ApiManagement.Permission[];
     children: RoleMenuPermission[];
   };
+
+  /** 菜单-新增编辑 */
+  type MenuFormModal = Omit<ApiManagement.Menu, 'children'>;
 }
