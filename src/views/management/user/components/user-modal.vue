@@ -46,9 +46,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useBoolean } from '@/hooks';
+import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
 import type { FormInst, FormItemRule, SelectOption } from 'naive-ui';
-import { computed, ref, reactive, watch } from 'vue';
+import { computed, ref, reactive } from 'vue';
 import { roleListAssignable, userAdd, userEdit } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { BusinessRoleEnum } from '@/enums';
@@ -57,38 +57,32 @@ defineOptions({
   name: 'UserModal',
 });
 
-export interface Props {
-  visible: boolean;
-  type?: 'add' | 'edit';
+interface Props {
+  type?: Modal.Type;
   editData?: BusinessManagement.UserModel | null;
 }
 
-export type ModalType = NonNullable<Props['type']>;
-
 interface Emits {
-  (e: 'update:visible', visible: boolean): void;
   (e: 'on-success'): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props & ModalProps>(), {
+  visible: false,
   type: 'add',
   editData: null,
 });
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<Emits & ModalEmits>();
 
-const modalVisible = computed({
-  get() {
-    return props.visible;
-  },
-
-  set(visible) {
-    emit('update:visible', visible);
-  },
-});
+const { modalVisible, closeModal, submitLoading, showLoading, closeLoading } = useModal(
+  props,
+  emit,
+  afterOpenModal,
+  afterCloseModal,
+);
 
 const title = computed(() => {
-  const titleMap: Record<ModalType, string> = {
+  const titleMap: Record<Modal.Type, string> = {
     add: '添加用户',
     edit: '编辑用户',
   };
@@ -121,7 +115,7 @@ const formRules: Record<string, FormItemRule | FormItemRule[]> = {
 };
 
 function handleUpdateFormModelByFormType() {
-  const handlers: Record<ModalType, () => void> = {
+  const handlers: Record<Modal.Type, () => void> = {
     add: () => {
       const defaultFormModal = createFormModel();
       handleUpdateFormModel(defaultFormModal);
@@ -138,8 +132,6 @@ function handleUpdateFormModelByFormType() {
 function handleUpdateFormModel(model: Partial<FormModel>) {
   Object.assign(formModel, model);
 }
-
-const { bool: submitLoading, setTrue: showLoading, setFalse: closeLoading } = useBoolean(false);
 
 async function formSubmit() {
   await formRef.value?.validate();
@@ -159,10 +151,6 @@ function emitSucess() {
   emit('on-success');
 }
 
-function closeModal() {
-  modalVisible.value = false;
-}
-
 /** 获取可以分配的角色 */
 async function getRoleList() {
   roleList.value = [];
@@ -175,17 +163,14 @@ async function getRoleList() {
   }
 }
 
-watch(
-  () => props.visible,
-  (visible) => {
-    if (visible) {
-      getRoleList();
-      handleUpdateFormModelByFormType();
-    } else {
-      formRef.value?.restoreValidation();
-    }
-  },
-);
+function afterOpenModal() {
+  getRoleList();
+  handleUpdateFormModelByFormType();
+}
+
+function afterCloseModal() {
+  formRef.value?.restoreValidation();
+}
 </script>
 
 <style lang="scss" scoped></style>
