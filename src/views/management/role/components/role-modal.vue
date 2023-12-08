@@ -28,9 +28,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useBoolean } from '@/hooks';
+import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
 import type { FormInst, FormItemRule } from 'naive-ui';
-import { computed, ref, reactive, watch } from 'vue';
+import { computed, ref, reactive } from 'vue';
 import { roleAdd, roleEdit } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
@@ -39,37 +39,30 @@ defineOptions({
 });
 
 export interface Props {
-  visible: boolean;
   type?: 'add' | 'edit';
   editData?: ApiManagement.Role | null;
 }
 
-export type ModalType = NonNullable<Props['type']>;
-
 interface Emits {
-  (e: 'update:visible', visible: boolean): void;
   (e: 'on-success'): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props & ModalProps>(), {
   type: 'add',
   editData: null,
 });
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<Emits & ModalEmits>();
 
-const modalVisible = computed({
-  get() {
-    return props.visible;
-  },
-
-  set(visible) {
-    emit('update:visible', visible);
-  },
-});
+const { modalVisible, closeModal, submitLoading, showLoading, closeLoading } = useModal(
+  props,
+  emit,
+  afterOpenModal,
+  afterCloseModal,
+);
 
 const title = computed(() => {
-  const titleMap: Record<ModalType, string> = {
+  const titleMap: Record<Modal.Type, string> = {
     add: '添加角色',
     edit: '编辑角色',
   };
@@ -93,7 +86,7 @@ const formRules: Record<string, FormItemRule | FormItemRule[]> = {
 };
 
 function handleUpdateFormModelByFormType() {
-  const handlers: Record<ModalType, () => void> = {
+  const handlers: Record<Modal.Type, () => void> = {
     add: () => {
       const defaultFormModal = createFormModel();
       handleUpdateFormModel(defaultFormModal);
@@ -111,14 +104,12 @@ function handleUpdateFormModel(model: Partial<FormModel>) {
   formModel.name = model.name || '';
 }
 
-const { bool: submitLoading, setTrue: showLoading, setFalse: closeLoading } = useBoolean(false);
-
 async function formSubmit() {
   await formRef.value?.validate();
   showLoading();
   let api: any;
   let params: any;
-  const map: Record<ModalType, () => void> = {
+  const map: Record<Modal.Type, () => void> = {
     add: () => {
       api = roleAdd;
       params = { ...formModel };
@@ -143,20 +134,13 @@ function emitSucess() {
   emit('on-success');
 }
 
-function closeModal() {
-  modalVisible.value = false;
+function afterOpenModal() {
+  handleUpdateFormModelByFormType();
 }
 
-watch(
-  () => props.visible,
-  (visible) => {
-    if (visible) {
-      handleUpdateFormModelByFormType();
-    } else {
-      formRef.value?.restoreValidation();
-    }
-  },
-);
+function afterCloseModal() {
+  formRef.value?.restoreValidation();
+}
 </script>
 
 <style lang="scss" scoped></style>
