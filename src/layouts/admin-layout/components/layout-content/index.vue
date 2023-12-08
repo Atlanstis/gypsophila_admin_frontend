@@ -1,6 +1,10 @@
 <template>
   <!-- <ScrollContainer> -->
-  <RouterView class="p-16px h-full" />
+  <RouterView v-slot="{ Component }">
+    <Transition :name="'fade'" mode="out-in" :appear="false">
+      <component :is="Component" class="p-16px h-full"></component>
+    </Transition>
+  </RouterView>
   <!-- </ScrollContainer> -->
 </template>
 
