@@ -7,6 +7,7 @@ import { h, ref, type Ref } from 'vue';
 
 /** 有关角色列表的操作 */
 export function useRoleTable(
+  operation: Ref<System.OperationPermission>,
   handleEdit: (row: ApiManagement.Role) => void,
   handleDelete: (id: number) => void,
   handleAllocation: (row: ApiManagement.Role) => void,
@@ -48,23 +49,29 @@ export function useRoleTable(
             trigger: () => h(NButton, { size: 'small', type: 'error' }, () => '删除'),
           },
         );
-        const isDefault = row.isDefault === RoleIsDefaultEnum.NO;
+        const canDel = row.isDefault === RoleIsDefaultEnum.NO && operation.value.canDelete;
+
+        const editBtn = h(
+          NButton,
+          { size: 'small', onClick: () => handleEdit(row) },
+          { default: () => '编辑' },
+        );
+        const canEdit = operation.value.canEdit;
+
+        const allocationBtn = h(
+          NButton,
+          { size: 'small', onClick: () => handleAllocation(row) },
+          { default: () => '权限控制' },
+        );
+        const canAllocation = operation.value.canAllocation;
         return h(
           NSpace,
           { justify: 'center' },
           {
             default: () => [
-              h(
-                NButton,
-                { size: 'small', onClick: () => handleAllocation(row) },
-                { default: () => '权限控制' },
-              ),
-              h(
-                NButton,
-                { size: 'small', onClick: () => handleEdit(row) },
-                { default: () => '编辑' },
-              ),
-              isDefault ? delConfirm : null,
+              canAllocation ? allocationBtn : null,
+              canEdit ? editBtn : null,
+              canDel ? delConfirm : null,
             ],
           },
         );

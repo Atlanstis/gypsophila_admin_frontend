@@ -21,5 +21,7 @@ declare namespace System {
     canDelete?: boolean;
     /** 是否可以查看列表 */
     canList?: boolean;
+    /** 角色管理，菜单管理中权限的分配 */
+    canAllocation?: boolean;
   };
 }
