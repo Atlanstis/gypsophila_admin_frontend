@@ -2,7 +2,7 @@
   <div>
     <TableContainer>
       <template #header>
-        <NSpace class="pb-12px" justify="space-between">
+        <NSpace v-if="operation.canAdd" class="pb-12px" justify="space-between">
           <NSpace>
             <nButton type="primary" @click="handleUserAdd">
               <icon-ic-round-plus class="mr-4px text-20px" />
@@ -28,7 +28,7 @@
       v-model:visible="visible"
       :type="modalType"
       :edit-data="editData"
-      @on-success="getTableData"
+      @on-success="getUserTableData"
     ></UserModal>
   </div>
 </template>
@@ -40,14 +40,21 @@ import { userDelete } from '@/service';
 import UserModal from './components/user-modal.vue';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { useTable, useUserModal } from './hooks';
+import { useRoute } from 'vue-router';
+import { usePageOperationPermission } from '@/hooks';
 
 defineOptions({
   name: 'UserManagementView',
 });
 
+const route = useRoute();
+
+const { operation, getOperationPermission } = usePageOperationPermission(route, getUserTableData);
+
 const { visible, openModal, modalType, setModalType, editData, setEditData } = useUserModal();
 
 const { columns, loading, tableData, getTableData, pagination } = useTable(
+  operation,
   handleEdit,
   handleDelete,
 );
@@ -67,11 +74,20 @@ async function handleDelete(id: string) {
   const { error } = await userDelete({ id });
   if (error) return;
   window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
-  getTableData();
+  getUserTableData();
+}
+
+/**
+ * 当存在列表权限时，获取列表数据
+ */
+function getUserTableData() {
+  if (operation.value.canList) {
+    getTableData();
+  }
 }
 
 onMounted(() => {
-  getTableData();
+  getOperationPermission();
 });
 </script>
 

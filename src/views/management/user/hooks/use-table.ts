@@ -7,6 +7,7 @@ import { h, ref, type Ref } from 'vue';
 
 /** 有关列表的操作 */
 export function useTable(
+  operation: Ref<System.OperationPermission>,
   handleEdit: (row: ApiManagement.User) => void,
   handleDelete: (id: string) => void,
 ) {
@@ -50,19 +51,22 @@ export function useTable(
             trigger: () => h(NButton, { size: 'small', type: 'error' }, () => '删除'),
           },
         );
-        const canDel = !row.roles.some((role) => role.id === BusinessRoleEnum.SuperAdmin);
+        /** 超级管理员账号，及无删除权限的无法进行删除操作 */
+        const canDel =
+          !row.roles.some((role) => role.id === BusinessRoleEnum.SuperAdmin) &&
+          operation.value.canDelete;
+
+        const editBtn = h(
+          NButton,
+          { size: 'small', onClick: () => handleEdit(row) },
+          { default: () => '编辑' },
+        );
+        const canEdit = operation.value.canEdit;
         return h(
           NSpace,
           { justify: 'center' },
           {
-            default: () => [
-              h(
-                NButton,
-                { size: 'small', onClick: () => handleEdit(row) },
-                { default: () => '编辑' },
-              ),
-              canDel ? delConfirm : null,
-            ],
+            default: () => [canEdit ? editBtn : null, canDel ? delConfirm : null],
           },
         );
       },

@@ -9,3 +9,17 @@ declare namespace Layout {
     children?: AdminMenuOption[];
   };
 }
+
+declare namespace System {
+  /** 页面操作权限 */
+  type OperationPermission = {
+    /** 是否可以新增 */
+    canAdd?: boolean;
+    /** 是否可以编辑 */
+    canEdit?: boolean;
+    /** 是否可以删除 */
+    canDelete?: boolean;
+    /** 是否可以查看列表 */
+    canList?: boolean;
+  };
+}
