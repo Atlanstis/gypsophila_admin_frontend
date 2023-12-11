@@ -6,6 +6,7 @@ import { usePagination } from '@/composables';
 import { menuList } from '@/service';
 
 export function useTable(
+  operation: Ref<System.OperationPermission>,
   handleAdd: (parentId?: number) => void,
   handleEdit: (row: ApiManagement.Menu) => void,
   handleDelete: (id: number) => void,
@@ -44,9 +45,9 @@ export function useTable(
       title: '操作',
       align: 'center',
       render: (row) => {
-        const hasDel = !row.children;
-        const hasAdd = row.parentId === PARENT_FLAG;
-        const hasPermission = !row.children;
+        const hasDel = !row.children && operation.value.canDelete;
+        const hasAdd = row.parentId === PARENT_FLAG && operation.value.canAdd;
+        const hasPermission = !row.children && operation.value.canAllocation;
         const delBtn = h(
           NPopconfirm,
           { onPositiveClick: () => handleDelete(row.id) },
@@ -74,17 +75,20 @@ export function useTable(
             default: () => '编辑权限',
           },
         );
+
+        const editBtn = h(
+          NButton,
+          { size: 'small', onClick: () => handleEdit(row) },
+          { default: () => '编辑' },
+        );
+        const canEdit = operation.value.canEdit;
         return h(
           NSpace,
           { justify: 'center' },
           {
             default: () => [
               hasAdd ? addBtn : null,
-              h(
-                NButton,
-                { size: 'small', onClick: () => handleEdit(row) },
-                { default: () => '编辑' },
-              ),
+              canEdit ? editBtn : null,
               hasPermission ? permissionBtn : null,
               hasDel ? delBtn : null,
             ],
@@ -99,6 +103,10 @@ export function useTable(
   const tableData = ref<ApiManagement.Menu[]>([]);
 
   const expandedRowKeys = ref<number[]>([]);
+
+  function onExpandedRowKeys(keys: number[]) {
+    expandedRowKeys.value = keys;
+  }
 
   async function getTableData() {
     startLoading();
@@ -131,6 +139,8 @@ export function useTable(
     pagination,
     /** 展开项，默认展开所有子菜单 */
     expandedRowKeys,
+    /** 展开项的折叠操作 */
+    onExpandedRowKeys,
     /** 列表数据 */
     tableData,
   };
