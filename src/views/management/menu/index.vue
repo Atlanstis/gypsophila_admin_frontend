@@ -75,6 +75,7 @@ const {
 
 const {
   loading,
+  endLoading,
   columns,
   getTableData,
   expandedRowKeys,
@@ -130,6 +131,8 @@ function handlePermission(row: ApiManagement.Menu) {
 function getMenuTableData() {
   if (operation.value.canList) {
     getTableData();
+  } else {
+    endLoading();
   }
 }
 

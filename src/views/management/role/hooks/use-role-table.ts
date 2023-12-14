@@ -79,7 +79,7 @@ export function useRoleTable(
     },
   ]);
 
-  const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false);
+  const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
 
   const tableData = ref<ApiManagement.Role[]>([]);
 
@@ -104,6 +104,8 @@ export function useRoleTable(
     tableData,
     /** 列表加载状态 */
     loading,
+    /** 停止列表加载状态 */
+    endLoading,
     /** 获取列表数据 */
     getTableData,
     /** 列表分页信息 */

@@ -15,9 +15,7 @@ export function usePageOperationPermission(route: RouteLocationNormalizedLoaded,
     const { error, data } = await menuOperationPermission(route.name as string);
     if (!error) {
       operation.value = data;
-      if (operation.value.canList) {
-        cb && cb();
-      }
+      cb && cb();
     }
   }
 

@@ -62,7 +62,7 @@ const { visible, openModal, modalType, setModalType, editData, setEditData } = u
 const { visibleAllocationMenu, openAllocationMenuModal, allocationRoleId, setAllocationRoleId } =
   useAllocationMenuModal();
 
-const { columns, tableData, getTableData, pagination, loading } = useRoleTable(
+const { columns, tableData, getTableData, pagination, loading, endLoading } = useRoleTable(
   operation,
   handleEdit,
   handleDelete,
@@ -98,6 +98,8 @@ function handleAllocation(row: ApiManagement.Role) {
 function getRoleTableData() {
   if (operation.value.canList) {
     getTableData();
+  } else {
+    endLoading();
   }
 }
 

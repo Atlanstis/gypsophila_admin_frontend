@@ -131,6 +131,8 @@ export function useTable(
   return {
     /** 列表加载状态 */
     loading,
+    /** 停止列表加载状态 */
+    endLoading,
     /** 列表字段 */
     columns,
     /** 获取菜单数据 */

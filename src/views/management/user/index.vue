@@ -53,7 +53,7 @@ const { operation, getOperationPermission } = usePageOperationPermission(route, 
 
 const { visible, openModal, modalType, setModalType, editData, setEditData } = useUserModal();
 
-const { columns, loading, tableData, getTableData, pagination } = useTable(
+const { columns, loading, endLoading, tableData, getTableData, pagination } = useTable(
   operation,
   handleEdit,
   handleDelete,
@@ -83,6 +83,8 @@ async function handleDelete(id: string) {
 function getUserTableData() {
   if (operation.value.canList) {
     getTableData();
+  } else {
+    endLoading();
   }
 }
 
