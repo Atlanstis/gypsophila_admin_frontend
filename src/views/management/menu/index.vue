@@ -19,10 +19,12 @@
           :loading="loading"
           :columns="columns"
           :data="tableData"
-          :rowKey="(user) => user.id"
+          :rowKey="(menu: ApiManagement.Menu) => menu.id"
           :pagination="pagination"
           :expanded-row-keys="expandedRowKeys"
-          :on-update:expanded-row-keys="(keys) => onExpandedRowKeys(keys as number[])"
+          :on-update:expanded-row-keys="
+            (keys: DataTableRowKey[]) => onExpandedRowKeys(keys as number[])
+          "
         ></NDataTable>
       </template>
     </TableContainer>
@@ -41,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { NSpace, NButton } from 'naive-ui';
+import { NSpace, NButton, type DataTableRowKey } from 'naive-ui';
 import { onMounted } from 'vue';
 import { menuDelete } from '@/service';
 import MenuModal from './components/menu-modal.vue';

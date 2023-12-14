@@ -20,7 +20,7 @@
           :loading="loading"
           :columns="columns"
           :data="tableData"
-          :rowKey="(role) => role.id"
+          :rowKey="(role: ApiManagement.Role) => role.id"
           :pagination="pagination"
         ></NDataTable>
       </template>

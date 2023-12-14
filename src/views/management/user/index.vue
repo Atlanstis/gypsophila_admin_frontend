@@ -19,7 +19,7 @@
           :loading="loading"
           :columns="columns"
           :data="tableData"
-          :rowKey="(user) => user.id"
+          :rowKey="(user: ApiManagement.User) => user.id"
           :pagination="pagination"
         ></NDataTable>
       </template>
