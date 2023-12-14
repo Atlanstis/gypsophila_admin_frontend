@@ -16,4 +16,7 @@ WORKDIR /app
 COPY --from=build-stage /app/dist /app
 COPY --from=build-stage /app/nginx/nginx.conf /etc/nginx/nginx.conf
 
+VOLUME [ "/cert" ]
+
 EXPOSE 80
+EXPOSE 443
