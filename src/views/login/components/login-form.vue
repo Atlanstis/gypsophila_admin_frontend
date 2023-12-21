@@ -49,8 +49,8 @@ const formDisabled = computed(() => {
 const formRef = ref<FormInst | null>(null);
 
 const form = reactive({
-  username: 'admin',
-  password: '2wsxVFR_',
+  username: '',
+  password: '',
 });
 
 const rules: FormRules = {
