@@ -33,7 +33,7 @@ export function transformAuthRouteToMenus(
 function filterAuthRouteToMenus(routes: AuthRoute.Route[], authMap: Record<string, boolean>) {
   const menus: Layout.AdminMenuOption[] = [];
   routes.forEach((route) => {
-    if (authMap[route.name]) {
+    if (authMap[route.name] && !route.meta.hide) {
       const { iconRender } = useIconRender();
       const menu: Layout.AdminMenuOption = {
         key: route.name,

@@ -11,6 +11,7 @@ export const managementRoutes: AuthRoute.Route[] = [
       title: '系统管理',
       icon: 'carbon:cloud-service-management',
       layout: Layouts[LayoutEnum.Admin],
+      mode: 'fixed',
     },
     children: [
       {
@@ -20,6 +21,7 @@ export const managementRoutes: AuthRoute.Route[] = [
         meta: {
           title: '用户管理',
           icon: 'ic:outline-manage-accounts',
+          mode: 'fixed',
         },
       },
       {
@@ -29,6 +31,7 @@ export const managementRoutes: AuthRoute.Route[] = [
         meta: {
           title: '角色管理',
           icon: 'carbon:user-role',
+          mode: 'fixed',
         },
       },
       {
@@ -38,6 +41,7 @@ export const managementRoutes: AuthRoute.Route[] = [
         meta: {
           title: '菜单管理',
           icon: 'material-symbols-light:route',
+          mode: 'fixed',
         },
       },
     ],

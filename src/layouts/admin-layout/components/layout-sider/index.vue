@@ -35,8 +35,10 @@ const app = useAppStore();
 
 const route = useRoute();
 
-/** 当前选中项 */
-const activeName = computed(() => route.name as string);
+/** 菜单当前选中项 */
+const activeName = computed(
+  () => (route.meta.activeMenu ? route.meta.activeMenu : route.name) as string,
+);
 
 const { routerPush } = useRouterPush();
 

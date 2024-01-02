@@ -29,7 +29,6 @@ export const playStationRoutes: AuthRoute.Route[] = [
         meta: {
           title: '奖杯信息',
           iconLocal: 'trophy',
-          hide: true,
         },
       },
       {
@@ -37,8 +36,20 @@ export const playStationRoutes: AuthRoute.Route[] = [
         path: '/play-station/search',
         component: Views[RouteEnum.PlayStation_Search],
         meta: {
-          title: '查找',
+          title: '游戏查找',
           iconLocal: 'psnine',
+          mode: 'fixed',
+        },
+      },
+      {
+        name: RouteEnum.PlayStation_Analysis,
+        path: '/play-station/analysis/:id',
+        component: Views[RouteEnum.PlayStation_Analysis],
+        meta: {
+          title: '游戏分析',
+          iconLocal: 'psnine',
+          hide: true,
+          activeMenu: RouteEnum.PlayStation_Search,
         },
       },
     ],

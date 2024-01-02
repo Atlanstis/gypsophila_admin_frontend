@@ -11,10 +11,46 @@ declare namespace Psnine {
   type PerfectDifficulty = '极易' | '容易' | '普通' | '麻烦' | '困难' | '地狱';
 
   /** 奖杯数量信息 */
-  export type TrophyNum = Record<PlayStation.TrophyType, nunber>;
+  export type TrophyNum = Record<PlayStation.TrophyType, number>;
+
+  interface Troup {
+    /** 奖杯名称 */
+    name: string;
+    /** 奖杯类型 */
+    trophyType: PlayStation.TrophyType;
+    /** 奖杯图标 */
+    thumbnail: string;
+    /** 奖杯描述 */
+    description: string;
+    /** 奖杯顺序 */
+    order: number;
+    /** 奖杯 id */
+    psnineId: number;
+    /** 提示数量 */
+    tipNums: number;
+    /** 完成率 */
+    complateRate: number;
+    /** 详情地址 */
+    url: string;
+    /** 奖杯 Id */
+    id: number;
+  }
+
+  interface TrophyGroup {
+    /** 奖杯组名称 */
+    name: string;
+    /** 缩略图 */
+    thumbnail: string;
+    /** 奖杯数量信息 */
+    trophyNum: TrophyNum;
+    /** 是否 DLC */
+    isDLC: boolean;
+    /** 奖杯信息 */
+    trophies: Troup[];
+  }
 
   /** 搜索游戏 */
-  interface SearchPsGame {
+  interface SearchGame {
     /** psnine 游戏 id */
     id: number;
     /** 游戏名称 */
@@ -35,5 +71,32 @@ declare namespace Psnine {
     players: number;
     /** 版本 */
     version: string[];
+  }
+
+  interface GameDetail {
+    /** psnine 游戏 id */
+    id: number;
+    /** 游戏名称 */
+    name: string;
+    /** 游戏原名 */
+    originName: string;
+    /** 缩略图 */
+    thumbnail: string;
+    /** 上线平台 */
+    platforms: PlayStation.Platform[];
+    /** 奖杯数量 */
+    trophyNum: TrophyNum;
+    /** psnine 地址 */
+    url: string;
+    /** 完美难度 */
+    perfectDiffucuity: PerfectDifficulty;
+    /** 完美率 */
+    perfectRate: number;
+    /** 游玩人数 */
+    players: number;
+    /** 版本 */
+    version: string[];
+    /** 奖杯组信息 */
+    trophyGroup: PsTrophyGroup[];
   }
 }
