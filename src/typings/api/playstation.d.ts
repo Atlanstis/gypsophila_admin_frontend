@@ -99,4 +99,18 @@ declare namespace Psnine {
     /** 奖杯组信息 */
     trophyGroup: PsTrophyGroup[];
   }
+
+  /** 游戏主题讨论 */
+  interface GameTopic {
+    /** id */
+    id: number;
+    /** 标题 */
+    title: string;
+    /** 详细地址 */
+    url: string;
+    /** 发布时间 */
+    publicationTime: string;
+    /** 讨论数 */
+    discussTimes: number;
+  }
 }

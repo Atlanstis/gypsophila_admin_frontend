@@ -14,3 +14,8 @@ export function psnineGameDetail(id: number) {
     id,
   });
 }
+
+/** Psnine 游戏主题 */
+export function psnineGameTopic(id: number) {
+  return request.get<ApiCommon.TableData<Psnine.GameTopic[]>>('/psnine/game/topic', { id });
+}

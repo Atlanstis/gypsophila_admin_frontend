@@ -57,11 +57,7 @@
       </div>
       <div>
         <NSpace>
-          <PopoverBtn
-            :msg="'查看 Psnine 详情'"
-            :icon="'iconamoon:eye-fill'"
-            @click="onWatchDetail"
-          />
+          <PopoverBtn :msg="'查看 Psnine 详情'" :icon="'solar:eye-broken'" @click="onWatchDetail" />
           <PopoverBtn :msg="'返回查找'" :icon="'lets-icons:refund-back'" @click="onBackSearch" />
         </NSpace>
       </div>

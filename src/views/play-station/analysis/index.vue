@@ -4,6 +4,7 @@
     <Transition :name="'zoom-fade'" mode="out-in" :appear="false">
       <TrophyCard v-if="!loading" :trophy-group="detail?.trophyGroup" />
     </Transition>
+    <TopicCard v-if="!loading" :id="Number(id)" />
     <n-back-top :right="40" :bottom="50" class="z-999" />
   </NSpace>
 </template>
@@ -14,7 +15,7 @@ import { onMounted, ref } from 'vue';
 import { psnineGameDetail } from '@/service';
 import { useTitle } from '@vueuse/core';
 import { useBoolean } from '@/hooks';
-import { TopCard, TrophyCard } from './components';
+import { TopCard, TrophyCard, TopicCard } from './components';
 
 defineOptions({
   name: 'PlayStationAnalysisView',

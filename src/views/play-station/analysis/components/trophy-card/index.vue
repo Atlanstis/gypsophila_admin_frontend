@@ -29,7 +29,6 @@ const activeTabName = ref<string>('');
 watch(
   () => props.trophyGroup,
   () => {
-    console.log(props.trophyGroup);
     activeTabName.value = props.trophyGroup.length > 0 ? '0' : '';
   },
   { immediate: true },

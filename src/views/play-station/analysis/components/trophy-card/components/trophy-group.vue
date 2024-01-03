@@ -1,7 +1,7 @@
 <template>
   <NSpace v-if="props.group" vertical>
     <NSpace>
-      <div class="h-80px w-80px">
+      <div class="h-80px w-80px flex flex-center">
         <NImage width="80" height="80" :src="props.group.thumbnail">
           <template #placeholder>
             <PlaystationLoading />
@@ -71,9 +71,18 @@ const columns: Ref<DataTableColumns<Psnine.Troup>> = ref([
     key: 'name',
     title: '奖杯名称',
     align: 'center',
-    width: 200,
+    width: 120,
+    fixed: 'left',
     render: ({ name, trophyType }) =>
       h('span', { style: { color: TrophyColorMap[trophyType] } }, name),
+  },
+  {
+    key: 'description',
+    title: '奖杯描述',
+    align: 'center',
+    width: 280,
+    render: ({ description, trophyType }) =>
+      h('span', { style: { color: TrophyColorMap[trophyType] } }, description),
   },
   {
     key: 'tipNums',
@@ -108,7 +117,7 @@ const columns: Ref<DataTableColumns<Psnine.Troup>> = ref([
       h(NSpace, { justify: 'center' }, () => [
         h(PopoverBtn, {
           msg: '查看 Psnine 详情',
-          icon: 'iconamoon:eye-fill',
+          icon: 'solar:eye-broken',
           onClick: () => {
             toOutsideUrl(url);
           },

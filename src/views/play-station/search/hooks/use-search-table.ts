@@ -138,7 +138,7 @@ export function useSearchTable() {
         h(NSpace, { justify: 'center' }, () => [
           h(PopoverBtn, {
             msg: '查看 Psnine 详情',
-            icon: 'iconamoon:eye-fill',
+            icon: 'solar:eye-broken',
             onClick: () => {
               toOutsideUrl(url);
             },
