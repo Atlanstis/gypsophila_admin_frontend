@@ -1,6 +1,6 @@
-import { usePaginationWithDefinePageSize, useRouterPush } from '@/composables';
+import { useRouterPush } from '@/composables';
 import { PerfectDifficultyColorMap, PlatformColorMap, TrophyColorMap } from '@/constants';
-import { useBoolean } from '@/hooks';
+import { useBoolean, usePaginationWithDefinePageSize } from '@/hooks';
 import { psnineGameSearch } from '@/service';
 import { NImage, type DataTableColumns, NTag, NSpace, NProgress } from 'naive-ui';
 import { type Ref, ref, h } from 'vue';
