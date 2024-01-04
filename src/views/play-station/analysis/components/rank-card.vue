@@ -42,7 +42,7 @@ function watchRankMore() {
 
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
 
-/** 转换 Y 轴标签显示 */
+/** 转换秒数显示 */
 function transformSecords(second: number) {
   const strFun = (second: number, item: number, i: number) =>
     (second / item).toFixed(1) + labelArr[i];
@@ -76,8 +76,13 @@ function getChartOptions(list: Psnine.GameRank[]) {
         type: 'cross',
         label: {
           backgroundColor: '#6a7985',
-          formatter: function ({ value }) {
-            return transformSecords(value as number);
+          formatter: function ({ value, axisDimension }) {
+            console.log(value);
+            if (axisDimension === 'x') {
+              return `次序：${value}`;
+            } else {
+              return transformSecords(value as number);
+            }
           },
         },
       },
