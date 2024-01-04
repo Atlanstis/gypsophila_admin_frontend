@@ -19,3 +19,8 @@ export function psnineGameDetail(id: number) {
 export function psnineGameTopic(id: number) {
   return request.get<ApiCommon.TableData<Psnine.GameTopic[]>>('/psnine/game/topic', { id });
 }
+
+/** Psnine 游戏排名 */
+export function psnineGameRank(id: number) {
+  return request.post<ApiCommon.TableData<Psnine.GameRank[]>>('/psnine/game/rank', { id });
+}

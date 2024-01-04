@@ -113,4 +113,17 @@ declare namespace Psnine {
     /** 讨论数 */
     discussTimes: number;
   }
+
+  interface GameRank {
+    /** 排名顺序 */
+    index: number;
+    /** 完成时间 */
+    completionTime: string;
+    /** 完成进度 */
+    completionRate: number;
+    /** 使用时间(单位:秒) */
+    usedSecords: number;
+    /** 使用时间(字符串) */
+    usedTime: string;
+  }
 }

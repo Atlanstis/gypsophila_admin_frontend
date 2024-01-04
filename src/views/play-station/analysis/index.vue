@@ -2,6 +2,9 @@
   <NSpace vertical>
     <TopCard :detail="detail" :loading="loading" />
     <Transition :name="'zoom-fade'" mode="out-in" :appear="false">
+      <RankCard v-if="!loading" :id="Number(id)" />
+    </Transition>
+    <Transition :name="'zoom-fade'" mode="out-in" :appear="false">
       <TrophyCard v-if="!loading" :trophy-group="detail?.trophyGroup" />
     </Transition>
     <TopicCard v-if="!loading" :id="Number(id)" />
@@ -15,7 +18,7 @@ import { onMounted, ref } from 'vue';
 import { psnineGameDetail } from '@/service';
 import { useTitle } from '@vueuse/core';
 import { useBoolean } from '@/hooks';
-import { TopCard, TrophyCard, TopicCard } from './components';
+import { TopCard, TrophyCard, TopicCard, RankCard } from './components';
 
 defineOptions({
   name: 'PlayStationAnalysisView',
