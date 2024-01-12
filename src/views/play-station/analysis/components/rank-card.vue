@@ -77,7 +77,6 @@ function getChartOptions(list: Psnine.GameRank[]) {
         label: {
           backgroundColor: '#6a7985',
           formatter: function ({ value, axisDimension }) {
-            console.log(value);
             if (axisDimension === 'x') {
               return `次序：${value}`;
             } else {

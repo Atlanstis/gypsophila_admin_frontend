@@ -1,7 +1,7 @@
 <template>
   <!-- <ScrollContainer> -->
   <RouterView v-slot="{ Component }">
-    <Transition :name="'fade'" mode="out-in" :appear="false">
+    <Transition :name="'fade-slide'" mode="out-in" :appear="false">
       <component
         v-if="route.meta.mode === 'fixed'"
         :is="Component"

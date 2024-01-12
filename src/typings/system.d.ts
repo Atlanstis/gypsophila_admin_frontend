@@ -8,6 +8,18 @@ declare namespace Layout {
     icon?: () => import('vue').VNodeChild;
     children?: AdminMenuOption[];
   };
+
+  /** 后台页页签 Tab */
+  type AdminTab = Pick<
+    import('vue-router').RouteLocationNormalizedLoaded,
+    'name' | 'fullPath' | 'meta'
+  > & {
+    /** 滚动的位置 */
+    scrollPosition: {
+      left: number;
+      top: number;
+    };
+  };
 }
 
 declare namespace System {
@@ -24,4 +36,12 @@ declare namespace System {
     /** 角色管理，菜单管理中权限的分配 */
     canAllocation?: boolean;
   };
+}
+
+/** defineExpose 导出的类型 */
+declare namespace Expose {
+  /** BetterScroll 组件 Expose 类型 */
+  interface BetterScroll {
+    instance: import('@better-scroll/core').BScrollInstance;
+  }
 }

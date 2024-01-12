@@ -41,5 +41,9 @@ declare namespace AuthRoute {
      * scroll: 溢出滚动
      */
     mode?: 'fixed' | 'scroll';
+    /** tab 页签上是否支持显示多个(默认一个，即相同name的路由会被替换) */
+    multiTab?: boolean;
+    /** 缓存页面 */
+    keepAlive?: boolean;
   }
 }
