@@ -9,7 +9,7 @@ import {
   getKeepAliveRouteNames,
 } from './helper';
 import { authInfo } from '@/service';
-import { useAuthStore } from '@/stores';
+import { useAppStore, useAuthStore } from '@/stores';
 
 interface RouteState {
   /** 路由权限是否已初始化 */
@@ -96,6 +96,37 @@ export const useRouteStore = defineStore('route-store', {
           router.addRoute(rootRoute);
         }
       });
+    },
+
+    async reloadRoute(name: string) {
+      const { reloadPage } = useAppStore();
+
+      const isCached = this.keepAliveRouteNames.includes(name);
+      if (isCached) {
+        this.removeKeepAliveRoute(name);
+      }
+
+      await reloadPage();
+
+      if (isCached) {
+        this.addKeepAliveRoute(name);
+      }
+    },
+
+    /** 从缓存路由中去除某个路由 */
+    removeKeepAliveRoute(name: string) {
+      const index = this.keepAliveRouteNames.indexOf(name);
+      if (index > -1) {
+        this.keepAliveRouteNames.splice(index, 1);
+      }
+    },
+
+    /** 添加某个缓存路由 */
+    addKeepAliveRoute(name: string) {
+      const index = this.keepAliveRouteNames.indexOf(name);
+      if (index === -1) {
+        this.keepAliveRouteNames.push(name);
+      }
     },
 
     setRedirect(url: string) {
