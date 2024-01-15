@@ -1,6 +1,6 @@
-import { Views } from '@/views';
 import { LayoutEnum, RouteEnum } from '@/enums';
 import { Layouts } from '@/layouts';
+import { getRouteView } from '@/utils';
 
 /** PlayStation 路由 */
 export const playStationRoutes: AuthRoute.Route[] = [
@@ -16,7 +16,7 @@ export const playStationRoutes: AuthRoute.Route[] = [
       {
         name: RouteEnum.PlayStation_Game,
         path: '/play-station/game',
-        component: Views[RouteEnum.PlayStation_Game],
+        component: getRouteView(RouteEnum.PlayStation_Game),
         meta: {
           title: 'PS 游戏',
           iconLocal: 'psgame',
@@ -25,7 +25,7 @@ export const playStationRoutes: AuthRoute.Route[] = [
       {
         name: RouteEnum.PlayStation_Trophy,
         path: '/play-station/trophy',
-        component: Views[RouteEnum.PlayStation_Trophy],
+        component: getRouteView(RouteEnum.PlayStation_Trophy),
         meta: {
           title: '奖杯信息',
           iconLocal: 'trophy',
@@ -34,17 +34,17 @@ export const playStationRoutes: AuthRoute.Route[] = [
       {
         name: RouteEnum.PlayStation_Search,
         path: '/play-station/search',
-        component: Views[RouteEnum.PlayStation_Search],
+        component: getRouteView(RouteEnum.PlayStation_Search),
         meta: {
           title: '游戏查找',
           iconLocal: 'psnine',
-          mode: 'fixed',
+          keepAlive: true,
         },
       },
       {
         name: RouteEnum.PlayStation_Analysis,
         path: '/play-station/analysis/:id',
-        component: Views[RouteEnum.PlayStation_Analysis],
+        component: getRouteView(RouteEnum.PlayStation_Analysis),
         meta: {
           title: '游戏分析',
           iconLocal: 'psnine',

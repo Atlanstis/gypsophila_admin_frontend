@@ -1,5 +1,5 @@
-import { Views } from '@/views';
 import { RouteEnum } from '@/enums';
+import { getRouteView } from '@/utils';
 
 /** 根路由 */
 export const ROOT_ROUTE: AuthRoute.Route = {
@@ -16,7 +16,7 @@ export const constantRoutes: AuthRoute.Route[] = [
   {
     path: '/login',
     name: RouteEnum.Login,
-    component: Views[RouteEnum.Login],
+    component: getRouteView(RouteEnum.Login),
     meta: {
       title: '登录',
     },
@@ -24,7 +24,7 @@ export const constantRoutes: AuthRoute.Route[] = [
   {
     path: '/:pathMatch(.*)*',
     name: RouteEnum.NotFound,
-    component: Views[RouteEnum.NotFound],
+    component: getRouteView(RouteEnum.NotFound),
     meta: {
       title: '404',
     },

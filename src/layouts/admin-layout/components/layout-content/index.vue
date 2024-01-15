@@ -1,28 +1,21 @@
 <template>
-  <!-- <ScrollContainer> -->
-  <RouterView v-slot="{ Component }">
+  <RouterView v-slot="{ Component, route }">
     <Transition :name="'fade-slide'" mode="out-in" :appear="false">
-      <component
-        v-if="route.meta.mode === 'fixed'"
-        :is="Component"
-        class="p-16px h-full"
-      ></component>
-      <ScrollContainer v-else>
-        <component :is="Component" class="p-16px"></component>
-      </ScrollContainer>
+      <KeepAlive :include="routeStore.keepAliveRouteNames">
+        <component :key="route.fullPath" :is="Component" class="p-16px h-full"></component>
+      </KeepAlive>
     </Transition>
   </RouterView>
-  <!-- </ScrollContainer> -->
 </template>
 
 <script lang="ts" setup>
-import { useRoute } from 'vue-router';
+import { useRouteStore } from '@/stores';
 
 defineOptions({
   name: 'AdminLayoutContent',
 });
 
-const route = useRoute();
+const routeStore = useRouteStore();
 </script>
 
 <style lang="scss" scoped></style>

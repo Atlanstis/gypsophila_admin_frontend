@@ -2,7 +2,12 @@ import { defineStore } from 'pinia';
 import { routes, router, ROOT_ROUTE } from '@/router';
 import { RouteEnum } from '@/enums';
 import type { RouteRecordRaw } from 'vue-router';
-import { transformAuthRoute, transformAuthRouteToMenus, getConstantRouteName } from './helper';
+import {
+  transformAuthRoute,
+  transformAuthRouteToMenus,
+  getConstantRouteName,
+  getKeepAliveRouteNames,
+} from './helper';
 import { authInfo } from '@/service';
 import { useAuthStore } from '@/stores';
 
@@ -13,6 +18,8 @@ interface RouteState {
   adminMenus: Layout.AdminMenuOption[];
   /** 用于记录刷新后，由于长时间未操作，导致被强制登出后，无法进入原路由，无法记录原路由的 path */
   redirect: string;
+  /** 缓存的路由名称 */
+  keepAliveRouteNames: string[];
 }
 
 export const useRouteStore = defineStore('route-store', {
@@ -20,6 +27,7 @@ export const useRouteStore = defineStore('route-store', {
     isInitAuthRoute: false,
     adminMenus: [],
     redirect: '',
+    keepAliveRouteNames: [],
   }),
 
   actions: {
@@ -30,6 +38,8 @@ export const useRouteStore = defineStore('route-store', {
         setUserInfo(data);
         // 生成权限路由
         const authRoutes = await transformAuthRoute(routes, data.menus);
+        // 获取需要 keepAlive 的路由
+        this.keepAliveRouteNames = getKeepAliveRouteNames(authRoutes);
         // 生成后台菜单
         (this.adminMenus as Layout.AdminMenuOption[]) = transformAuthRouteToMenus(
           routes,
