@@ -10,6 +10,7 @@ import {
 } from './helper';
 import { authInfo } from '@/service';
 import { useAppStore, useAuthStore } from '@/stores';
+import { nextTick } from 'vue';
 
 interface RouteState {
   /** 路由权限是否已初始化 */
@@ -126,6 +127,18 @@ export const useRouteStore = defineStore('route-store', {
       const index = this.keepAliveRouteNames.indexOf(name);
       if (index === -1) {
         this.keepAliveRouteNames.push(name);
+      }
+    },
+
+    /** 刷新 keepAlive 状态 */
+    async refreshKeepAliveState(name: string) {
+      const isCached = this.keepAliveRouteNames.includes(name);
+      if (isCached) {
+        this.removeKeepAliveRoute(name);
+      }
+      await nextTick();
+      if (isCached) {
+        this.addKeepAliveRoute(name);
       }
     },
 

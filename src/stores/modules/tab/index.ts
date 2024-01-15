@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import type { RouteLocationNormalized } from 'vue-router';
 import { getIndexInTabsByRouteName, getTabByVueRoute, isInTabs } from './helpers';
 import { useRouterPush } from '@/composables';
+import { useRouteStore } from '@/stores';
 
 interface TabState {
   /** 页签数据 */
@@ -77,6 +78,13 @@ export const useTabStore = defineStore('tab-store', {
      */
     async removeTab(fullPath: string) {
       const { routerPush } = useRouterPush(false);
+      const routeStore = useRouteStore();
+
+      // 刷新 keepAlive 状态
+      const tabName = this.tabs.find((tab) => tab.fullPath === fullPath)?.name as string;
+      if (tabName) {
+        await routeStore.refreshKeepAliveState(tabName);
+      }
 
       const isActive = this.activeTab === fullPath;
       const updateTabs = this.tabs.filter((tab) => tab.fullPath !== fullPath);
