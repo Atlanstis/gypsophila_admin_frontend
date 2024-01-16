@@ -20,6 +20,20 @@ declare namespace Layout {
       top: number;
     };
   };
+
+  type AdminBreadcrumbOption = {
+    label: string;
+    key: string;
+    icon?: () => import('vue').VNodeChild;
+  };
+
+  type AdminBreadcrumb = {
+    key: string;
+    label: string;
+    hasChildren?: boolean;
+    icon?: () => import('vue').VNodeChild;
+    options?: AdminBreadcrumbOption[];
+  };
 }
 
 declare namespace System {

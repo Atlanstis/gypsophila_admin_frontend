@@ -1,7 +1,8 @@
 <template>
   <div :class="['layout-header', 'h-full flex-y-center bg-white']">
-    <div class="flex-1-hidden h-full">
+    <div class="flex-1-hidden h-full flex-y-center">
       <BtnCollapse />
+      <BreadcrumbNav />
     </div>
     <div class="flex justify-end h-full">
       <UserAvatar />
@@ -10,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BtnCollapse, UserAvatar } from './components';
+import { BtnCollapse, UserAvatar, BreadcrumbNav } from './components';
 
 defineOptions({
   name: 'AdminLayoutHeader',
