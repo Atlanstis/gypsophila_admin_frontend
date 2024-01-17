@@ -1,13 +1,13 @@
 <template>
   <div v-if="hasTooltip">
-    <NTooltip :placement="placement" trigger="hover">
+    <NPopover :placement="placement" trigger="hover">
       <template #trigger>
         <div class="h-full flex-center cursor-pointer hover:bg-#f6f6f6">
           <slot></slot>
         </div>
       </template>
       <span>{{ tooltip }}</span>
-    </NTooltip>
+    </NPopover>
   </div>
   <div v-else class="flex-center cursor-pointer hover:bg-#f6f6f6">
     <slot></slot>
