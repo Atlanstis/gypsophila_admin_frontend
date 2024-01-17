@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full">
+  <div>
     <TableContainer>
       <template #header>
         <NSpace v-if="operation.canAdd" class="pb-12px" justify="space-between">

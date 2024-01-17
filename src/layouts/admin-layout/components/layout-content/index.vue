@@ -1,13 +1,13 @@
 <template>
   <div class="p-16px h-full">
     <RouterView v-slot="{ Component, route }">
-      <Transition :name="'fade-slide'" mode="out-in" :appear="false">
+      <Transition :name="'fade-slide'" mode="out-in" :appear="true">
         <KeepAlive :include="routeStore.keepAliveRouteNames">
           <component
             v-if="appStore.adminReloadFlag"
             :key="route.fullPath"
             :is="Component"
-            class="p-16px h-full"
+            class="h-full"
           ></component>
         </KeepAlive>
       </Transition>

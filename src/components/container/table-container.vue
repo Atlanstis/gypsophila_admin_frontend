@@ -1,6 +1,6 @@
 <template>
   <div class="overflow-hidden h-full">
-    <NCard :bordered="false" class="h-full rounded-8px shadow-sm">
+    <NCard class="h-full">
       <div class="h-full flex-col">
         <slot name="header"></slot>
         <div class="flex-1-hidden table-wrap">
