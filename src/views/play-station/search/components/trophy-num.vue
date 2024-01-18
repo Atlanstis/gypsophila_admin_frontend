@@ -1,9 +1,7 @@
 <template>
   <div class="inline-flex flex-center">
     <IconSvg></IconSvg>
-    <span class="font-14 ml-2px mr-4px font-bold" :style="{ color: props.color }">{{
-      props.num
-    }}</span>
+    <span class="ml-2px mr-4px font-bold" :style="{ color: props.color }">{{ props.num }}</span>
   </div>
 </template>
 

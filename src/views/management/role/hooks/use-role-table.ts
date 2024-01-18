@@ -1,6 +1,5 @@
-import { usePagination } from '@/composables';
 import { RoleIsDefaultEnum } from '@/enums';
-import { useBoolean } from '@/hooks';
+import { useBoolean, usePagination } from '@/hooks';
 import { roleList } from '@/service';
 import { NTag, type DataTableColumns, NButton, NSpace, NPopconfirm } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';

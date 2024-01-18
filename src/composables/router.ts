@@ -2,6 +2,8 @@ import { useRouter, type RouteLocationRaw } from 'vue-router';
 import { router as globalRouter } from '@/router';
 import { RouteEnum } from '@/enums';
 import { useRouteStore } from '@/stores';
+import { urlRegex } from '@/constants';
+import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 /**
  * 路由跳转
@@ -10,6 +12,15 @@ import { useRouteStore } from '@/stores';
 export function useRouterPush(isInSetup = true) {
   const router = isInSetup ? useRouter() : globalRouter;
   const route = router.currentRoute;
+
+  /** 跳转到外部地址 */
+  function toOutsideUrl(url: string) {
+    if (urlRegex.test(url)) {
+      window.open(url);
+    } else {
+      window.$message?.error(`该地址(${url})不符合格式`, { duration: DEFAULT_MESSAGE_DURATION });
+    }
+  }
 
   /**
    * 路由跳转
@@ -68,6 +79,7 @@ export function useRouterPush(isInSetup = true) {
   }
 
   return {
+    toOutsideUrl,
     routerPush,
     toLogin,
     toHome,

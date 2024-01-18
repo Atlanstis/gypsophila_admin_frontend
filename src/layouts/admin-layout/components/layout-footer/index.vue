@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-white h-full">底部</div>
+  <div class="bg-white h-full flex-center">
+    <RecordNumber />
+  </div>
 </template>
 
 <script lang="ts" setup>

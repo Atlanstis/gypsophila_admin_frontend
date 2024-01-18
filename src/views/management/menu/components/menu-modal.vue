@@ -143,16 +143,13 @@ function emitSucess() {
 const menuTopOpt: Ref<SelectOption[]> = ref([]);
 
 async function getMenuTop() {
-  if (!menuTopOpt.value.length) {
-    const { data, error } = await menuListTop();
-    if (!error) {
-      menuTopOpt.value = data.map((menu) => ({
-        label: menu.name,
-        value: menu.id,
-      }));
-    }
+  const { data, error } = await menuListTop();
+  if (!error) {
+    menuTopOpt.value = data.map((menu) => ({
+      label: menu.name,
+      value: menu.id,
+    }));
   }
-  menuListTop;
 }
 
 /**

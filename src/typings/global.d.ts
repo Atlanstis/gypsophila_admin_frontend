@@ -14,8 +14,9 @@ declare namespace Common {
    */
   type StrategyAction = [boolean, () => void];
 
+  /** 异步组件 */
+  type AsyncComponent = () => Promise<{ default: import('vue-router').RouteComponent }>;
+
   /** 组件/异步组件 */
-  type Component =
-    | import('vue-router').RouteComponent
-    | (() => Promise<{ default: import('vue-router').RouteComponent }>);
+  type Component = import('vue-router').RouteComponent | AsyncComponent;
 }

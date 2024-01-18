@@ -1,23 +1,26 @@
-import { usePaginationWithDefinePageSize } from '@/composables';
+import { useRouterPush } from '@/composables';
 import { PerfectDifficultyColorMap, PlatformColorMap, TrophyColorMap } from '@/constants';
-import { useBoolean } from '@/hooks';
+import { useBoolean, usePaginationWithDefinePageSize } from '@/hooks';
 import { psnineGameSearch } from '@/service';
 import { NImage, type DataTableColumns, NTag, NSpace, NProgress } from 'naive-ui';
 import { type Ref, ref, h } from 'vue';
 import TrophyNum from '../components/trophy-num.vue';
 import PopoverBtn from '@/components/common/popover-btn.vue';
 import PlaystationLoading from '@/components/custom/loading/playstation-loading.vue';
+import { RouteEnum } from '@/enums';
 
 export function useSearchTable() {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false);
 
   const { bool: isSearched, setTrue: setSearched } = useBoolean(false);
 
+  const { routerPush, toOutsideUrl } = useRouterPush(false);
+
   const keyword = ref<string>('');
 
-  const tableData = ref<Psnine.SearchPsGame[]>([]);
+  const tableData = ref<Psnine.SearchGame[]>([]);
 
-  const columns: Ref<DataTableColumns<Psnine.SearchPsGame>> = ref([
+  const columns: Ref<DataTableColumns<Psnine.SearchGame>> = ref([
     {
       key: 'thumbnail',
       title: '缩略图',
@@ -38,7 +41,7 @@ export function useSearchTable() {
       align: 'center',
       width: 250,
       render: ({ name, version }) =>
-        h(NSpace, { justify: 'center' }, [
+        h(NSpace, { justify: 'center' }, () => [
           h(NSpace, {}, { default: () => name }),
           version.length
             ? h(
@@ -46,7 +49,9 @@ export function useSearchTable() {
                 {},
                 {
                   default: () =>
-                    version.map((v) => h(NTag, { size: 'small' }, { default: () => v })),
+                    version.map((v) =>
+                      h(NTag, { size: 'small', type: 'info' }, { default: () => v }),
+                    ),
                 },
               )
             : null,
@@ -72,8 +77,8 @@ export function useSearchTable() {
                     color: {
                       color: PlatformColorMap[platform],
                       textColor: '#fff',
-                      borderColor: '#fff',
                     },
+                    bordered: false,
                   },
                   { default: () => platform },
                 ),
@@ -119,7 +124,6 @@ export function useSearchTable() {
           color: PerfectDifficultyColorMap[perfectDiffucuity],
           percentage: perfectRate,
           indicatorPlacement: 'inside',
-          indicatorTextColor: '#',
         });
       },
     },
@@ -130,10 +134,22 @@ export function useSearchTable() {
       align: 'center',
       fixed: 'right',
       width: 120,
-      render: () =>
+      render: ({ id, url }) =>
         h(NSpace, { justify: 'center' }, () => [
-          h(PopoverBtn, { msg: '查看详情', icon: 'iconamoon:eye-fill', onClick: () => {} }),
-          h(PopoverBtn, { msg: '分析', icon: 'tabler:analyze-filled', onClick: () => {} }),
+          h(PopoverBtn, {
+            msg: '查看 Psnine 详情',
+            icon: 'solar:eye-broken',
+            onClick: () => {
+              toOutsideUrl(url);
+            },
+          }),
+          h(PopoverBtn, {
+            msg: '分析',
+            icon: 'tabler:analyze-filled',
+            onClick: () => {
+              routerPush({ name: RouteEnum.PlayStation_Analysis, params: { id } });
+            },
+          }),
         ]),
     },
   ]);

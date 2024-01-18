@@ -1,8 +1,7 @@
-import { useBoolean } from '@/hooks';
+import { useBoolean, usePagination } from '@/hooks';
 import { NTag, type DataTableColumns, NPopconfirm, NButton, NSpace } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
 import { PARENT_FLAG } from '../constants';
-import { usePagination } from '@/composables';
 import { menuList } from '@/service';
 
 export function useTable(

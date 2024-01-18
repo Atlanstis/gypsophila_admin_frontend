@@ -8,6 +8,13 @@ declare namespace StorageSpace {
     refreshToken: string;
     /** admin 菜单折叠状态 */
     adminMenuCollapsed: boolean;
+    /** 登录页-记住我 */
+    loginRememberMe: boolean;
+    /** 登录页-登录信息 */
+    loginInfo: {
+      username: string;
+      password: string;
+    };
   }
 
   /** 存储数据格式 */

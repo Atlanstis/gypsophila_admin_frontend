@@ -5,4 +5,8 @@ export const enum LocalKeyEnum {
   RefreshToken = 'refreshToken',
   /** admin 菜单折叠状态 */
   AdminMenuCollapsed = 'adminMenuCollapsed',
+  /** 登录页-记住我 */
+  LoginRememberMe = 'loginRememberMe',
+  /** 登录页-登录信息 */
+  LoginInfo = 'loginInfo',
 }

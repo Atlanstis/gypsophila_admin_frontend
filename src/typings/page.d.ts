@@ -18,23 +18,36 @@ declare namespace PageRoute {
   type PlayStationNoPageName = 'PlayStation';
 
   /** PlayStation 有对应页面路由名 */
-  type PlayStationName = 'PlayStation_Game' | 'PlayStation_Trophy' | 'PlayStation_Search';
+  type PlayStationName =
+    | 'PlayStation_Game'
+    | 'PlayStation_Trophy'
+    | 'PlayStation_Search'
+    | 'PlayStation_Analysis';
 
   /** PlayStation 路由名 */
   type AllPlayStationName = PlayStationNoPageName | PlayStationName;
 
+  /** 系统管理 */
   type ManagementNoPageName = 'Management';
-
   type ManagementName = 'Management_User' | 'Management_Role' | 'Management_Menu';
-
   type AllManagementName = ManagementNoPageName | ManagementName;
 
+  /** 系统设置 */
+  type SettingNoPageName = 'Setting';
+  type SettingName = 'Setting_Common';
+  type AllSettingName = SettingNoPageName | SettingName;
+
   /** 全部路由名 */
-  type AllRouteName = FunctionName | WorkbenchName | AllPlayStationName | AllManagementName;
+  type AllRouteName =
+    | FunctionName
+    | WorkbenchName
+    | AllPlayStationName
+    | AllManagementName
+    | AllSettingName;
 
   /** 全部有对应页面的路由名  */
   type HasPageRoute = Exclude<
     AllRouteName,
-    RootName | PlayStationNoPageName | ManagementNoPageName
+    RootName | PlayStationNoPageName | ManagementNoPageName | SettingNoPageName
   >;
 }

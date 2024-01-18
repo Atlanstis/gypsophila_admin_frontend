@@ -33,5 +33,11 @@ declare namespace AuthRoute {
     hide?: boolean;
     /** 路由顺序，可用于菜单的排序 */
     order?: number;
+    /** 当前路由需要选中的菜单项(用于跳转至不在左侧菜单显示的路由且需要高亮某个菜单的情况) */
+    activeMenu?: PageRoute.AllRouteName;
+    /** tab 页签上是否支持显示多个(默认一个，即相同name的路由会被替换) */
+    multiTab?: boolean;
+    /** 缓存页面 */
+    keepAlive?: boolean;
   }
 }

@@ -5,7 +5,7 @@
     </div>
     <NForm ref="formRef" :model="form" :rules="rules" :disabled="formDisabled" :show-label="false">
       <NFormItem path="username">
-        <NInput v-model:value="form.username" placeholder="请输入用户名">
+        <NInput v-model:value="form.username" placeholder="请输入用户名" @keydown="onKeyDown">
           <template #prefix>
             <icon-line-md-account class="text-16px" />
           </template>
@@ -17,6 +17,7 @@
           type="password"
           show-password-on="click"
           placeholder="请输入密码"
+          @keydown="onKeyDown"
         >
           <template #prefix>
             <icon-ri-lock-password-line class="text-16px" />
@@ -24,7 +25,9 @@
         </n-input>
       </NFormItem>
       <div class="justify-between flex-y-center">
-        <n-checkbox v-model:checked="rememberMe">记住我</n-checkbox>
+        <n-checkbox v-model:checked="rememberMe" :on-update:checked="onRememberMeUpdate"
+          >记住我</n-checkbox
+        >
         <n-button type="primary" :loading="auth.loginLoading" @click="goLoginHandle">登录</n-button>
       </div>
     </NForm>
@@ -35,6 +38,9 @@
 import { computed, reactive, ref } from 'vue';
 import type { FormInst, FormRules } from 'naive-ui';
 import { useAuthStore } from '@/stores';
+import { useBoolean } from '@/hooks';
+import { localStorage } from '@/utils';
+import { LocalKeyEnum } from '@/enums';
 
 defineOptions({
   name: 'LoginForm',
@@ -48,10 +54,14 @@ const formDisabled = computed(() => {
 
 const formRef = ref<FormInst | null>(null);
 
-const form = reactive({
-  username: '',
-  password: '',
-});
+const loginInfo = localStorage.get(LocalKeyEnum.LoginInfo);
+
+const form = reactive(
+  loginInfo || {
+    username: '',
+    password: '',
+  },
+);
 
 const rules: FormRules = {
   username: {
@@ -66,10 +76,48 @@ const rules: FormRules = {
   },
 };
 
-const rememberMe = ref(false);
+/** 默认存储时间 */
+const DEFAULT_STORE_TIME = 7 * 24 * 60 * 60;
+
+const { bool: rememberMe, setBool: setRemember } = useBoolean(
+  !!localStorage.get(LocalKeyEnum.LoginRememberMe),
+);
+
+function onRememberMeUpdate(bool: boolean) {
+  setRemember(bool);
+  localStorage.set(LocalKeyEnum.LoginRememberMe, bool, DEFAULT_STORE_TIME);
+  if (bool) {
+    window.$dialog?.warning({
+      title: '提示',
+      content: '此操作将保留 7 天的登录信息，是否继续？',
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: () => {},
+      onNegativeClick: () => {
+        setRemember(bool);
+        localStorage.set(LocalKeyEnum.LoginRememberMe, bool, DEFAULT_STORE_TIME);
+      },
+    });
+  }
+}
+
+function onKeyDown(key: KeyboardEvent) {
+  if (key.code === 'Enter') {
+    goLoginHandle();
+  }
+}
 
 async function goLoginHandle() {
   await formRef.value?.validate();
+  if (rememberMe.value) {
+    localStorage.set(
+      LocalKeyEnum.LoginInfo,
+      { username: form.username, password: form.password },
+      DEFAULT_STORE_TIME,
+    );
+  } else {
+    localStorage.remove(LocalKeyEnum.LoginInfo);
+  }
   auth.login(form.username, form.password);
 }
 </script>

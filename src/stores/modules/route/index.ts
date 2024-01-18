@@ -2,9 +2,15 @@ import { defineStore } from 'pinia';
 import { routes, router, ROOT_ROUTE } from '@/router';
 import { RouteEnum } from '@/enums';
 import type { RouteRecordRaw } from 'vue-router';
-import { transformAuthRoute, transformAuthRouteToMenus, getConstantRouteName } from './helper';
+import {
+  transformAuthRoute,
+  transformAuthRouteToMenus,
+  getConstantRouteName,
+  getKeepAliveRouteNames,
+} from './helper';
 import { authInfo } from '@/service';
-import { useAuthStore } from '@/stores';
+import { useAppStore, useAuthStore } from '@/stores';
+import { nextTick } from 'vue';
 
 interface RouteState {
   /** 路由权限是否已初始化 */
@@ -13,6 +19,8 @@ interface RouteState {
   adminMenus: Layout.AdminMenuOption[];
   /** 用于记录刷新后，由于长时间未操作，导致被强制登出后，无法进入原路由，无法记录原路由的 path */
   redirect: string;
+  /** 缓存的路由名称 */
+  keepAliveRouteNames: string[];
 }
 
 export const useRouteStore = defineStore('route-store', {
@@ -20,6 +28,7 @@ export const useRouteStore = defineStore('route-store', {
     isInitAuthRoute: false,
     adminMenus: [],
     redirect: '',
+    keepAliveRouteNames: [],
   }),
 
   actions: {
@@ -30,6 +39,8 @@ export const useRouteStore = defineStore('route-store', {
         setUserInfo(data);
         // 生成权限路由
         const authRoutes = await transformAuthRoute(routes, data.menus);
+        // 获取需要 keepAlive 的路由
+        this.keepAliveRouteNames = getKeepAliveRouteNames(authRoutes);
         // 生成后台菜单
         (this.adminMenus as Layout.AdminMenuOption[]) = transformAuthRouteToMenus(
           routes,
@@ -86,6 +97,49 @@ export const useRouteStore = defineStore('route-store', {
           router.addRoute(rootRoute);
         }
       });
+    },
+
+    async reloadRoute(name: string) {
+      const { reloadPage } = useAppStore();
+
+      const isCached = this.keepAliveRouteNames.includes(name);
+      if (isCached) {
+        this.removeKeepAliveRoute(name);
+      }
+
+      await reloadPage();
+
+      if (isCached) {
+        this.addKeepAliveRoute(name);
+      }
+    },
+
+    /** 从缓存路由中去除某个路由 */
+    removeKeepAliveRoute(name: string) {
+      const index = this.keepAliveRouteNames.indexOf(name);
+      if (index > -1) {
+        this.keepAliveRouteNames.splice(index, 1);
+      }
+    },
+
+    /** 添加某个缓存路由 */
+    addKeepAliveRoute(name: string) {
+      const index = this.keepAliveRouteNames.indexOf(name);
+      if (index === -1) {
+        this.keepAliveRouteNames.push(name);
+      }
+    },
+
+    /** 刷新 keepAlive 状态 */
+    async refreshKeepAliveState(name: string) {
+      const isCached = this.keepAliveRouteNames.includes(name);
+      if (isCached) {
+        this.removeKeepAliveRoute(name);
+      }
+      await nextTick();
+      if (isCached) {
+        this.addKeepAliveRoute(name);
+      }
     },
 
     setRedirect(url: string) {

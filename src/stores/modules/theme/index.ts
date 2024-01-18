@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { getNaiveThemeOverrides } from './helper';
 
-interface ThereState {
+interface ThemeState {
   themeColor: string;
   otherColor: {
     info: string;
@@ -12,7 +12,7 @@ interface ThereState {
 }
 
 export const useThemeStore = defineStore('theme-store', {
-  state: (): ThereState => ({
+  state: (): ThemeState => ({
     themeColor: '#646cff',
     otherColor: {
       info: '#646cff',
