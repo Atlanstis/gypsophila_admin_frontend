@@ -18,15 +18,16 @@
 import { useRoute } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { psnineGameDetail } from '@/service';
-import { useTitle } from '@vueuse/core';
 import { useBoolean } from '@/hooks';
 import { TopCard, TrophyCard, TopicCard, RankCard } from './components';
+import { useAppStore } from '@/stores';
 
 defineOptions({
   name: 'PlayStationAnalysisView',
 });
 
 const route = useRoute();
+const appStore = useAppStore();
 
 const { id } = route.params;
 
@@ -38,7 +39,7 @@ async function getDetail(id: number) {
   startLoading();
   const { error, data } = await psnineGameDetail(id);
   if (!error) {
-    useTitle(`${data.name}-${route.meta.title}`);
+    appStore.updateWebsiteTitle(`${data.name}-${route.meta.title}`);
     detail.value = data;
     endLoading();
   }

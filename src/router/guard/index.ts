@@ -1,6 +1,7 @@
 import type { Router } from 'vue-router';
-import { useTitle } from '@vueuse/core';
 import { createPermissionGuard } from './permission';
+import { useAppStore } from '@/stores';
+
 /**
  * 路由守卫函数
  * @param router - 路由实例
@@ -14,8 +15,9 @@ export function createRouterGuard(router: Router) {
   });
 
   router.afterEach((to) => {
+    const appStore = useAppStore();
     // 设置页面标题
-    useTitle(to.meta.title);
+    appStore.updateWebsiteTitle(to.meta.title);
     // 关闭 loading bar
     window.$loadingBar?.finish();
   });

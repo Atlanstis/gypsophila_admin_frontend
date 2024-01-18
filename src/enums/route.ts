@@ -25,4 +25,8 @@ export enum RouteEnum {
   Management_Role = 'Management_Role',
   /** 菜单管理 */
   Management_Menu = 'Management_Menu',
+  /** 系统设置 */
+  Setting = 'Setting',
+  /** 通用设置 */
+  Setting_Common = 'Setting_Common',
 }

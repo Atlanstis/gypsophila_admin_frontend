@@ -13,9 +13,14 @@
 
 <script lang="ts" setup>
 import { dateZhCN, zhCN } from 'naive-ui';
-import { useThemeStore, subscribeStore } from '@/stores';
+import { useThemeStore, subscribeStore, useAppStore } from '@/stores';
+import { onMounted } from 'vue';
 
 const theme = useThemeStore();
+const appStore = useAppStore();
 
-subscribeStore();
+onMounted(() => {
+  subscribeStore();
+  appStore.getWebsiteInfo();
+});
 </script>
