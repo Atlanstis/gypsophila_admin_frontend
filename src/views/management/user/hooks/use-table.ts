@@ -1,8 +1,10 @@
-import { BusinessRoleEnum } from '@/enums';
+import PopoverBtn from '@/components/common/popover-btn.vue';
+import { BusinessRoleEnum, ButtonIconEnum } from '@/enums';
 import { useBoolean, usePagination } from '@/hooks';
 import { userList } from '@/service';
-import { NTag, type DataTableColumns, NPopconfirm, NButton, NSpace } from 'naive-ui';
+import { NTag, type DataTableColumns, NPopconfirm, NSpace, NButton } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
+import { useIconRender } from '@/composables';
 
 /** 有关列表的操作 */
 export function useTable(
@@ -10,6 +12,8 @@ export function useTable(
   handleEdit: (row: ApiManagement.User) => void,
   handleDelete: (id: string) => void,
 ) {
+  const { iconRender } = useIconRender();
+
   const columns: Ref<DataTableColumns<ApiManagement.User>> = ref([
     {
       key: 'username',
@@ -44,10 +48,17 @@ export function useTable(
       render: (row) => {
         const delConfirm = h(
           NPopconfirm,
-          { onPositiveClick: () => handleDelete(row.id) },
+          { onPositiveClick: () => handleDelete(row.id), trigger: 'hover' },
           {
             default: () => '确认删除',
-            trigger: () => h(NButton, { size: 'small', type: 'error' }, () => '删除'),
+            trigger: () =>
+              h(
+                NButton,
+                { type: 'error', size: 'small' },
+                {
+                  icon: iconRender({ fontSize: 18, icon: ButtonIconEnum.delete }),
+                },
+              ),
           },
         );
         /** 超级管理员账号，及无删除权限的无法进行删除操作 */
@@ -55,11 +66,11 @@ export function useTable(
           !row.roles.some((role) => role.id === BusinessRoleEnum.SuperAdmin) &&
           operation.value.canDelete;
 
-        const editBtn = h(
-          NButton,
-          { size: 'small', onClick: () => handleEdit(row) },
-          { default: () => '编辑' },
-        );
+        const editBtn = h(PopoverBtn, {
+          msg: '编辑',
+          icon: ButtonIconEnum.edit,
+          onClick: () => handleEdit(row),
+        });
         const canEdit = operation.value.canEdit;
         return h(
           NSpace,

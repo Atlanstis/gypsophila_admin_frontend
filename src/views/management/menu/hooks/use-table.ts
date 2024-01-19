@@ -3,6 +3,9 @@ import { NTag, type DataTableColumns, NPopconfirm, NButton, NSpace } from 'naive
 import { h, ref, type Ref } from 'vue';
 import { PARENT_FLAG } from '../constants';
 import { menuList } from '@/service';
+import { useIconRender } from '@/composables';
+import PopoverBtn from '@/components/common/popover-btn.vue';
+import { ButtonIconEnum } from '@/enums';
 
 export function useTable(
   operation: Ref<System.OperationPermission>,
@@ -12,6 +15,8 @@ export function useTable(
   handlePermission: (row: ApiManagement.Menu) => void,
 ) {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
+
+  const { iconRender } = useIconRender();
 
   const columns: Ref<DataTableColumns<ApiManagement.Menu>> = ref([
     {
@@ -49,37 +54,37 @@ export function useTable(
         const hasPermission = !row.children && operation.value.canAllocation;
         const delBtn = h(
           NPopconfirm,
-          { onPositiveClick: () => handleDelete(row.id) },
+          { onPositiveClick: () => handleDelete(row.id), trigger: 'hover' },
           {
             default: () => '确认删除',
-            trigger: () => h(NButton, { size: 'small', type: 'error' }, () => '删除'),
+            trigger: () =>
+              h(
+                NButton,
+                { type: 'error', size: 'small' },
+                {
+                  icon: iconRender({ fontSize: 18, icon: ButtonIconEnum.delete }),
+                },
+              ),
           },
         );
-        const addBtn = h(
-          NButton,
-          { type: 'primary', size: 'small', onClick: () => handleAdd(row.id) },
-          {
-            default: () => '新增',
+        const addBtn = h(PopoverBtn, {
+          msg: '新增',
+          icon: ButtonIconEnum.add,
+          onClick: () => handleAdd(row.id),
+        });
+        const permissionBtn = h(PopoverBtn, {
+          msg: '编辑权限',
+          icon: ButtonIconEnum.setting,
+          onClick: () => {
+            handlePermission(row);
           },
-        );
-        const permissionBtn = h(
-          NButton,
-          {
-            size: 'small',
-            onClick: () => {
-              handlePermission(row);
-            },
-          },
-          {
-            default: () => '编辑权限',
-          },
-        );
+        });
 
-        const editBtn = h(
-          NButton,
-          { size: 'small', onClick: () => handleEdit(row) },
-          { default: () => '编辑' },
-        );
+        const editBtn = h(PopoverBtn, {
+          msg: '编辑',
+          icon: ButtonIconEnum.edit,
+          onClick: () => handleEdit(row),
+        });
         const canEdit = operation.value.canEdit;
         return h(
           NSpace,

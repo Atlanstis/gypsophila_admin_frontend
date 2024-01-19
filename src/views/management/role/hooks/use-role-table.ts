@@ -1,8 +1,10 @@
-import { RoleIsDefaultEnum } from '@/enums';
+import { useIconRender } from '@/composables';
+import { ButtonIconEnum, RoleIsDefaultEnum } from '@/enums';
 import { useBoolean, usePagination } from '@/hooks';
 import { roleList } from '@/service';
 import { NTag, type DataTableColumns, NButton, NSpace, NPopconfirm } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
+import PopoverBtn from '@/components/common/popover-btn.vue';
 
 /** 有关角色列表的操作 */
 export function useRoleTable(
@@ -11,6 +13,8 @@ export function useRoleTable(
   handleDelete: (id: number) => void,
   handleAllocation: (row: ApiManagement.Role) => void,
 ) {
+  const { iconRender } = useIconRender();
+
   const columns: Ref<DataTableColumns<ApiManagement.Role>> = ref([
     {
       key: 'name',
@@ -42,26 +46,33 @@ export function useRoleTable(
       render: (row) => {
         const delConfirm = h(
           NPopconfirm,
-          { onPositiveClick: () => handleDelete(row.id) },
+          { onPositiveClick: () => handleDelete(row.id), trigger: 'hover' },
           {
             default: () => '确认删除',
-            trigger: () => h(NButton, { size: 'small', type: 'error' }, () => '删除'),
+            trigger: () =>
+              h(
+                NButton,
+                { type: 'error', size: 'small' },
+                {
+                  icon: iconRender({ fontSize: 18, icon: ButtonIconEnum.delete }),
+                },
+              ),
           },
         );
         const canDel = row.isDefault === RoleIsDefaultEnum.NO && operation.value.canDelete;
 
         const editBtn = h(
-          NButton,
-          { size: 'small', onClick: () => handleEdit(row) },
+          PopoverBtn,
+          { msg: '编辑', icon: ButtonIconEnum.edit, onClick: () => handleEdit(row) },
           { default: () => '编辑' },
         );
         const canEdit = operation.value.canEdit;
 
-        const allocationBtn = h(
-          NButton,
-          { size: 'small', onClick: () => handleAllocation(row) },
-          { default: () => '权限控制' },
-        );
+        const allocationBtn = h(PopoverBtn, {
+          msg: '权限控制',
+          icon: ButtonIconEnum.setting,
+          onClick: () => handleAllocation(row),
+        });
         const canAllocation = operation.value.canAllocation;
         return h(
           NSpace,

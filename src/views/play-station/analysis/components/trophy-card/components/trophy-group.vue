@@ -28,6 +28,7 @@ import PlaystationLoading from '@/components/custom/loading/playstation-loading.
 import { useRouterPush } from '@/composables';
 import TrophyNum from '../../trophy-num.vue';
 import { TrophyColorMap } from '@/constants';
+import { ButtonIconEnum } from '@/enums';
 
 defineOptions({
   name: 'TropyGroup',
@@ -117,7 +118,7 @@ const columns: Ref<DataTableColumns<Psnine.Troup>> = ref([
       h(NSpace, { justify: 'center' }, () => [
         h(PopoverBtn, {
           msg: '查看 Psnine 详情',
-          icon: 'solar:eye-broken',
+          icon: ButtonIconEnum.detail,
           onClick: () => {
             toOutsideUrl(url);
           },

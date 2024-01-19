@@ -57,8 +57,12 @@
       </div>
       <div>
         <NSpace>
-          <PopoverBtn :msg="'查看 Psnine 详情'" :icon="'solar:eye-broken'" @click="onWatchDetail" />
-          <PopoverBtn :msg="'返回查找'" :icon="'lets-icons:refund-back'" @click="onBackSearch" />
+          <PopoverBtn
+            :msg="'查看 Psnine 详情'"
+            :icon="ButtonIconEnum.detail"
+            @click="onWatchDetail"
+          />
+          <PopoverBtn :msg="'返回查找'" :icon="ButtonIconEnum.back" @click="onBackSearch" />
         </NSpace>
       </div>
     </div>
@@ -72,7 +76,7 @@ import PlaystationLoading from '@/components/custom/loading/playstation-loading.
 import { PlatformColorMap, PerfectDifficultyColorMap } from '@/constants';
 import TrophyNum from './trophy-num.vue';
 import { useRouterPush } from '@/composables';
-import { RouteEnum } from '@/enums';
+import { RouteEnum, ButtonIconEnum } from '@/enums';
 
 defineOptions({
   name: 'TopCard',

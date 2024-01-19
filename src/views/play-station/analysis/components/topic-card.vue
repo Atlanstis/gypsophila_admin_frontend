@@ -6,7 +6,11 @@
     }"
   >
     <template #header-extra>
-      <PopoverBtn :msg="'查看更多'" icon="ri:more-line" @click="watchTopicMore"></PopoverBtn>
+      <PopoverBtn
+        :msg="'查看更多'"
+        :icon="ButtonIconEnum.more"
+        @click="watchTopicMore"
+      ></PopoverBtn>
     </template>
     <NDataTable striped :loading="loading" :columns="columns" :data="tableData">
       <template #loading>
@@ -23,6 +27,7 @@ import { type Ref, ref, onMounted, h } from 'vue';
 import { psnineGameTopic } from '@/service';
 import PopoverBtn from '@/components/common/popover-btn.vue';
 import { useRouterPush } from '@/composables';
+import { ButtonIconEnum } from '@/enums';
 
 defineOptions({
   name: 'TopicCard',
@@ -69,7 +74,7 @@ const columns: Ref<DataTableColumns<Psnine.GameTopic>> = ref([
       h(NSpace, { justify: 'center' }, () => [
         h(PopoverBtn, {
           msg: '查看 Psnine 详情',
-          icon: 'solar:eye-broken',
+          icon: ButtonIconEnum.detail,
           onClick: () => {
             toOutsideUrl(url);
           },
