@@ -9,3 +9,8 @@ export function getWebsiteInfo() {
 export function updateWebsiteInfo(info: ApiSetting.Website) {
   return request.post('/setting/website/update', info);
 }
+
+/** 通用配置-获取权限下的配置 */
+export function settingCommonTabs() {
+  return request.get<string[]>('/setting/common/tabs');
+}
