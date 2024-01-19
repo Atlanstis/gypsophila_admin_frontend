@@ -4,10 +4,10 @@
       <template #header>
         <NSpace v-if="operation.canAdd" class="pb-12px" justify="space-between">
           <NSpace>
-            <nButton type="primary" @click="handleUserAdd">
+            <NButton type="primary" @click="handleUserAdd">
               <icon-ic-round-plus class="mr-4px text-20px" />
               新增
-            </nButton>
+            </NButton>
           </NSpace>
         </NSpace>
       </template>

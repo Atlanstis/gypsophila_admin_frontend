@@ -7,7 +7,7 @@ import { type Ref, ref, h } from 'vue';
 import TrophyNum from '../components/trophy-num.vue';
 import PopoverBtn from '@/components/common/popover-btn.vue';
 import PlaystationLoading from '@/components/custom/loading/playstation-loading.vue';
-import { RouteEnum } from '@/enums';
+import { ButtonIconEnum, RouteEnum } from '@/enums';
 
 export function useSearchTable() {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false);
@@ -138,14 +138,14 @@ export function useSearchTable() {
         h(NSpace, { justify: 'center' }, () => [
           h(PopoverBtn, {
             msg: '查看 Psnine 详情',
-            icon: 'solar:eye-broken',
+            icon: ButtonIconEnum.detail,
             onClick: () => {
               toOutsideUrl(url);
             },
           }),
           h(PopoverBtn, {
             msg: '分析',
-            icon: 'tabler:analyze-filled',
+            icon: ButtonIconEnum.analysis,
             onClick: () => {
               routerPush({ name: RouteEnum.PlayStation_Analysis, params: { id } });
             },

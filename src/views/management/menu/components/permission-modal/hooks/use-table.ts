@@ -4,6 +4,9 @@ import { h, ref, type Ref } from 'vue';
 import type { Props } from '../index.vue';
 import { useBoolean } from '@/hooks';
 import { PermissionTypeOpts } from '@/views/management/menu/constants';
+import { useIconRender } from '@/composables';
+import PopoverBtn from '@/components/common/popover-btn.vue';
+import { ButtonIconEnum } from '@/enums';
 /**
  * 列表的相关操作
  * @param props 组件 props
@@ -16,6 +19,8 @@ export function useTable(
   handleDelete: (id: number) => void,
 ) {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
+
+  const { iconRender } = useIconRender();
 
   const columns: Ref<DataTableColumns<ApiManagement.Permission>> = ref([
     {
@@ -47,17 +52,24 @@ export function useTable(
           { justify: 'center' },
           {
             default: () => [
-              h(
-                NButton,
-                { size: 'small', onClick: () => handleEdit(row) },
-                { default: () => '编辑' },
-              ),
+              h(PopoverBtn, {
+                msg: '编辑',
+                icon: ButtonIconEnum.edit,
+                onClick: () => handleEdit(row),
+              }),
               h(
                 NPopconfirm,
-                { onPositiveClick: () => handleDelete(row.id) },
+                { onPositiveClick: () => handleDelete(row.id), trigger: 'hover' },
                 {
                   default: () => '确认删除',
-                  trigger: () => h(NButton, { size: 'small', type: 'error' }, () => '删除'),
+                  trigger: () =>
+                    h(
+                      NButton,
+                      { type: 'error', size: 'small' },
+                      {
+                        icon: iconRender({ fontSize: 18, icon: ButtonIconEnum.delete }),
+                      },
+                    ),
                 },
               ),
             ],

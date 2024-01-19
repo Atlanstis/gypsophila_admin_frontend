@@ -6,7 +6,7 @@
     }"
   >
     <template #header-extra>
-      <PopoverBtn :msg="'查看更多'" icon="ri:more-line" @click="watchRankMore"></PopoverBtn>
+      <PopoverBtn :msg="'查看更多'" :icon="ButtonIconEnum.more" @click="watchRankMore"></PopoverBtn>
     </template>
     <div v-if="loading" class="flex flex-center h-240px">
       <PlaystationLoading />
@@ -17,10 +17,10 @@
 
 <script lang="ts" setup>
 import { useEcharts, type ECOption, useRouterPush } from '@/composables';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { psnineGameRank } from '@/service';
 import { useBoolean } from '@/hooks';
-import { nextTick } from 'vue';
+import { ButtonIconEnum } from '@/enums';
 
 defineOptions({
   name: 'RankCard',
