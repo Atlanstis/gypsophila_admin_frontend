@@ -74,7 +74,6 @@ import { computed } from 'vue';
 import type { NSkeleton } from 'naive-ui';
 import PlaystationLoading from '@/components/custom/loading/playstation-loading.vue';
 import { PlatformColorMap, PerfectDifficultyColorMap } from '@/constants';
-import TrophyNum from './trophy-num.vue';
 import { useRouterPush } from '@/composables';
 import { RouteEnum, ButtonIconEnum } from '@/enums';
 

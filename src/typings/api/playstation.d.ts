@@ -127,3 +127,21 @@ declare namespace Psnine {
     usedTime: string;
   }
 }
+
+declare namespace ApiPsn {
+  interface Profile {
+    id: number;
+    /** Psn Id */
+    psnId: string;
+    /** 头像地址 */
+    avatar: string;
+    /** 白金奖杯数量 */
+    platinum: number;
+    /** 金奖杯数量 */
+    gold: number;
+    /** 银奖杯数量 */
+    silver: number;
+    /** 铜奖杯数量 */
+    bronze: number;
+  }
+}

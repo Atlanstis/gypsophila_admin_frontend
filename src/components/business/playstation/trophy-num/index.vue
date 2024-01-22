@@ -13,10 +13,10 @@
 
 <script lang="ts" setup>
 import { computed, type ComputedRef } from 'vue';
-import TrophyBronzeImg from '../assets/trophy-bronze.png';
-import TrophyGoldImg from '../assets/trophy-gold.png';
-import TrophyPlatinumImg from '../assets/trophy-platinum.png';
-import TrophySilverImg from '../assets/trophy-silver.png';
+import TrophyBronzeImg from './assets/trophy-bronze.png';
+import TrophyGoldImg from './assets/trophy-gold.png';
+import TrophyPlatinumImg from './assets/trophy-platinum.png';
+import TrophySilverImg from './assets/trophy-silver.png';
 import { TrophyColorMap } from '@/constants';
 
 defineOptions({

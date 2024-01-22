@@ -20,6 +20,7 @@ export const playStationRoutes: AuthRoute.Route[] = [
         meta: {
           title: 'PS 游戏',
           iconLocal: 'psgame',
+          keepAlive: true,
         },
       },
       {
