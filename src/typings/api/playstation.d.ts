@@ -126,6 +126,37 @@ declare namespace Psnine {
     /** 使用时间(字符串) */
     usedTime: string;
   }
+
+  interface SyncGame {
+    /** 游戏名称 */
+    name: string;
+    /** 游戏原名 */
+    originName: string;
+    /** 缩略图 */
+    thumbnail: string;
+    /** 上线平台 */
+    platforms: PlayStation.Platform[];
+    /** psnine 游戏 id */
+    id: number;
+    /** 最后奖杯获取时间 */
+    lastTrophyTime: string;
+    /** 已用时间 */
+    usedTime: string;
+    /** psnine url */
+    url: string;
+    /** 完美难度 */
+    perfectDiffucuity: PerfectDifficulty;
+    /** 游戏进度 */
+    perfectRate: number;
+    /** 完成进度 */
+    progress: number;
+    /** 获得奖杯数 */
+    trophyGot: TrophyNum;
+    /** 版本 */
+    version: string[];
+    /** 是否已同步 */
+    isSync: boolean;
+  }
 }
 
 declare namespace ApiPsn {

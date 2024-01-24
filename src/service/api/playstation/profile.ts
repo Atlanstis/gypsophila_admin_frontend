@@ -9,3 +9,10 @@ export function psnProfile() {
 export function psnProfileBind(psnId: Pick<ApiPsn.Profile, 'psnId'>['psnId']) {
   return request.post('/psn/profile/bind', { psnId });
 }
+
+/** 获取可同步的游戏列表 */
+export function psnSynchronizeableGame(page: number) {
+  return request.post<ApiCommon.TableData<Psnine.SyncGame[]>>('/psn/synchronizeable/game', {
+    page,
+  });
+}

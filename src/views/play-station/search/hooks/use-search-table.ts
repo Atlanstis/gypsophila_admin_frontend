@@ -1,12 +1,12 @@
 import { useRouterPush } from '@/composables';
-import { PerfectDifficultyColorMap, PlatformColorMap, TrophyColorMap } from '@/constants';
+import { PerfectDifficultyColorMap, PlatformColorMap } from '@/constants';
 import { useBoolean, usePaginationWithDefinePageSize } from '@/hooks';
 import { psnineGameSearch } from '@/service';
 import { NImage, type DataTableColumns, NTag, NSpace, NProgress } from 'naive-ui';
 import { type Ref, ref, h } from 'vue';
-import TrophyNum from '../components/trophy-num.vue';
 import PopoverBtn from '@/components/common/popover-btn.vue';
 import PlaystationLoading from '@/components/custom/loading/playstation-loading.vue';
+import { TrophyNumText } from '@/components';
 import { ButtonIconEnum, RouteEnum } from '@/enums';
 
 export function useSearchTable() {
@@ -92,14 +92,7 @@ export function useSearchTable() {
       title: '奖杯数量',
       align: 'center',
       width: '200',
-      render: ({ trophyNum: { platinum, gold, silver, bronze } }) => {
-        return [
-          h(TrophyNum, { color: TrophyColorMap.platinum, num: platinum }),
-          h(TrophyNum, { color: TrophyColorMap.gold, num: gold }),
-          h(TrophyNum, { color: TrophyColorMap.silver, num: silver }),
-          h(TrophyNum, { color: TrophyColorMap.bronze, num: bronze }),
-        ];
-      },
+      render: ({ trophyNum }) => h(TrophyNumText, { trophyNum }),
     },
     {
       key: 'perfectDiffucuity',

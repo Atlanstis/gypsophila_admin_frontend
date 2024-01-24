@@ -16,4 +16,6 @@ export enum ButtonIconEnum {
   setting = 'line-md:cog',
   /** 新增 */
   add = 'mingcute:add-fill',
+  /** 刷新/同步 */
+  refresh = 'solar:refresh-broken',
 }

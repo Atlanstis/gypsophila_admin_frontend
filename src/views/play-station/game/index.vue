@@ -1,14 +1,21 @@
 <template>
   <ScrollContainer>
-    <NCard>
-      <div v-if="profileLoading" class="h-100px flex-center">
-        <PlaystationLoading />
-      </div>
-      <div class="h-100px" v-else>
-        <ProfileBindForm v-if="!profile" @binded="getPsnProfile" />
-        <ProfileInfo v-else :profile="profile" />
-      </div>
-    </NCard>
+    <NSpace vertical>
+      <NCard>
+        <div v-if="profileLoading" class="h-100px flex-center">
+          <PlaystationLoading />
+        </div>
+        <div v-else>
+          <Transition :name="'zoom-fade'" mode="out-in" :appear="false">
+            <ProfileBindForm v-if="!profile" @binded="getPsnProfile" />
+            <ProfileInfo v-else :profile="profile" />
+          </Transition>
+        </div>
+      </NCard>
+      <Transition :name="'zoom-fade'" mode="out-in" :appear="false">
+        <GameList v-if="profile" />
+      </Transition>
+    </NSpace>
   </ScrollContainer>
 </template>
 
@@ -16,7 +23,7 @@
 import { psnProfile } from '@/service';
 import { onMounted, ref } from 'vue';
 import { useBoolean } from '@/hooks';
-import { ProfileBindForm, ProfileInfo } from './components';
+import { ProfileBindForm, ProfileInfo, GameList } from './components';
 
 defineOptions({
   name: 'PlayStationGameView',
