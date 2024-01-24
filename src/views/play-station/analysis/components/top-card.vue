@@ -72,7 +72,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import type { NSkeleton } from 'naive-ui';
-import PlaystationLoading from '@/components/custom/loading/playstation-loading.vue';
+import { PlaystationLoading } from '@/components';
 import { PlatformColorMap, PerfectDifficultyColorMap } from '@/constants';
 import { useRouterPush } from '@/composables';
 import { RouteEnum, ButtonIconEnum } from '@/enums';

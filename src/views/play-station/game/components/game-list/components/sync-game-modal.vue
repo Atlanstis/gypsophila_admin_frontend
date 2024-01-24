@@ -41,12 +41,11 @@ import {
 import { psnSynchronizeableGame } from '@/service';
 import { NSpace, type DataTableColumns, NImage, NTag, NProgress } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
-import PlaystationLoading from '@/components/custom/loading/playstation-loading.vue';
 import PopoverBtn from '@/components/common/popover-btn.vue';
 import { PlatformColorMap } from '@/constants';
 import { ButtonIconEnum } from '@/enums';
 import { useRouterPush } from '@/composables';
-import { TrophyNumText } from '@/components';
+import { TrophyNumText, PlaystationLoading } from '@/components';
 
 const props = withDefaults(defineProps<ModalProps>(), {
   visible: false,

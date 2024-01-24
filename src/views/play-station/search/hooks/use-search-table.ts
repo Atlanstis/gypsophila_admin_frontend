@@ -5,8 +5,7 @@ import { psnineGameSearch } from '@/service';
 import { NImage, type DataTableColumns, NTag, NSpace, NProgress } from 'naive-ui';
 import { type Ref, ref, h } from 'vue';
 import PopoverBtn from '@/components/common/popover-btn.vue';
-import PlaystationLoading from '@/components/custom/loading/playstation-loading.vue';
-import { TrophyNumText } from '@/components';
+import { TrophyNumText, PlaystationLoading } from '@/components';
 import { ButtonIconEnum, RouteEnum } from '@/enums';
 
 export function useSearchTable() {

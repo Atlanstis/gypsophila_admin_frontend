@@ -24,7 +24,7 @@
 import { h, ref, type Ref } from 'vue';
 import { NImage, type DataTableColumns, NTag, NProgress, NSpace } from 'naive-ui';
 import PopoverBtn from '@/components/common/popover-btn.vue';
-import PlaystationLoading from '@/components/custom/loading/playstation-loading.vue';
+import { PlaystationLoading } from '@/components';
 import { useRouterPush } from '@/composables';
 import { TrophyColorMap } from '@/constants';
 import { ButtonIconEnum } from '@/enums';
