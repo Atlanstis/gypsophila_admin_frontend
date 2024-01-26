@@ -12,7 +12,7 @@
         @click="openSyncGameModal"
       ></PopoverBtn>
     </template>
-    <SyncGameModal v-model:visible="showSyncGameModal" />
+    <SyncGameModal v-model:visible="showSyncGameModal" @on-sync="getGameList" />
   </NCard>
 </template>
 
@@ -26,6 +26,8 @@ defineOptions({
 });
 
 const { bool: showSyncGameModal, setTrue: openSyncGameModal } = useBoolean();
+
+function getGameList() {}
 </script>
 
 <style lang="scss" scoped></style>

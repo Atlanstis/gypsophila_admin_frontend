@@ -98,10 +98,10 @@ const columns: Ref<DataTableColumns<Psnine.Troup>> = ref([
     title: '完成率',
     align: 'center',
     width: 100,
-    sorter: (row1, row2) => row1.complateRate - row2.complateRate,
-    render: ({ complateRate }) => {
+    sorter: (row1, row2) => row1.completeRate - row2.completeRate,
+    render: ({ completeRate }) => {
       return h(NProgress, {
-        percentage: complateRate,
+        percentage: completeRate,
         indicatorPlacement: 'inside',
       });
     },

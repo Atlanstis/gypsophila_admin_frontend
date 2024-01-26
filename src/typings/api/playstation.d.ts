@@ -29,7 +29,7 @@ declare namespace Psnine {
     /** 提示数量 */
     tipNums: number;
     /** 完成率 */
-    complateRate: number;
+    completeRate: number;
     /** 详情地址 */
     url: string;
     /** 奖杯 Id */

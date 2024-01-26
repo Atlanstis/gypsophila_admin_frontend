@@ -38,7 +38,7 @@ import {
   useBoolean,
   usePaginationWithDefinePageSize,
 } from '@/hooks';
-import { psnSynchronizeableGame } from '@/service';
+import { psnGameSync, psnSynchronizeableGame } from '@/service';
 import { NSpace, type DataTableColumns, NImage, NTag, NProgress } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
 import PopoverBtn from '@/components/common/popover-btn.vue';
@@ -46,13 +46,23 @@ import { PlatformColorMap } from '@/constants';
 import { ButtonIconEnum } from '@/enums';
 import { useRouterPush } from '@/composables';
 import { TrophyNumText, PlaystationLoading } from '@/components';
+import { DEFAULT_MESSAGE_DURATION } from '@/config';
+
+type SyncGame = Psnine.SyncGame & {
+  /** 同步中 */
+  __IN_SYNC__: boolean;
+};
+
+interface Emits {
+  (e: 'on-sync'): void;
+}
 
 const props = withDefaults(defineProps<ModalProps>(), {
   visible: false,
   roleId: null,
 });
 
-const emits = defineEmits<ModalEmits>();
+const emits = defineEmits<ModalEmits & Emits>();
 
 defineOptions({
   name: 'AllocationMenuModal',
@@ -60,9 +70,9 @@ defineOptions({
 
 const { toOutsideUrl } = useRouterPush(false);
 
-const tableData = ref<Psnine.SyncGame[]>([]);
+const tableData = ref<SyncGame[]>([]);
 
-const columns: Ref<DataTableColumns<Psnine.SyncGame>> = ref([
+const columns: Ref<DataTableColumns<SyncGame>> = ref([
   {
     key: 'thumbnail',
     title: '缩略图',
@@ -157,25 +167,32 @@ const columns: Ref<DataTableColumns<Psnine.SyncGame>> = ref([
     align: 'center',
     fixed: 'right',
     width: 120,
-    render: ({ id, url }) =>
+    render: (row) =>
       h(NSpace, { justify: 'center' }, () => [
         h(PopoverBtn, {
           msg: '查看 Psnine 详情',
           icon: ButtonIconEnum.detail,
           onClick: () => {
-            toOutsideUrl(url);
+            toOutsideUrl(row.url);
           },
         }),
-        h(PopoverBtn, {
-          msg: '同步',
-          icon: ButtonIconEnum.refresh,
-          onClick: () => {
-            console.log(id);
-          },
-        }),
+        !row.isSync
+          ? h(PopoverBtn, {
+              msg: '同步',
+              loadingMsg: '同步中',
+              icon: ButtonIconEnum.refresh,
+              loading: row.__IN_SYNC__,
+              onClick: () => {
+                onGameSync(row);
+              },
+            })
+          : null,
       ]),
   },
 ]);
+
+/** 是否进行过同步游戏操作，是则刷新列表数据 */
+const { bool: hasSync, setTrue: setHasSyncTrue, setFalse: setHasSyncFalse } = useBoolean(false);
 
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false);
 
@@ -184,9 +201,31 @@ const { pagination, getPageParams, setItemCount, resetPage } = usePaginationWith
   30,
 );
 
+/** 同步游戏 */
+async function onGameSync(row: SyncGame) {
+  row.__IN_SYNC__ = true;
+  const { error } = await psnGameSync(row.id);
+  if (!error) {
+    setHasSyncTrue();
+    window.$message?.success('同步成功', { duration: DEFAULT_MESSAGE_DURATION });
+  }
+  getSynchronizeableGame();
+  row.__IN_SYNC__ = false;
+}
+
+/** 打开模态框处理 */
 function handleModalOpen() {
+  setHasSyncFalse();
   clearData();
   getSynchronizeableGame();
+}
+
+/** 关闭模态框处理 */
+function handleModalClose() {
+  // 同步过游戏后，刷新游戏列表
+  if (hasSync.value) {
+    emits('on-sync');
+  }
 }
 
 /** 获取可以同步的游戏列表 */
@@ -196,7 +235,7 @@ async function getSynchronizeableGame() {
   const { data, error } = await psnSynchronizeableGame(page);
   if (!error) {
     const { list, total } = data;
-    tableData.value = list;
+    tableData.value = list.map((item) => ({ ...item, __IN_SYNC__: false }));
     setItemCount(total);
   } else {
     closeModal();
@@ -211,7 +250,7 @@ function clearData() {
   setItemCount(0);
 }
 
-const { modalVisible, closeModal } = useModal(props, emits, handleModalOpen);
+const { modalVisible, closeModal } = useModal(props, emits, handleModalOpen, handleModalClose);
 </script>
 
 <style lang="scss" scoped></style>

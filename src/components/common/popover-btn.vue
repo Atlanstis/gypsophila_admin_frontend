@@ -1,13 +1,13 @@
 <template>
   <n-popover trigger="hover">
     <template #trigger>
-      <n-button size="small" :type="type" ghost @click="onBtnClick">
+      <n-button size="small" :type="type" :disabled="loading" ghost @click="onBtnClick">
         <template #icon>
-          <Icon></Icon>
+          <Icon :class="loading ? 'animate-spin' : ''"></Icon>
         </template>
       </n-button>
     </template>
-    <span>{{ props.msg }}</span>
+    <span>{{ loading ? loadingMsg : msg }}</span>
   </n-popover>
 </template>
 
@@ -24,9 +24,14 @@ defineOptions({
 type Props = {
   /** 悬浮显示信息 */
   msg: string;
+  /** 执行中显示信息 */
+  loadingMsg?: string;
   /** 显示 icon */
   icon?: ButtonIconEnum;
+  /** 按钮类型 */
   type?: Type;
+  /** 执行中 */
+  loading?: boolean;
 };
 
 const { iconRender } = useIconRender();
@@ -34,6 +39,7 @@ const { iconRender } = useIconRender();
 const props = withDefaults(defineProps<Props>(), {
   msg: '',
   type: 'default',
+  loading: false,
 });
 
 const emit = defineEmits<{ (e: 'click'): void }>();

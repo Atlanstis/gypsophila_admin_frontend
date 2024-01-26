@@ -16,3 +16,10 @@ export function psnSynchronizeableGame(page: number) {
     page,
   });
 }
+
+/** 同步游戏 */
+export function psnGameSync(gameId: number) {
+  return request.post('/psn/game/sync', {
+    gameId,
+  });
+}

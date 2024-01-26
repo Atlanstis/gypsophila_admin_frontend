@@ -1,2 +1,2 @@
 export * from './psnine';
-export * from './profile';
+export * from './psn';
