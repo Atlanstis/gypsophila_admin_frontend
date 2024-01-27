@@ -1,7 +1,14 @@
 <template>
   <div class="h-100px">
     <div class="flex h-full">
-      <img :src="profile.avatar" class="w-100px h-100px b-rd-50% b-3px b-primary" />
+      <div class="w-100px h-100px b-rd-50% b-2px b-primary overflow-hidden p-2px">
+        <NImage :src="profile.avatar" :alt="profile.psnId" class="h-full w-full b-rd-50%">
+          <template #placeholder>
+            <PlaystationLoading />
+          </template>
+        </NImage>
+        <img :src="profile.avatar" class="" />
+      </div>
       <NSpace vertical justify="space-around" class="h-100px flex-1 p-x-10px">
         <div class="text-24px font-bold">{{ profile.psnId }}</div>
         <TrophyNum :trophy-num="trophyNum"></TrophyNum>

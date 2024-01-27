@@ -18,4 +18,8 @@ export enum ButtonIconEnum {
   add = 'mingcute:add-fill',
   /** 刷新/同步 */
   refresh = 'solar:refresh-broken',
+  /** 未收藏 */
+  favorite = 'carbon:favorite',
+  /** 已收藏 */
+  favoriteFilled = 'carbon:favorite-filled',
 }

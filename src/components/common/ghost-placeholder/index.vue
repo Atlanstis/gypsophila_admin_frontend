@@ -27,7 +27,7 @@
       <div class="box__description">
         <div class="box__description-container">
           <div class="box__description-title">Whoops!</div>
-          <div class="box__description-text">暂无数据</div>
+          <div class="box__description-text">{{ text }}</div>
         </div>
       </div>
     </div>
@@ -42,6 +42,15 @@ import { computed } from 'vue';
 defineOptions({
   name: 'GhostPlaceholder',
 });
+
+interface Props {
+  text: string;
+}
+
+withDefaults(defineProps<Props>(), {
+  text: '暂无数据',
+});
+
 const { width: pageX, height: pageY } = useWindowSize();
 const { x, y } = useMouse();
 

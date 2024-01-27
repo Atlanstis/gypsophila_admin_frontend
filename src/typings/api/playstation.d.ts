@@ -175,4 +175,24 @@ declare namespace ApiPsn {
     /** 铜奖杯数量 */
     bronze: number;
   }
+
+  interface Game {
+    id: string;
+    isFavor: boolean;
+    syncTime: string;
+    platinumGot: number;
+    goldGot: number;
+    silverGot: number;
+    bronzeGot: number;
+    game: {
+      platinum: number;
+      bronze: number;
+      gold: number;
+      silver: number;
+      name: string;
+      originName: string;
+      platforms: PlayStation.Platform[];
+      thumbnail: string;
+    };
+  }
 }

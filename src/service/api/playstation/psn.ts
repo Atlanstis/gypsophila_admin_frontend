@@ -12,7 +12,7 @@ export function psnProfileBind(psnId: Pick<ApiPsn.Profile, 'psnId'>['psnId']) {
 
 /** 获取可同步的游戏列表 */
 export function psnSynchronizeableGame(page: number) {
-  return request.post<ApiCommon.TableData<Psnine.SyncGame[]>>('/psn/synchronizeable/game', {
+  return request.post<ApiCommon.TableData<Psnine.SyncGame[]>>('/psn/game/synchronizeable', {
     page,
   });
 }
@@ -22,4 +22,9 @@ export function psnGameSync(gameId: number) {
   return request.post('/psn/game/sync', {
     gameId,
   });
+}
+
+/** 获取用户已同步的游戏列表 */
+export function psnGameSynchronized() {
+  return request.post<ApiPsn.Game[]>('/psn/game/synchronized', {});
 }

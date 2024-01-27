@@ -1,7 +1,14 @@
 <template>
   <n-popover trigger="hover">
     <template #trigger>
-      <n-button size="small" :type="type" :disabled="loading" ghost @click="onBtnClick">
+      <n-button
+        size="small"
+        :type="type"
+        :disabled="loading"
+        ghost
+        :bordered="bordered"
+        @click="onBtnClick"
+      >
         <template #icon>
           <Icon :class="loading ? 'animate-spin' : ''"></Icon>
         </template>
@@ -32,6 +39,7 @@ type Props = {
   type?: Type;
   /** 执行中 */
   loading?: boolean;
+  bordered?: boolean;
 };
 
 const { iconRender } = useIconRender();
@@ -40,6 +48,7 @@ const props = withDefaults(defineProps<Props>(), {
   msg: '',
   type: 'default',
   loading: false,
+  bordered: false,
 });
 
 const emit = defineEmits<{ (e: 'click'): void }>();

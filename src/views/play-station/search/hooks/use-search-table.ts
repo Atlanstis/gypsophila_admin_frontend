@@ -1,11 +1,11 @@
 import { useRouterPush } from '@/composables';
-import { PerfectDifficultyColorMap, PlatformColorMap } from '@/constants';
+import { PerfectDifficultyColorMap } from '@/constants';
 import { useBoolean, usePaginationWithDefinePageSize } from '@/hooks';
 import { psnineGameSearch } from '@/service';
 import { NImage, type DataTableColumns, NTag, NSpace, NProgress } from 'naive-ui';
 import { type Ref, ref, h } from 'vue';
 import PopoverBtn from '@/components/common/popover-btn.vue';
-import { TrophyNumText, PlaystationLoading } from '@/components';
+import { TrophyNumText, PlaystationLoading, GamePlatform } from '@/components';
 import { ButtonIconEnum, RouteEnum } from '@/enums';
 
 export function useSearchTable() {
@@ -70,17 +70,9 @@ export function useSearchTable() {
           {
             default: () =>
               platforms.map((platform) =>
-                h(
-                  NTag,
-                  {
-                    color: {
-                      color: PlatformColorMap[platform],
-                      textColor: '#fff',
-                    },
-                    bordered: false,
-                  },
-                  { default: () => platform },
-                ),
+                h(GamePlatform, {
+                  platform,
+                }),
               ),
           },
         );
