@@ -19,7 +19,7 @@ export enum ButtonIconEnum {
   /** 刷新/同步 */
   refresh = 'solar:refresh-broken',
   /** 未收藏 */
-  favorite = 'heart',
+  favorite = 'line-md:heart',
   /** 已收藏 */
-  favoriteFilled = 'heart-filled',
+  favoriteFilled = 'line-md:heart-filled',
 }
