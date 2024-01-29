@@ -14,6 +14,15 @@ export const playStationRoutes: AuthRoute.Route[] = [
     },
     children: [
       {
+        name: RouteEnum.PlayStation_Profile,
+        path: '/play-station/profile',
+        component: getRouteView(RouteEnum.PlayStation_Profile),
+        meta: {
+          title: 'PSN 概览',
+          icon: 'line-md:account',
+        },
+      },
+      {
         name: RouteEnum.PlayStation_Game,
         path: '/play-station/game',
         component: getRouteView(RouteEnum.PlayStation_Game),
@@ -21,15 +30,6 @@ export const playStationRoutes: AuthRoute.Route[] = [
           title: 'PS 游戏',
           iconLocal: 'psgame',
           keepAlive: true,
-        },
-      },
-      {
-        name: RouteEnum.PlayStation_Trophy,
-        path: '/play-station/trophy',
-        component: getRouteView(RouteEnum.PlayStation_Trophy),
-        meta: {
-          title: '奖杯信息',
-          iconLocal: 'trophy',
         },
       },
       {

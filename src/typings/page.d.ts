@@ -19,8 +19,8 @@ declare namespace PageRoute {
 
   /** PlayStation 有对应页面路由名 */
   type PlayStationName =
+    | 'PlayStation_Profile'
     | 'PlayStation_Game'
-    | 'PlayStation_Trophy'
     | 'PlayStation_Search'
     | 'PlayStation_Analysis';
 
