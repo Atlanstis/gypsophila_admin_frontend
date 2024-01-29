@@ -6,14 +6,14 @@
           <PlaystationLoading />
         </div>
         <div v-else>
-          <Transition :name="'zoom-fade'" mode="out-in" :appear="false">
-            <ProfileBindForm v-if="!profile" @binded="getPsnProfile" />
+          <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
+            <ProfileBindForm v-if="!profile" @binded="getPsnProfile(true)" />
             <ProfileInfo v-else :profile="profile" />
           </Transition>
         </div>
       </NCard>
-      <Transition :name="'zoom-fade'" mode="out-in" :appear="false">
-        <GameList v-if="profile" />
+      <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
+        <GameList v-if="profile" @on-refresh="getPsnProfile(false)" />
       </Transition>
     </NSpace>
     <NBackTop :right="40" :bottom="50" class="z-999" />
@@ -38,17 +38,25 @@ const {
 
 const profile = ref<ApiPsn.Profile | null>(null);
 
-async function getPsnProfile() {
-  startProfileLoading();
+/**
+ * 获取 psn 用户信息
+ * @param needLoading 是否显示加载状态
+ */
+async function getPsnProfile(needLoading: boolean) {
+  if (needLoading) {
+    startProfileLoading();
+  }
   const { error, data } = await psnProfile();
   if (!error && data) {
     profile.value = data;
   }
-  endPerfileLoading();
+  if (needLoading) {
+    endPerfileLoading();
+  }
 }
 
 onMounted(() => {
-  getPsnProfile();
+  getPsnProfile(true);
 });
 </script>
 

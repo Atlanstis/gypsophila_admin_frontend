@@ -21,7 +21,7 @@
           <GhostPlaceholder :text="'暂无游戏'" />
         </div>
         <NGrid v-else cols="1 540:2 800:3 1200:4" x-gap="16" y-gap="16" item-responsive>
-          <NGridItem v-for="(info, i) of gameList" :key="info.id" class="h-216px rd-10px">
+          <NGridItem v-for="(info, i) of gameList" :key="info.id">
             <GameCard :info="info" :i="i" @refresh="onGameRefresh" />
           </NGridItem>
         </NGrid>
@@ -35,7 +35,7 @@
         </div>
       </template>
     </div>
-    <SyncGameModal v-model:visible="showSyncGameModal" @on-sync="getGameList" />
+    <SyncGameModal v-model:visible="showSyncGameModal" @on-sync="onRefreshInfo" />
   </NCard>
 </template>
 
@@ -51,6 +51,8 @@ import { GameCard } from '..';
 defineOptions({
   name: 'GameList',
 });
+
+const emit = defineEmits<{ (e: 'on-refresh'): void }>();
 
 const { bool: showSyncGameModal, setTrue: openSyncGameModal } = useBoolean(false);
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
@@ -74,6 +76,12 @@ async function getGameList() {
 
 function onGameRefresh(i: number) {
   gameList.value[i].isFavor = !gameList.value[i].isFavor;
+}
+
+/** 刷新游戏列表及个人信息 */
+function onRefreshInfo() {
+  getGameList();
+  emit('on-refresh');
 }
 
 onMounted(() => {

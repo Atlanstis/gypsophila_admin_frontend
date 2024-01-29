@@ -1,5 +1,8 @@
 <template>
-  <div class="h-full flex-col" :style="{ background: `${colorArr[i % colorArr.length][0]}` }">
+  <div
+    class="h-full flex-col rd-10px h-216px"
+    :style="{ background: `${colorArr[i % colorArr.length][0]}` }"
+  >
     <div class="flex-col p-y-16px p-x-20px b-b-1px b-b-#fff">
       <div class="flex">
         <NImage class="w-60px h-60px rd-10px" :src="info.game.thumbnail" :lazy="true">
