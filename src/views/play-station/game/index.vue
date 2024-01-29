@@ -16,6 +16,7 @@
         <GameList v-if="profile" />
       </Transition>
     </NSpace>
+    <NBackTop :right="40" :bottom="50" class="z-999" />
   </ScrollContainer>
 </template>
 

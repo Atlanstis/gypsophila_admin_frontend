@@ -4,7 +4,7 @@
       <n-button
         size="small"
         :type="type"
-        :disabled="loading"
+        :disabled="loading || disabled"
         ghost
         :bordered="bordered"
         @click="onBtnClick"
@@ -37,6 +37,7 @@ type Props = {
   icon?: ButtonIconEnum;
   /** 按钮类型 */
   type?: Type;
+  disabled?: boolean;
   /** 执行中 */
   loading?: boolean;
   bordered?: boolean;
@@ -47,8 +48,9 @@ const { iconRender } = useIconRender();
 const props = withDefaults(defineProps<Props>(), {
   msg: '',
   type: 'default',
+  disabled: false,
   loading: false,
-  bordered: false,
+  bordered: true,
 });
 
 const emit = defineEmits<{ (e: 'click'): void }>();

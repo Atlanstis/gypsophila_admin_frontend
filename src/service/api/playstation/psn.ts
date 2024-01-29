@@ -25,6 +25,11 @@ export function psnGameSync(gameId: number) {
 }
 
 /** 获取用户已同步的游戏列表 */
-export function psnGameSynchronized() {
-  return request.post<ApiPsn.Game[]>('/psn/game/synchronized', {});
+export function psnGameSynchronized(page: number) {
+  return request.post<ApiCommon.TableData<ApiPsn.Game[]>>('/psn/game/synchronized', { page });
+}
+
+/** 收藏/取消收藏 游戏 */
+export function psnGameFavor(ppgId: string) {
+  return request.post('/psn/game/favor', { ppgId });
 }

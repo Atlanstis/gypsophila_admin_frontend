@@ -9,7 +9,7 @@
         <TrophyCard v-if="!loading" :trophy-group="detail?.trophyGroup" />
       </Transition>
       <TopicCard v-if="!loading" :id="Number(id)" />
-      <n-back-top :right="40" :bottom="50" class="z-999" />
+      <NBackTop :right="40" :bottom="50" class="z-999" />
     </NSpace>
   </ScrollContainer>
 </template>
