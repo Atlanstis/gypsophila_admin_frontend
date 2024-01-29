@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-full flex-col rd-10px h-216px"
+    class="flex-col rd-10px h-216px"
     :style="{ background: `${colorArr[i % colorArr.length][0]}` }"
   >
     <div class="flex-col p-y-16px p-x-20px b-b-1px b-b-#fff">
