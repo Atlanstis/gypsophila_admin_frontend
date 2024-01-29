@@ -27,7 +27,7 @@ export const playStationRoutes: AuthRoute.Route[] = [
         path: '/play-station/game',
         component: getRouteView(RouteEnum.PlayStation_Game),
         meta: {
-          title: 'PS 游戏',
+          title: 'PSN 游戏',
           iconLocal: 'psgame',
           keepAlive: true,
         },
