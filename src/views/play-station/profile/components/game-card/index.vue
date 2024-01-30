@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-col rd-10px h-216px"
+    class="flex-col rd-10px h-216px card-wrap"
     :style="{ background: `${colorArr[i % colorArr.length][0]}` }"
   >
     <div class="flex-col p-y-16px p-x-20px b-b-1px b-b-#fff">
@@ -77,7 +77,7 @@ const colorArr = [
   ['#dbf6fd', '#096c86'],
   ['#ffd3e2', '#df3670'],
   ['#c8f7dc', '#34c471'],
-  ['#d5deff', '4067f9'],
+  ['#d5deff', '#4067f9'],
 ];
 
 const { bool: favorDisabled, setTrue: setFavorTrue, setFalse: setFavorFalse } = useBoolean();
@@ -101,13 +101,15 @@ function calcCompleteRate(info: ApiPsn.Game) {
     platinumGot,
     game: { bronze, silver, gold, platinum },
   } = info;
-  return Number(
-    (
-      ((bronzeGot + silverGot + goldGot + platinumGot) / (bronze + silver + gold + platinum)) *
-      100
-    ).toFixed(0),
+  return Math.round(
+    (100 * (1 * bronzeGot + 2 * silverGot + 6 * goldGot + 3 * platinumGot)) /
+      (1 * bronze + 2 * silver + 6 * gold + 3 * platinum),
   );
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.card-wrap {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 3px;
+}
+</style>
