@@ -36,6 +36,11 @@ export function psnGameFavor(ppgId: string) {
   return request.post('/psn/game/favor', { ppgId });
 }
 
+/** 收藏游戏列表 */
+export function psnGameFavorList() {
+  return request.get<ApiPsn.ProfileGame[]>('/psn/game/favor/list');
+}
+
 /** 获取游戏列表 */
 export function psnGameList(page: number, size: number) {
   return request.post<ApiCommon.TableData<ApiPsn.Game[]>>('/psn/game/list', { page, size });

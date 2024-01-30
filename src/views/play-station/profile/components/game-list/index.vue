@@ -52,7 +52,7 @@ defineOptions({
   name: 'GameList',
 });
 
-const emit = defineEmits<{ (e: 'on-refresh'): void }>();
+const emit = defineEmits<{ (e: 'on-refresh'): void; (e: 'on-favor'): void }>();
 
 const { bool: showSyncGameModal, setTrue: openSyncGameModal } = useBoolean(false);
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
@@ -76,6 +76,7 @@ async function getGameList() {
 
 function onGameRefresh(i: number) {
   gameList.value[i].isFavor = !gameList.value[i].isFavor;
+  emit('on-favor');
 }
 
 /** 刷新游戏列表及个人信息 */

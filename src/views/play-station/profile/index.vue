@@ -13,7 +13,10 @@
         </div>
       </NCard>
       <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
-        <GameList v-if="profile" @on-refresh="getPsnProfile(false)" />
+        <GameFavorList v-if="profile" ref="gameFavorList" />
+      </Transition>
+      <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
+        <GameList v-if="profile" @on-refresh="getPsnProfile(false)" @on-favor="refreshFavorList" />
       </Transition>
     </NSpace>
     <NBackTop :right="40" :bottom="50" class="z-999" />
@@ -24,7 +27,7 @@
 import { psnProfile } from '@/service';
 import { onMounted, ref } from 'vue';
 import { useBoolean } from '@/hooks';
-import { ProfileBindForm, ProfileInfo, GameList } from './components';
+import { ProfileBindForm, ProfileInfo, GameList, GameFavorList } from './components';
 
 defineOptions({
   name: 'PlayStationGameView',
@@ -37,6 +40,7 @@ const {
 } = useBoolean(true);
 
 const profile = ref<ApiPsn.Profile | null>(null);
+const gameFavorList = ref<InstanceType<typeof GameFavorList>>();
 
 /**
  * 获取 psn 用户信息
@@ -53,6 +57,11 @@ async function getPsnProfile(needLoading: boolean) {
   if (needLoading) {
     endPerfileLoading();
   }
+}
+
+/** 刷新 */
+function refreshFavorList() {
+  gameFavorList.value?.getFavorList();
 }
 
 onMounted(() => {
