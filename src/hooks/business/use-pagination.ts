@@ -38,7 +38,19 @@ export function usePagination(cb: () => void) {
     };
   }
 
-  return { pagination, getPageParams };
+  /** 设置数量 */
+  function setItemCount(number: number) {
+    pagination.itemCount = number;
+  }
+
+  return {
+    /** 分页对象 */
+    pagination,
+    /** 获取当前分页参数 */
+    getPageParams,
+    /** 设置数量 */
+    setItemCount,
+  };
 }
 
 /**

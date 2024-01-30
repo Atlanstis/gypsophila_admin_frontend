@@ -19,7 +19,8 @@ export const playStationRoutes: AuthRoute.Route[] = [
         component: getRouteView(RouteEnum.PlayStation_Profile),
         meta: {
           title: 'PSN 概览',
-          icon: 'line-md:account',
+          icon: 'icon-park-outline:game-ps',
+          keepAlive: true,
         },
       },
       {
@@ -28,8 +29,7 @@ export const playStationRoutes: AuthRoute.Route[] = [
         component: getRouteView(RouteEnum.PlayStation_Game),
         meta: {
           title: 'PSN 游戏',
-          iconLocal: 'psgame',
-          keepAlive: true,
+          icon: 'basil:gamepad-outline',
         },
       },
       {

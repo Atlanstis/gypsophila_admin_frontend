@@ -61,7 +61,7 @@ const { pagination, getPageParams, setItemCount, onPageChange } = usePaginationW
   12,
 );
 
-const gameList = ref<ApiPsn.Game[]>([]);
+const gameList = ref<ApiPsn.ProfileGame[]>([]);
 
 async function getGameList() {
   startLoading();

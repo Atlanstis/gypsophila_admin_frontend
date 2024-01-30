@@ -26,10 +26,17 @@ export function psnGameSync(gameId: number) {
 
 /** 获取用户已同步的游戏列表 */
 export function psnGameSynchronized(page: number) {
-  return request.post<ApiCommon.TableData<ApiPsn.Game[]>>('/psn/game/synchronized', { page });
+  return request.post<ApiCommon.TableData<ApiPsn.ProfileGame[]>>('/psn/game/synchronized', {
+    page,
+  });
 }
 
 /** 收藏/取消收藏 游戏 */
 export function psnGameFavor(ppgId: string) {
   return request.post('/psn/game/favor', { ppgId });
+}
+
+/** 获取游戏列表 */
+export function psnGameList(page: number, size: number) {
+  return request.post<ApiCommon.TableData<ApiPsn.Game[]>>('/psn/game/list', { page, size });
 }

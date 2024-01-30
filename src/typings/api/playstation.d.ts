@@ -177,6 +177,23 @@ declare namespace ApiPsn {
   }
 
   interface Game {
+    platinum: number;
+    bronze: number;
+    gold: number;
+    silver: number;
+    name: string;
+    originName: string;
+    platforms: PlayStation.Platform[];
+    thumbnail: string;
+    link?: GameLink;
+  }
+
+  interface GameLink {
+    psnineId: number;
+    psnineUrl: string;
+  }
+
+  interface ProfileGame {
     id: string;
     isFavor: boolean;
     syncTime: string;
@@ -184,15 +201,6 @@ declare namespace ApiPsn {
     goldGot: number;
     silverGot: number;
     bronzeGot: number;
-    game: {
-      platinum: number;
-      bronze: number;
-      gold: number;
-      silver: number;
-      name: string;
-      originName: string;
-      platforms: PlayStation.Platform[];
-      thumbnail: string;
-    };
+    game: Game;
   }
 }

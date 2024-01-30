@@ -65,7 +65,7 @@ defineOptions({
   name: 'GameCard',
 });
 
-const props = defineProps<{ info: ApiPsn.Game; i: number }>();
+const props = defineProps<{ info: ApiPsn.ProfileGame; i: number }>();
 
 const emit = defineEmits<{
   (e: 'refresh', i: number): void;
@@ -93,7 +93,7 @@ async function onGameFavor(id: string) {
 }
 
 /** 计算完成率，暂不计算各奖杯的比重 */
-function calcCompleteRate(info: ApiPsn.Game) {
+function calcCompleteRate(info: ApiPsn.ProfileGame) {
   const {
     bronzeGot,
     silverGot,
