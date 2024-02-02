@@ -5,7 +5,7 @@ export enum ButtonIconEnum {
   /** 查看详情 */
   detail = 'solar:eye-broken',
   /** 返回 */
-  back = 'lets-icons:refund-back',
+  back = 'line-md:arrow-small-left',
   /** 分析 */
   analysis = 'tabler:analyze-filled',
   /** 编辑 */

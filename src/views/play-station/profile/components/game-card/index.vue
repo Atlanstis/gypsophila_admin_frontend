@@ -49,17 +49,24 @@
           :disabled="favorDisabled"
           @click="onGameFavor(info.id)"
         ></PopoverBtn>
-        <PopoverBtn :icon="ButtonIconEnum.more" msg="详情" :bordered="false"></PopoverBtn>
+        <PopoverBtn
+          :icon="ButtonIconEnum.more"
+          msg="详情"
+          :bordered="false"
+          @click="goProfileGame"
+        ></PopoverBtn>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ButtonIconEnum } from '@/enums';
+import { ButtonIconEnum, RouteEnum } from '@/enums';
 import { psnGameFavor } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { useBoolean } from '@/hooks';
+import { useRouterPush } from '@/composables';
+import { calcCompleteRate } from '@/utils';
 
 defineOptions({
   name: 'GameCard',
@@ -70,6 +77,8 @@ const props = defineProps<{ info: ApiPsn.ProfileGame; i: number }>();
 const emit = defineEmits<{
   (e: 'refresh', i: number): void;
 }>();
+
+const { routerPush } = useRouterPush();
 
 const colorArr = [
   ['#fee4cb', '#ff942e'],
@@ -82,6 +91,7 @@ const colorArr = [
 
 const { bool: favorDisabled, setTrue: setFavorTrue, setFalse: setFavorFalse } = useBoolean();
 
+/** 处理收藏 */
 async function onGameFavor(id: string) {
   setFavorTrue();
   const { error } = await psnGameFavor(id);
@@ -92,19 +102,9 @@ async function onGameFavor(id: string) {
   setFavorFalse();
 }
 
-/** 计算完成率，暂不计算各奖杯的比重 */
-function calcCompleteRate(info: ApiPsn.ProfileGame) {
-  const {
-    bronzeGot,
-    silverGot,
-    goldGot,
-    platinumGot,
-    game: { bronze, silver, gold, platinum },
-  } = info;
-  return Math.round(
-    (100 * (1 * bronzeGot + 2 * silverGot + 6 * goldGot + 3 * platinumGot)) /
-      (1 * bronze + 2 * silver + 6 * gold + 3 * platinum),
-  );
+/** 跳转至游戏概览页 */
+function goProfileGame() {
+  routerPush({ name: RouteEnum.PlayStation_Profile_Game, params: { id: props.info.id } });
 }
 </script>
 

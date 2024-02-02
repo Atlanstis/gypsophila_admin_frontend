@@ -24,6 +24,17 @@ export const playStationRoutes: AuthRoute.Route[] = [
         },
       },
       {
+        name: RouteEnum.PlayStation_Profile_Game,
+        path: '/play-station/profile/game/:id',
+        component: getRouteView(RouteEnum.PlayStation_Profile_Game),
+        meta: {
+          title: '游戏概览',
+          icon: 'icon-park-outline:game-ps',
+          hide: true,
+          activeMenu: RouteEnum.PlayStation_Profile,
+        },
+      },
+      {
         name: RouteEnum.PlayStation_Game,
         path: '/play-station/game',
         component: getRouteView(RouteEnum.PlayStation_Game),

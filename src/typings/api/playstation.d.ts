@@ -4,14 +4,14 @@ declare namespace PlayStation {
 
   /** 奖杯类型 */
   type TrophyType = 'platinum' | 'gold' | 'silver' | 'bronze';
+
+  /** 奖杯数量信息 */
+  type TrophyNum = Record<PlayStation.TrophyType, number>;
 }
 
 declare namespace Psnine {
   /** 完美困难度 */
   type PerfectDifficulty = '极易' | '容易' | '普通' | '麻烦' | '困难' | '地狱';
-
-  /** 奖杯数量信息 */
-  export type TrophyNum = Record<PlayStation.TrophyType, number>;
 
   interface Troup {
     /** 奖杯名称 */
@@ -177,30 +177,111 @@ declare namespace ApiPsn {
   }
 
   interface Game {
+    /** 白金奖杯数量 */
     platinum: number;
-    bronze: number;
+    /** 金奖杯数量 */
     gold: number;
+    /** 银奖杯数量 */
     silver: number;
+    /** 铜奖杯数量 */
+    bronze: number;
+    /** 名称 */
     name: string;
+    /** 原始名称 */
     originName: string;
+    /** 支持平台 */
     platforms: PlayStation.Platform[];
+    /** 缩略图 */
     thumbnail: string;
+    /** 关联信息 */
     link?: GameLink;
+    /** 奖杯组 */
+    trophyGroups?: TrophyGroup[];
   }
 
+  /** 游戏关联信息 */
   interface GameLink {
+    /** psnine Id */
     psnineId: number;
+    /*** psnine 地址 */
     psnineUrl: string;
   }
 
+  /** 用户游戏 */
   interface ProfileGame {
+    /** id */
     id: string;
+    /** 是否收藏 */
     isFavor: boolean;
+    /** 同步时间 */
     syncTime: string;
+    /** 获得白金奖杯数量 */
     platinumGot: number;
+    /** 获得金奖杯数 */
     goldGot: number;
+    /** 获得银奖杯数 */
     silverGot: number;
+    /** 获得铜奖杯数 */
     bronzeGot: number;
     game: Game;
+  }
+
+  /** 奖杯关联信息 */
+  interface TrophyLink {
+    /** psnine 奖杯 Id */
+    psnineTrophyId: number;
+
+    /** psnine 链接地址 */
+    psnineUrl: string;
+  }
+
+  /** 奖杯获取信息 */
+  interface ProfileGameTrophy {
+    id: string;
+    /** 获取时间 */
+    completeTime: string;
+    /** 跳杯截图 */
+    screenshot: string;
+    /** 跳杯视频 */
+    video: string;
+  }
+
+  /** 奖杯 */
+  interface Trophy {
+    id: number;
+    /** 顺序 */
+    order: number;
+    /** 名称 */
+    name: string;
+    /** 描述 */
+    description: string;
+    /** 缩略图 */
+    thumbnail: string;
+    /** 奖杯类型 */
+    type: PlayStation.TrophyType;
+    /** 奖杯关联信息 */
+    link: TrophyLink;
+    /** 获取信息 */
+    completeInfo?: ProfileGameTrophy;
+  }
+
+  /** 奖杯组 */
+  interface TrophyGroup {
+    /** 名称 */
+    name: string;
+    /** 缩略图 */
+    thumbnail: string;
+    /** 是否 DLC */
+    isDLC: boolean;
+    /** 白金奖杯数 */
+    platinum: number;
+    /** 金奖杯数 */
+    gold: number;
+    /** 银奖杯数 */
+    silver: number;
+    /** 铜奖杯数 */
+    bronze: number;
+    /** 奖杯信息 */
+    trophies: Trophy[];
   }
 }

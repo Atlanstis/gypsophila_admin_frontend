@@ -45,3 +45,8 @@ export function psnGameFavorList() {
 export function psnGameList(page: number, size: number) {
   return request.post<ApiCommon.TableData<ApiPsn.Game[]>>('/psn/game/list', { page, size });
 }
+
+/** 获取用户的游戏信息 */
+export function psnProfileGame(ppgId: string) {
+  return request.post<ApiPsn.ProfileGame>('/psn/profile/game', { ppgId });
+}

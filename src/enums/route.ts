@@ -11,6 +11,8 @@ export enum RouteEnum {
   PlayStation = 'PlayStation',
   /** PlayStation PSN 概览 */
   PlayStation_Profile = 'PlayStation_Profile',
+  /** PlayStation 游戏概览 */
+  PlayStation_Profile_Game = 'PlayStation_Profile_Game',
   /** PlayStation 游戏信息 */
   PlayStation_Game = 'PlayStation_Game',
   /** PlayStation 游戏查找 */

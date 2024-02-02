@@ -36,6 +36,11 @@ export function useRouterPush(isInSetup = true) {
     return router.push(to);
   }
 
+  /** 返回上一页 */
+  function goBack() {
+    return router.go(-1);
+  }
+
   /**
    * 跳转首页
    * @param newTab - 是否在新的浏览器标签中打开
@@ -80,6 +85,7 @@ export function useRouterPush(isInSetup = true) {
 
   return {
     toOutsideUrl,
+    goBack,
     routerPush,
     toLogin,
     toHome,

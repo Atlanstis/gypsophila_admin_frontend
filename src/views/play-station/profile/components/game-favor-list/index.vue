@@ -7,7 +7,12 @@
     }"
   >
     <NSpace>
-      <div class="w-60px h-60px cursor-pointer" v-for="info of list" :key="info.id">
+      <div
+        class="w-60px h-60px cursor-pointer"
+        v-for="info of list"
+        :key="info.id"
+        @click="goProfileGame(info.id)"
+      >
         <NPopover trigger="hover">
           <template #trigger>
             <NImage
@@ -29,6 +34,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useRouterPush } from '@/composables';
+import { RouteEnum } from '@/enums';
 import { psnGameFavorList } from '@/service';
 import { onMounted, ref } from 'vue';
 
@@ -38,6 +45,8 @@ defineOptions({
 
 defineExpose({ getFavorList });
 
+const { routerPush } = useRouterPush();
+
 const list = ref<ApiPsn.ProfileGame[]>([]);
 
 async function getFavorList() {
@@ -45,6 +54,11 @@ async function getFavorList() {
   if (!error) {
     list.value = data;
   }
+}
+
+/** 跳转至游戏概览页 */
+function goProfileGame(id: string) {
+  routerPush({ name: RouteEnum.PlayStation_Profile_Game, params: { id: id } });
 }
 
 onMounted(() => {

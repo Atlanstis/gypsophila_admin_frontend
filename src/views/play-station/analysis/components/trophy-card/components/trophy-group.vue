@@ -2,7 +2,7 @@
   <NSpace v-if="props.group" vertical>
     <NSpace>
       <div class="h-80px w-80px flex flex-center">
-        <NImage width="80" height="80" :src="props.group.thumbnail">
+        <NImage width="80" height="80" :src="props.group.thumbnail" class="flex-center rd-10px">
           <template #placeholder>
             <PlaystationLoading />
           </template>

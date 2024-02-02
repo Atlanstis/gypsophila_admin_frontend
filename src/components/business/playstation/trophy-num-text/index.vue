@@ -17,7 +17,7 @@ defineOptions({
 });
 
 interface Props {
-  trophyNum: Psnine.TrophyNum;
+  trophyNum: PlayStation.TrophyNum;
 }
 
 interface TrophyType {

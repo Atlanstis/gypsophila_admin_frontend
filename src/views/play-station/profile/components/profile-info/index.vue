@@ -2,7 +2,11 @@
   <div class="h-100px">
     <div class="flex h-full">
       <div class="w-100px h-100px b-rd-50% b-2px b-primary overflow-hidden p-2px">
-        <NImage :src="profile.avatar" :alt="profile.psnId" class="h-full w-full b-rd-50%">
+        <NImage
+          :src="profile.avatar"
+          :alt="profile.psnId"
+          class="h-full w-full b-rd-50% flex-center"
+        >
           <template #placeholder>
             <PlaystationLoading />
           </template>
