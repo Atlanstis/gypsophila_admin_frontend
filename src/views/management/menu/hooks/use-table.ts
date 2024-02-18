@@ -4,7 +4,7 @@ import { h, ref, type Ref } from 'vue';
 import { PARENT_FLAG } from '../constants';
 import { menuList } from '@/service';
 import { useIconRender } from '@/composables';
-import PopoverBtn from '@/components/common/popover-btn.vue';
+import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
 
 export function useTable(

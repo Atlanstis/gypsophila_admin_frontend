@@ -4,7 +4,7 @@ import { useBoolean, usePagination } from '@/hooks';
 import { roleList } from '@/service';
 import { NTag, type DataTableColumns, NButton, NSpace, NPopconfirm } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
-import PopoverBtn from '@/components/common/popover-btn.vue';
+import { PopoverBtn } from '@/components';
 
 /** 有关角色列表的操作 */
 export function useRoleTable(

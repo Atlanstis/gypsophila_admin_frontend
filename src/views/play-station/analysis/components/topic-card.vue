@@ -25,7 +25,7 @@ import { useBoolean } from '@/hooks';
 import { NSpace, type DataTableColumns, NTag } from 'naive-ui';
 import { type Ref, ref, onMounted, h } from 'vue';
 import { psnineGameTopic } from '@/service';
-import PopoverBtn from '@/components/common/popover-btn.vue';
+import { PopoverBtn } from '@/components';
 import { useRouterPush } from '@/composables';
 import { ButtonIconEnum } from '@/enums';
 

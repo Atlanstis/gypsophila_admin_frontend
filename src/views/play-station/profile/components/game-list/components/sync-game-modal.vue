@@ -41,11 +41,10 @@ import {
 import { psnGameSync, psnSynchronizeableGame } from '@/service';
 import { NSpace, type DataTableColumns, NImage, NTag, NProgress } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
-import PopoverBtn from '@/components/common/popover-btn.vue';
 import { PlatformColorMap } from '@/constants';
 import { ButtonIconEnum } from '@/enums';
 import { useRouterPush } from '@/composables';
-import { TrophyNumText, PlaystationLoading } from '@/components';
+import { TrophyNumText, PlaystationLoading, PopoverBtn } from '@/components';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 type SyncGame = Psnine.SyncGame & {

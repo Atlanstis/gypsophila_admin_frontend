@@ -4,8 +4,7 @@ import { useBoolean, usePaginationWithDefinePageSize } from '@/hooks';
 import { psnineGameSearch } from '@/service';
 import { NImage, type DataTableColumns, NTag, NSpace, NProgress } from 'naive-ui';
 import { type Ref, ref, h } from 'vue';
-import PopoverBtn from '@/components/common/popover-btn.vue';
-import { TrophyNumText, PlaystationLoading, GamePlatform } from '@/components';
+import { TrophyNumText, PlaystationLoading, GamePlatform, PopoverBtn } from '@/components';
 import { ButtonIconEnum, RouteEnum } from '@/enums';
 
 export function useSearchTable() {
