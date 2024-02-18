@@ -15,7 +15,7 @@ export default defineConfig({
     'flex-center': 'flex items-center justify-center',
     'flex-1-hidden': 'flex-1 overflow-hidden',
     'nowrap-hidden': 'whitespace-nowrap overflow-hidden',
-    ellipsis: 'nowrap-hidden text-ellipsis',
+    'text-ellipsis': 'nowrap-hidden text-ellipsis',
   },
 
   theme: {

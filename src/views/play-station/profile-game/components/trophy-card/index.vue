@@ -6,7 +6,7 @@
       border: isComplete ? `2px solid ${colorArr[i % colorArr.length][1]}` : '',
     }"
   >
-    <div class="h-60px w-60px flex flex-center">
+    <div class="h-60px w-60px flex flex-center flex-shrink-0">
       <NImage
         width="60"
         height="60"
@@ -19,7 +19,7 @@
         </template>
       </NImage>
     </div>
-    <div class="p-l-12px flex-col justify-around flex-1">
+    <div class="p-l-12px flex-col justify-around flex-1-hidden">
       <div class="flex items-center">
         <p class="font-bold text-16px">{{ trophy.name }}</p>
         <TrophyTypeImage :type="trophy.type" class="m-l-8px" />
@@ -28,7 +28,10 @@
         <div class="w-6px h-6px rd-50% bg-#808191 m-r-8px"></div>
         <span>{{ completeTime }}</span>
       </div>
-      <p class="text-12px" :style="{ color: `${colorArr[i % colorArr.length][1]}` }">
+      <p
+        class="text-12px w-full text-ellipsis"
+        :style="{ color: `${colorArr[i % colorArr.length][1]}` }"
+      >
         {{ trophy.description }}
       </p>
     </div>

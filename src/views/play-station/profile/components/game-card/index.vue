@@ -11,7 +11,7 @@
           </template>
         </NImage>
         <div class="m-l-12px flex-col flex-1-hidden justify-around">
-          <p class="font-bold text-16px ellipsis">{{ info.game.originName }}</p>
+          <p class="font-bold text-16px text-ellipsis">{{ info.game.originName }}</p>
           <NSpace>
             <GamePlatform v-for="p of info.game.platforms" :key="p" :platform="p" />
           </NSpace>
