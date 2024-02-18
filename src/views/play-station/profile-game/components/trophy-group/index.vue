@@ -16,7 +16,7 @@
         <TrophyComplete size="small" :trophyNum="trophyNum.total" :trophy-num-got="trophyNum.got" />
       </NSpace>
     </NSpace>
-    <NGrid cols="2 1200:3" x-gap="16" y-gap="16" item-responsive>
+    <NGrid cols="1 550:2 1200:3" x-gap="16" y-gap="16" item-responsive>
       <NGridItem v-for="(trophy, i) of group.trophies" :key="trophy.id">
         <TrophyCard :trophy="trophy" :i="i" />
       </NGridItem>

@@ -11,7 +11,6 @@
             <PlaystationLoading />
           </template>
         </NImage>
-        <img :src="profile.avatar" class="" />
       </div>
       <NSpace vertical justify="space-around" class="h-100px flex-1 p-x-10px">
         <div class="text-24px font-bold">{{ profile.psnId }}</div>

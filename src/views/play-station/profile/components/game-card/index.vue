@@ -5,7 +5,7 @@
   >
     <div class="flex-col p-y-16px p-x-20px b-b-1px b-b-#fff">
       <div class="flex">
-        <NImage class="w-60px h-60px rd-10px" :src="info.game.thumbnail" :lazy="true">
+        <NImage class="w-60px h-60px rd-10px flex-center" :src="info.game.thumbnail" :lazy="true">
           <template #placeholder>
             <PlaystationLoading />
           </template>
