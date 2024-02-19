@@ -17,12 +17,14 @@ import { onMounted, ref, computed } from 'vue';
 import { useRouterPush } from '@/composables';
 import { useBoolean } from '@/hooks';
 import { GameInfo, TrophyInfo, GuideInfo } from './components';
+import { useAppStore } from '@/stores';
 
 defineOptions({
   name: 'PlaystationProfileGameView',
 });
 
 const route = useRoute();
+const appStore = useAppStore();
 
 const { goBack } = useRouterPush();
 
@@ -39,6 +41,7 @@ async function getProfileGame() {
   startLoading();
   const { error, data } = await psnProfileGame(gameId.value);
   if (!error) {
+    appStore.updateWebsiteTitle(`${data.game.originName}-${route.meta.title}`);
     game.value = data;
   } else {
     goBack();
