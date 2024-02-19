@@ -1,7 +1,7 @@
 <template>
   <ScrollContainer>
     <NSpace vertical>
-      <GameInfo :info="game" :loading="loading" />
+      <GameInfo :info="game" :loading="loading" @on-sync="getProfileGame" />
       <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
         <TrophyInfo v-if="game" :trophy-group="game.game.trophyGroups" />
       </Transition>

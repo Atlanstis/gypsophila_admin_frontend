@@ -41,9 +41,16 @@
           />
         </div>
       </div>
-      <div>
+      <NSpace>
+        <PopoverBtn
+          :msg="'同步游戏'"
+          :loading-msg="'同步中'"
+          :loading="isInSync"
+          :icon="ButtonIconEnum.refresh"
+          @click="onSyncGame"
+        ></PopoverBtn>
         <PopoverBtn :msg="'返回'" :icon="ButtonIconEnum.back" @click="onGoback"></PopoverBtn>
-      </div>
+      </NSpace>
     </div>
   </NCard>
 </template>
@@ -53,6 +60,10 @@ import { ButtonIconEnum } from '@/enums';
 import { calcCompleteRate } from '@/utils';
 import { computed } from 'vue';
 import { useRouterPush } from '@/composables';
+import { useBoolean } from '@/hooks';
+import { psnGameSync } from '@/service';
+import { DEFAULT_MESSAGE_DURATION } from '@/config';
+
 defineOptions({
   name: 'GameInfo',
 });
@@ -63,6 +74,10 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: 'on-sync'): void;
+}>();
 
 const { goBack } = useRouterPush();
 
@@ -80,6 +95,21 @@ const trophyNum = computed(() => {
     got: { bronze: bronzeGot, silver: silverGot, gold: goldGot, platinum: platinumGot },
   };
 });
+
+const { bool: isInSync, setTrue: startSync, setFalse: endSync } = useBoolean(false);
+
+async function onSyncGame() {
+  if (!props.info) return undefined;
+  startSync();
+  const { error } = await psnGameSync(
+    props.info.game.link?.psnineId as ApiPsn.GameLink['psnineId'],
+  );
+  if (!error) {
+    window.$message?.success('同步成功', { duration: DEFAULT_MESSAGE_DURATION });
+    emit('on-sync');
+  }
+  endSync();
+}
 
 function onGoback() {
   goBack();
