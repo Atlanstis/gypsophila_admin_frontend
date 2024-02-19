@@ -9,10 +9,12 @@ export enum RouteEnum {
   Workbench = 'Workbench',
   /** PlayStation */
   PlayStation = 'PlayStation',
+  /** PlayStation PSN 概览 */
+  PlayStation_Profile = 'PlayStation_Profile',
+  /** PlayStation 游戏概览 */
+  PlayStation_Profile_Game = 'PlayStation_Profile_Game',
   /** PlayStation 游戏信息 */
   PlayStation_Game = 'PlayStation_Game',
-  /** PlayStation 奖杯信息 */
-  PlayStation_Trophy = 'PlayStation_Trophy',
   /** PlayStation 游戏查找 */
   PlayStation_Search = 'PlayStation_Search',
   /** PlayStation 游戏分析 */

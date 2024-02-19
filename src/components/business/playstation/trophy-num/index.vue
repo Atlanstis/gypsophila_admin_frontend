@@ -1,10 +1,13 @@
 <template>
-  <NSpace>
+  <NSpace :size="size.space">
     <template v-for="trophy of trophyTypes" :key="trophy.type">
-      <NImage :src="trophy.img" :width="30" preview-disabled />
+      <img :src="trophy.img" :style="{ width: `${size.img}px` }" />
       <div class="h-full flex flex-col flex-justify-end">
-        <span class="text-24px font-bold" :style="{ color: TrophyColorMap[trophy.type] }">
-          <n-number-animation :from="0" :to="trophy.num" :duration="2000" />
+        <span
+          class="font-bold"
+          :style="{ color: TrophyColorMap[trophy.type], 'font-size': `${size.font}px` }"
+        >
+          <NNumberAnimation :from="0" :to="trophy.num" :duration="2000" />
         </span>
       </div>
     </template>
@@ -13,10 +16,10 @@
 
 <script lang="ts" setup>
 import { computed, type ComputedRef } from 'vue';
-import TrophyBronzeImg from '../assets/trophy-bronze.png';
-import TrophyGoldImg from '../assets/trophy-gold.png';
-import TrophyPlatinumImg from '../assets/trophy-platinum.png';
-import TrophySilverImg from '../assets/trophy-silver.png';
+import TrophyBronzeImg from './assets/trophy-bronze.png';
+import TrophyGoldImg from './assets/trophy-gold.png';
+import TrophyPlatinumImg from './assets/trophy-platinum.png';
+import TrophySilverImg from './assets/trophy-silver.png';
 import { TrophyColorMap } from '@/constants';
 
 defineOptions({
@@ -24,7 +27,8 @@ defineOptions({
 });
 
 interface Props {
-  trophyNum: Psnine.TrophyNum;
+  trophyNum: PlayStation.TrophyNum;
+  size?: 'small' | 'default';
 }
 
 interface TrophyType {
@@ -40,6 +44,16 @@ const props = withDefaults(defineProps<Props>(), {
     gold: 0,
     platinum: 0,
   }),
+  size: 'default',
+});
+
+const size = computed(() => {
+  const map: Record<'small' | 'default', { font: number; img: number; space: 'small' | 'medium' }> =
+    {
+      small: { font: 15, img: 21, space: 'small' },
+      default: { font: 24, img: 30, space: 'medium' },
+    };
+  return map[props.size];
 });
 
 const trophyTypes: ComputedRef<TrophyType[]> = computed(() => [

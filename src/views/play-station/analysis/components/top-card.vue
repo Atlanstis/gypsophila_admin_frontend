@@ -1,9 +1,14 @@
 <template>
   <NCard>
     <div class="flex min-h-100px">
-      <div class="w-100px flex-center">
+      <div class="w-100px">
         <NSkeleton v-if="loading" height="100px" width="100px" :sharp="false" />
-        <NImage v-else :src="detail?.thumbnail" :alt="detail?.originName">
+        <NImage
+          v-else
+          :src="detail?.thumbnail"
+          :alt="detail?.originName"
+          class="rd-10px flex-center"
+        >
           <template #placeholder>
             <PlaystationLoading />
           </template>
@@ -16,20 +21,13 @@
         </template>
         <div v-else class="h-full flex flex-col justify-around">
           <div class="flex flex-y-center">
-            <p class="font-bold text-16px m-r-6px">{{ detail?.name }}</p>
-            <NSpace>
-              <NTag
+            <NSpace align="center">
+              <p class="font-bold text-16px">{{ detail?.name }}</p>
+              <GamePlatform
                 v-for="platform of detail?.platforms"
                 :key="platform"
-                :color="{
-                  color: PlatformColorMap[platform],
-                  textColor: '#fff',
-                }"
-                :bordered="false"
-                size="small"
-              >
-                {{ platform }}
-              </NTag>
+                :platform="platform"
+              />
               <NTag v-for="version of detail?.version" :key="version" size="small" type="primary">
                 {{ version }}
               </NTag>
@@ -72,9 +70,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import type { NSkeleton } from 'naive-ui';
-import PlaystationLoading from '@/components/custom/loading/playstation-loading.vue';
-import { PlatformColorMap, PerfectDifficultyColorMap } from '@/constants';
-import TrophyNum from './trophy-num.vue';
+import { PlaystationLoading } from '@/components';
+import { PerfectDifficultyColorMap } from '@/constants';
 import { useRouterPush } from '@/composables';
 import { RouteEnum, ButtonIconEnum } from '@/enums';
 

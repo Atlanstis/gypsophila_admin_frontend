@@ -38,7 +38,19 @@ export function usePagination(cb: () => void) {
     };
   }
 
-  return { pagination, getPageParams };
+  /** 设置数量 */
+  function setItemCount(number: number) {
+    pagination.itemCount = number;
+  }
+
+  return {
+    /** 分页对象 */
+    pagination,
+    /** 获取当前分页参数 */
+    getPageParams,
+    /** 设置数量 */
+    setItemCount,
+  };
 }
 
 /**
@@ -56,10 +68,7 @@ export function usePaginationWithDefinePageSize(cb: () => void, pageSize: number
     prefix({ itemCount }) {
       return `总计: ${itemCount} 条`;
     },
-    onChange: (page: number) => {
-      pagination.page = page;
-      cb();
-    },
+    onChange: onPageChange,
   });
 
   /**
@@ -84,6 +93,11 @@ export function usePaginationWithDefinePageSize(cb: () => void, pageSize: number
     pagination.itemCount = number;
   }
 
+  function onPageChange(page: number) {
+    pagination.page = page;
+    cb();
+  }
+
   return {
     /** 分页对象 */
     pagination,
@@ -93,5 +107,7 @@ export function usePaginationWithDefinePageSize(cb: () => void, pageSize: number
     setItemCount,
     /** 重置分页信息 */
     resetPage,
+    /** 页码发生变更 */
+    onPageChange,
   };
 }

@@ -5,7 +5,7 @@ import type { Props } from '../index.vue';
 import { useBoolean } from '@/hooks';
 import { PermissionTypeOpts } from '@/views/management/menu/constants';
 import { useIconRender } from '@/composables';
-import PopoverBtn from '@/components/common/popover-btn.vue';
+import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
 /**
  * 列表的相关操作

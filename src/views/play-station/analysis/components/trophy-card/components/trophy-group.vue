@@ -2,7 +2,7 @@
   <NSpace v-if="props.group" vertical>
     <NSpace>
       <div class="h-80px w-80px flex flex-center">
-        <NImage width="80" height="80" :src="props.group.thumbnail">
+        <NImage width="80" height="80" :src="props.group.thumbnail" class="flex-center rd-10px">
           <template #placeholder>
             <PlaystationLoading />
           </template>
@@ -23,10 +23,8 @@
 <script lang="ts" setup>
 import { h, ref, type Ref } from 'vue';
 import { NImage, type DataTableColumns, NTag, NProgress, NSpace } from 'naive-ui';
-import PopoverBtn from '@/components/common/popover-btn.vue';
-import PlaystationLoading from '@/components/custom/loading/playstation-loading.vue';
+import { PlaystationLoading, PopoverBtn } from '@/components';
 import { useRouterPush } from '@/composables';
-import TrophyNum from '../../trophy-num.vue';
 import { TrophyColorMap } from '@/constants';
 import { ButtonIconEnum } from '@/enums';
 
@@ -99,10 +97,10 @@ const columns: Ref<DataTableColumns<Psnine.Troup>> = ref([
     title: '完成率',
     align: 'center',
     width: 100,
-    sorter: (row1, row2) => row1.complateRate - row2.complateRate,
-    render: ({ complateRate }) => {
+    sorter: (row1, row2) => row1.completeRate - row2.completeRate,
+    render: ({ completeRate }) => {
       return h(NProgress, {
-        percentage: complateRate,
+        percentage: completeRate,
         indicatorPlacement: 'inside',
       });
     },

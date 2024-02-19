@@ -14,21 +14,33 @@ export const playStationRoutes: AuthRoute.Route[] = [
     },
     children: [
       {
+        name: RouteEnum.PlayStation_Profile,
+        path: '/play-station/profile',
+        component: getRouteView(RouteEnum.PlayStation_Profile),
+        meta: {
+          title: 'PSN 概览',
+          icon: 'icon-park-outline:game-ps',
+          keepAlive: true,
+        },
+      },
+      {
+        name: RouteEnum.PlayStation_Profile_Game,
+        path: '/play-station/profile/game/:id',
+        component: getRouteView(RouteEnum.PlayStation_Profile_Game),
+        meta: {
+          title: '游戏概览',
+          icon: 'icon-park-outline:game-ps',
+          hide: true,
+          activeMenu: RouteEnum.PlayStation_Profile,
+        },
+      },
+      {
         name: RouteEnum.PlayStation_Game,
         path: '/play-station/game',
         component: getRouteView(RouteEnum.PlayStation_Game),
         meta: {
-          title: 'PS 游戏',
-          iconLocal: 'psgame',
-        },
-      },
-      {
-        name: RouteEnum.PlayStation_Trophy,
-        path: '/play-station/trophy',
-        component: getRouteView(RouteEnum.PlayStation_Trophy),
-        meta: {
-          title: '奖杯信息',
-          iconLocal: 'trophy',
+          title: 'PSN 游戏',
+          icon: 'basil:gamepad-outline',
         },
       },
       {

@@ -14,3 +14,7 @@ export const enum RoleIsDefaultEnum {
   /** 非内置角色 */
   NO = 0,
 }
+
+export const enum GuideType {
+  url = 'url',
+}

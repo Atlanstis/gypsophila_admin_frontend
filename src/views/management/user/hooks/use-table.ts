@@ -1,4 +1,4 @@
-import PopoverBtn from '@/components/common/popover-btn.vue';
+import { PopoverBtn } from '@/components';
 import { BusinessRoleEnum, ButtonIconEnum } from '@/enums';
 import { useBoolean, usePagination } from '@/hooks';
 import { userList } from '@/service';
