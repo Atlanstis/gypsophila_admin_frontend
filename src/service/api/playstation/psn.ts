@@ -50,3 +50,26 @@ export function psnGameList(page: number, size: number) {
 export function psnProfileGame(ppgId: string) {
   return request.post<ApiPsn.ProfileGame>('/psn/profile/game', { ppgId });
 }
+
+/** 获取用户的游戏攻略列表 */
+export function psnProfileGameGuideList(ppgId: string) {
+  return request.post<ApiPsn.ProfileGameGuide[]>('/psn/profile/game/guide/list', { ppgId });
+}
+
+/** 新增用户游戏攻略 */
+export function psnProfileGameGuideAdd(dto: ApiPsn.ProfileGameGuideDto) {
+  return request.post('/psn/profile/game/guide/add', dto);
+}
+
+/** 编辑用户游戏攻略 */
+export function psnProfileGameGuideEdit(dto: ApiPsn.ProfileGameGuideDto) {
+  return request.post('/psn/profile/game/guide/edit', dto);
+}
+
+/** 删除用户游戏攻略 */
+export function psnProfileGameGuideDelete(
+  id: ApiPsn.ProfileGameGuide['id'],
+  ppgId: ApiPsn.ProfileGame['id'],
+) {
+  return request.post('/psn/profile/game/guide/delete', { id, ppgId });
+}

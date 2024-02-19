@@ -5,6 +5,7 @@
       <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
         <TrophyInfo v-if="game" :trophy-group="game.game.trophyGroups" />
       </Transition>
+      <GuideInfo v-if="game" :ppgId="gameId" />
     </NSpace>
   </ScrollContainer>
 </template>
@@ -12,10 +13,10 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
 import { psnProfileGame } from '@/service';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRouterPush } from '@/composables';
 import { useBoolean } from '@/hooks';
-import { GameInfo, TrophyInfo } from './components';
+import { GameInfo, TrophyInfo, GuideInfo } from './components';
 
 defineOptions({
   name: 'PlaystationProfileGameView',
@@ -29,9 +30,14 @@ const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolea
 
 const game = ref<ApiPsn.ProfileGame | null>(null);
 
+const gameId = computed(() => {
+  return route.params.id as ApiPsn.ProfileGame['id'];
+});
+
+/** 获取游戏信息 */
 async function getProfileGame() {
   startLoading();
-  const { error, data } = await psnProfileGame(route.params.id as string);
+  const { error, data } = await psnProfileGame(gameId.value);
   if (!error) {
     game.value = data;
   } else {

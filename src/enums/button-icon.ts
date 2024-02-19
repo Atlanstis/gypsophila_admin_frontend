@@ -22,4 +22,6 @@ export enum ButtonIconEnum {
   favorite = 'line-md:star',
   /** 已收藏 */
   favoriteFilled = 'line-md:star-filled',
+  /** 链接 */
+  link = 'line-md:external-link',
 }

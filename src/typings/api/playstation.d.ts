@@ -284,4 +284,27 @@ declare namespace ApiPsn {
     /** 奖杯信息 */
     trophies: Trophy[];
   }
+
+  /** 游戏攻略 */
+  interface ProfileGameGuide {
+    id?: number;
+    /** 标题 */
+    title: string;
+    /** 类型 */
+    type: 'url' | 'text';
+    /** url 地址 */
+    url: string;
+    /** 文本内容 */
+    text: string;
+    /** 排序 */
+    order: number;
+    /** 是否完成 */
+    isCompleted: boolean;
+  }
+
+  /** 游戏攻略-新增编辑 */
+  type ProfileGameGuideDto = Partial<ProfileGameGuide> & {
+    /** 游戏 id */
+    ppgId: ProfileGame['id'];
+  };
 }
