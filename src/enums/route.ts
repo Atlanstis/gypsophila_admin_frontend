@@ -19,6 +19,10 @@ export enum RouteEnum {
   PlayStation_Search = 'PlayStation_Search',
   /** PlayStation 游戏分析 */
   PlayStation_Analysis = 'PlayStation_Analysis',
+  /** 梦幻西游 */
+  Mhxy = 'Mhxy',
+  /** 梦幻西游账号 */
+  MhxyAccount = 'Mhxy_Account',
   /** 系统管理 */
   Management = 'Management',
   /** 用户管理 */
