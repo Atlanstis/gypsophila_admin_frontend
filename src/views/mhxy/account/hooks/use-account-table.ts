@@ -39,45 +39,38 @@ export function useAccountTable(
     endLoading();
   }
 
-  const createIconLabelReder = (src: string, name?: string) => {
-    return h(
-      'div',
-      {
-        style: {
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-      },
-      {
-        default: () => [
-          h(NAvatar, {
-            src: src,
-            round: true,
-            color: '#fff',
-            size: 'small',
-            style: { marginRight: '8px' },
-          }),
-          h('span', {}, name),
-        ],
-      },
-    );
-  };
-
   const { iconRender } = useIconRender();
 
   const columns: Ref<DataTableColumns<ApiMhxy.Account>> = ref([
     {
       key: 'name',
-      title: '名称',
+      title: '角色',
       align: 'center',
       render: (row) =>
         h(
-          NSpace,
-          { justify: 'center', align: 'center' },
+          'div',
+          {
+            style: {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+          },
           {
             default: () => [
-              h('span', {}, row.name),
+              h(NAvatar, {
+                src: mhxyRoleImgMap[row.role],
+                round: true,
+                color: '#fff',
+                size: 'small',
+              }),
+              h(
+                'span',
+                {
+                  style: { margin: '0 8px' },
+                },
+                row.name,
+              ),
               row.isPrimary
                 ? h(NTag, { size: 'small', type: 'primary' }, { default: () => '主号' })
                 : null,
@@ -86,21 +79,33 @@ export function useAccountTable(
         ),
     },
     {
-      key: 'role',
-      title: '角色',
-      align: 'center',
-      render: (row) => {
-        const roleName = accountRoles.value.find((item) => item.value === row.role)?.label;
-        return createIconLabelReder(mhxyRoleImgMap[row.role], roleName);
-      },
-    },
-    {
       key: 'sect',
       title: '门派',
       align: 'center',
       render: (row) => {
         const sectName = accountSects.value.find((item) => item.value === row.sect)?.label;
-        return createIconLabelReder(mhxySectImgMap[row.sect], sectName);
+        return h(
+          'div',
+          {
+            style: {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+          },
+          {
+            default: () => [
+              h(NAvatar, {
+                src: mhxySectImgMap[row.sect],
+                round: true,
+                color: '#fff',
+                size: 'small',
+                style: { marginRight: '8px' },
+              }),
+              h('span', {}, sectName),
+            ],
+          },
+        );
       },
     },
     {
