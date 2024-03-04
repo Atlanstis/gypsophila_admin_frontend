@@ -24,4 +24,8 @@ export enum ButtonIconEnum {
   favoriteFilled = 'line-md:star-filled',
   /** 链接 */
   link = 'line-md:external-link',
+  /** 上升 */
+  increase = 'streamline:graph-arrow-increase',
+  /** 下降 */
+  decrease = 'streamline:graph-arrow-decrease',
 }

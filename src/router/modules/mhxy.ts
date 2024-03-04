@@ -22,6 +22,15 @@ export const mhxyRoutes: AuthRoute.Route[] = [
           icon: 'line-md:account',
         },
       },
+      {
+        name: RouteEnum.MhxyGoldRecord,
+        path: '/mhxy/gold-record',
+        component: getRouteView(RouteEnum.MhxyGoldRecord),
+        meta: {
+          title: '金币收支记录',
+          icon: 'icon-park-outline:list-middle',
+        },
+      },
     ],
   },
 ];

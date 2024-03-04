@@ -49,7 +49,6 @@ const accountRoles = ref<ApiMhxy.AccountRole[]>([]);
 const accountSects = ref<ApiMhxy.AccountSect[]>([]);
 
 const { loading, pagination, tableData, columns, getTableData } = useAccountTable(
-  accountRoles,
   accountSects,
   onAccountEdit,
   onAccountDelete,

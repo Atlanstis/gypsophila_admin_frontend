@@ -16,7 +16,6 @@ import { ButtonIconEnum } from '@/enums';
 import { useIconRender } from '@/composables';
 
 export function useAccountTable(
-  accountRoles: Ref<ApiMhxy.AccountRole[]>,
   accountSects: Ref<ApiMhxy.AccountSect[]>,
   onAccountEdit: (row: ApiMhxy.Account) => void,
   onAccountDelete: (row: ApiMhxy.Account) => void,

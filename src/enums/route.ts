@@ -21,8 +21,10 @@ export enum RouteEnum {
   PlayStation_Analysis = 'PlayStation_Analysis',
   /** 梦幻西游 */
   Mhxy = 'Mhxy',
-  /** 梦幻西游账号 */
+  /** 梦幻西游 账号 */
   MhxyAccount = 'Mhxy_Account',
+  /** 梦幻西游 金币收支记录 */
+  MhxyGoldRecord = 'Mhxy_Gold_Record',
   /** 系统管理 */
   Management = 'Management',
   /** 用户管理 */
