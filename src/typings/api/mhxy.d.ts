@@ -76,11 +76,11 @@ declare namespace ApiMhxy {
   interface AccountGoldRecord {
     id: number;
     /** 数额 */
-    num: number;
+    amount: number;
     /** 操作前金币数量 */
-    beforeNum: number;
+    beforeGold: number;
     /** 操作后金币数量 */
-    afterNum: number;
+    afterGold: number;
     /** 记录类型: expenditure-支出,revenue-收入 */
     type: 'expenditure' | 'revenue';
     /** 贸易种类 */
@@ -89,7 +89,30 @@ declare namespace ApiMhxy {
     account: Account;
     /** 备注 */
     remark: string;
-    /** 创建时间 */
+    /** 是否是转金 */
+    isTransfer: boolean;
+    /** 记录时间 */
+    createTime: Date;
+  }
+
+  /** 转金记录 */
+  interface AccountGoldTransfer {
+    id: number;
+    /** 发起账号 */
+    fromAccount: Account;
+    /** 接收账号 */
+    toAccount: Account;
+    /** 发起账号转金前金币数量 */
+    fromBeforeGold: number;
+    /** 发起账号转金前后金币数量 */
+    fromAfterGold: number;
+    /** 接受账号转金前金币数量 */
+    toBeforeGold: number;
+    /** 接受账号转金后金币数量 */
+    toAfterGold: number;
+    /** 贸易种类 */
+    category: GoldTradeCategory;
+    /** 转金时间 */
     createTime: Date;
   }
 }

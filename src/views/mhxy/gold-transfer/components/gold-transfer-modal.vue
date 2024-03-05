@@ -1,7 +1,7 @@
 <template>
   <NModal
     v-model:show="modalVisible"
-    :title="'转金'"
+    :title="'新增记录'"
     preset="card"
     :segmented="true"
     class="w-500px"
@@ -14,15 +14,43 @@
       require-mark-placement="left"
       :rules="formRules"
     >
-      <NFormItem label="账号" path="accountId">
+      <NFormItem label="发起账号" path="fromAccountId">
         <NSelect
-          v-model:value="formModel.accountId"
-          :options="accountList"
+          v-model:value="formModel.fromAccountId"
+          :options="fromAccountList"
           label-field="name"
           value-field="id"
           filterable
+          clearable
           :render-label="renderAccountLabel"
         />
+      </NFormItem>
+      <NFormItem label="发起账号转金后金币数" path="fromNowGold">
+        <NInputNumber
+          v-model:value="formModel.fromNowGold"
+          class="w-full"
+          :precision="0"
+          :show-button="false"
+        ></NInputNumber>
+      </NFormItem>
+      <NFormItem label="接受账号" path="toAccountId">
+        <NSelect
+          v-model:value="formModel.toAccountId"
+          :options="toAccountList"
+          label-field="name"
+          value-field="id"
+          filterable
+          clearable
+          :render-label="renderAccountLabel"
+        />
+      </NFormItem>
+      <NFormItem label="接受账号转金后金币数" path="toNowGold">
+        <NInputNumber
+          v-model:value="formModel.toNowGold"
+          class="w-full"
+          :precision="0"
+          :show-button="false"
+        ></NInputNumber>
       </NFormItem>
       <NFormItem label="种类" path="categoryId">
         <NSelect
@@ -32,17 +60,6 @@
           value-field="id"
           filterable
         />
-      </NFormItem>
-      <NFormItem label="当前金币数" path="nowGold">
-        <NInputNumber
-          v-model:value="formModel.nowGold"
-          class="w-full"
-          :precision="0"
-          :show-button="false"
-        ></NInputNumber>
-      </NFormItem>
-      <NFormItem label="备注" path="remark">
-        <NInput v-model:value="formModel.remark" type="textarea"></NInput>
       </NFormItem>
     </NForm>
     <template #footer>
@@ -57,20 +74,20 @@
 <script lang="ts" setup>
 import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
 import { type FormInst, type FormItemRule } from 'naive-ui';
-import { ref, reactive } from 'vue';
-import { mhxyAccountAll, mhxyGoldTradeCategoryList, mhxyAccountGoldRecordAdd } from '@/service';
+import { ref, reactive, computed } from 'vue';
+import { mhxyAccountAll, mhxyGoldTradeCategoryList, mhxyAccountGoldTransferAdd } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { renderAccountLabel } from '@/utils';
 
 defineOptions({
-  name: 'MhxyAccountGoldRecordModal',
+  name: 'MhxyAccountGoldTransferModal',
 });
 
 interface Emits {
   (e: 'on-success'): void;
 }
 
-type FormModel = BusinessMhxy.AccountGoldRecordFormModal;
+type FormModel = BusinessMhxy.AccountGoldTransferFormModal;
 
 const props = withDefaults(defineProps<ModalProps>(), {
   visible: false,
@@ -89,18 +106,21 @@ const formRef = ref<HTMLElement & FormInst>();
 
 function createFormModel(): FormModel {
   return {
-    nowGold: undefined,
-    remark: '',
-    accountId: undefined,
+    toAccountId: undefined,
+    fromAccountId: undefined,
     categoryId: undefined,
+    fromNowGold: undefined,
+    toNowGold: undefined,
   };
 }
 
 const formModel = reactive<FormModel>(createFormModel());
 
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
-  nowGold: [{ required: true, message: '请输入当前金币数', type: 'number', trigger: 'blur' }],
-  accountId: [{ required: true, message: '请选择账号', trigger: 'change' }],
+  fromNowGold: [{ required: true, message: '请输入当前金币数', type: 'number', trigger: 'blur' }],
+  toNowGold: [{ required: true, message: '请输入当前金币数', type: 'number', trigger: 'blur' }],
+  fromAccountId: [{ required: true, message: '请选择账号', trigger: 'change' }],
+  toAccountId: [{ required: true, message: '请选择账号', trigger: 'change' }],
   categoryId: [{ required: true, message: '请选择种类', type: 'number', trigger: 'change' }],
 };
 
@@ -113,7 +133,7 @@ function handleUpdateFormModel() {
 async function formSubmit() {
   await formRef.value?.validate();
   showLoading();
-  const { error } = await mhxyAccountGoldRecordAdd({ ...formModel });
+  const { error } = await mhxyAccountGoldTransferAdd({ ...formModel });
   if (!error) {
     window.$message?.success(`新增成功`, { duration: DEFAULT_MESSAGE_DURATION });
     closeModal();
@@ -138,10 +158,18 @@ async function getAccountAll() {
   }
 }
 
+const fromAccountList = computed(() => {
+  return accountList.value.filter((account) => account.id !== formModel.toAccountId);
+});
+
+const toAccountList = computed(() => {
+  return accountList.value.filter((account) => account.id !== formModel.fromAccountId);
+});
+
 /** 获取贸易种类数据 */
 async function getGoldTradeCatrgory() {
   if (goldTradeCategoryList.value.length > 0) return;
-  const { error, data } = await mhxyGoldTradeCategoryList();
+  const { error, data } = await mhxyGoldTradeCategoryList(true);
   if (!error) {
     goldTradeCategoryList.value = data;
   }

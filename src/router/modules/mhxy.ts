@@ -23,6 +23,15 @@ export const mhxyRoutes: AuthRoute.Route[] = [
         },
       },
       {
+        name: RouteEnum.MhxyGoldTransfer,
+        path: '/mhxy/gold-transfer',
+        component: getRouteView(RouteEnum.MhxyGoldTransfer),
+        meta: {
+          title: '转金',
+          icon: 'mingcute:copper-coin-line',
+        },
+      },
+      {
         name: RouteEnum.MhxyGoldRecord,
         path: '/mhxy/gold-record',
         component: getRouteView(RouteEnum.MhxyGoldRecord),

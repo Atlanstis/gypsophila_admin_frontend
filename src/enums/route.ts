@@ -25,6 +25,8 @@ export enum RouteEnum {
   MhxyAccount = 'Mhxy_Account',
   /** 梦幻西游 金币收支记录 */
   MhxyGoldRecord = 'Mhxy_Gold_Record',
+  /** 梦幻西游 转金 */
+  MhxyGoldTransfer = 'Mhxy_Gold_Transfer',
   /** 系统管理 */
   Management = 'Management',
   /** 用户管理 */

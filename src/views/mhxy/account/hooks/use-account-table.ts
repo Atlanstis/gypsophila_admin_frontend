@@ -3,17 +3,17 @@ import { mhxyAccountList } from '@/service';
 import {
   NSpace,
   type DataTableColumns,
-  NTag,
   NAvatar,
   NNumberAnimation,
   NPopconfirm,
   NButton,
 } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
-import { mhxyRoleImgMap, mhxySectImgMap } from '@/assets';
+import { mhxySectImgMap } from '@/assets';
 import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
 import { useIconRender } from '@/composables';
+import { renderTableAccount } from '@/utils';
 
 export function useAccountTable(
   accountSects: Ref<ApiMhxy.AccountSect[]>,
@@ -45,37 +45,7 @@ export function useAccountTable(
       key: 'name',
       title: '角色',
       align: 'center',
-      render: (row) =>
-        h(
-          'div',
-          {
-            style: {
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            },
-          },
-          {
-            default: () => [
-              h(NAvatar, {
-                src: mhxyRoleImgMap[row.role],
-                round: true,
-                color: '#fff',
-                size: 'small',
-              }),
-              h(
-                'span',
-                {
-                  style: { margin: '0 8px' },
-                },
-                row.name,
-              ),
-              row.isPrimary
-                ? h(NTag, { size: 'small', type: 'primary' }, { default: () => '主号' })
-                : null,
-            ],
-          },
-        ),
+      render: (row) => renderTableAccount(row),
     },
     {
       key: 'sect',

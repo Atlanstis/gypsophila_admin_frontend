@@ -12,6 +12,7 @@ export const Views: Record<PageRoute.HasPageRoute, Common.AsyncComponent> = {
   [RouteEnum.PlayStation_Analysis]: () => import('./play-station/analysis/index.vue'),
   [RouteEnum.MhxyAccount]: () => import('./mhxy/account/index.vue'),
   [RouteEnum.MhxyGoldRecord]: () => import('./mhxy/gold-record/index.vue'),
+  [RouteEnum.MhxyGoldTransfer]: () => import('./mhxy/gold-transfer/index.vue'),
   [RouteEnum.Management_User]: () => import('./management/user/index.vue'),
   [RouteEnum.Management_Role]: () => import('./management/role/index.vue'),
   [RouteEnum.Management_Menu]: () => import('./management/menu/index.vue'),
