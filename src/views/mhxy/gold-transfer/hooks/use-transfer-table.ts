@@ -89,17 +89,17 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
       align: 'center',
       width: '80',
       render: (row) => {
-        const map = {
-          '0': {
+        const map: Record<ApiMhxy.AccountGoldTransferStatus, { text: string; color: string }> = {
+          progress: {
             text: '进行中',
             color: otherColor.info,
           },
-          '1': {
-            text: '已完成',
+          success: {
+            text: '转金成功',
             color: otherColor.success,
           },
-          '-1': {
-            text: '审核失败',
+          failFromLock: {
+            text: '转金失败，转出账号金币被锁',
             color: otherColor.error,
           },
         };
@@ -122,7 +122,7 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
           { justify: 'center' },
           {
             default: () => [
-              row.status === '0'
+              row.status === 'progress'
                 ? h(PopoverBtn, {
                     msg: '完成',
                     icon: ButtonIconEnum.finish,

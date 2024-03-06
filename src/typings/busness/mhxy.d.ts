@@ -20,9 +20,9 @@ declare namespace BusinessMhxy {
     fromAccountId?: ApiMhxy.Account['id'];
     toAccountId?: ApiMhxy.Account['id'];
     categoryId?: ApiMhxy.GoldTradeCategory['id'];
-    /** 发起账号转金后金币数量 */
+    /** 转出账号转金后金币数量 */
     fromNowGold?: number;
-    /** 发起账号转金后金币数量 */
+    /** 转出账号转金后金币数量 */
     toNowGold?: number;
     /** 珍品交易金额 */
     goldAmount?: number;

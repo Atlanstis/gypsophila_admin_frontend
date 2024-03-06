@@ -142,7 +142,7 @@ async function getTransferInfo() {
   if (!error) {
     transferInfo.value = data;
     // 未处于进行状态，跳过
-    if (data.status !== '0') {
+    if (data.status !== 'progress') {
       window.$message?.error(`该记录已处于完成状态，请选择其他记录`, {
         duration: DEFAULT_MESSAGE_DURATION,
       });

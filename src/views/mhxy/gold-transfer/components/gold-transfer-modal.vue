@@ -23,7 +23,7 @@
           filterable
         />
       </NFormItem>
-      <NFormItem label="发起账号" path="fromAccountId">
+      <NFormItem label="转出账号" path="fromAccountId">
         <NSelect
           v-model:value="formModel.fromAccountId"
           :options="fromAccountList"
@@ -36,7 +36,7 @@
       </NFormItem>
       <NFormItem
         v-if="formModel.categoryId && !isCategoryGem"
-        label="发起账号转金后金币数"
+        label="转出账号转金后金币数"
         path="fromNowGold"
       >
         <NInputNumber
@@ -46,7 +46,7 @@
           :show-button="false"
         ></NInputNumber>
       </NFormItem>
-      <NFormItem label="接受账号" path="toAccountId">
+      <NFormItem label="转入账号" path="toAccountId">
         <NSelect
           v-model:value="formModel.toAccountId"
           :options="toAccountList"
@@ -59,7 +59,7 @@
       </NFormItem>
       <NFormItem
         v-if="formModel.categoryId && !isCategoryGem"
-        label="接受账号转金后金币数"
+        label="转入账号转金后金币数"
         path="toNowGold"
       >
         <NInputNumber

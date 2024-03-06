@@ -107,27 +107,37 @@ declare namespace ApiMhxy {
     createTime: Date;
   }
 
+  /** 转金状态 */
+  enum AccountGoldTransferStatus {
+    /** 进行中 */
+    progress = 'progress',
+    /** 转金成功 */
+    success = 'success',
+    /** 转金失败，转出账号金币被锁 */
+    failFromLock = 'failFromLock',
+  }
+
   /** 转金记录 */
   interface AccountGoldTransfer {
     id: number;
-    /** 发起账号 */
+    /** 转出账号 */
     fromAccount: Account;
     /** 接收账号 */
     toAccount: Account;
-    /** 发起账号转金前金币数量 */
+    /** 转出账号转金前金币数量 */
     fromBeforeGold: number;
-    /** 发起账号转金前后金币数量 */
+    /** 转出账号转金前后金币数量 */
     fromAfterGold: number;
-    /** 接受账号转金前金币数量 */
+    /** 转入账号转金前金币数量 */
     toBeforeGold: number;
-    /** 接受账号转金后金币数量 */
+    /** 转入账号转金后金币数量 */
     toAfterGold: number;
     /** 贸易种类 */
     category: GoldTradeCategory;
     /** 转金时间 */
     createTime: Date;
-    /** 状态:0-进行中;1-已完成;-1-审核失败 */
-    status: '0' | '1' | '-1';
+    /** 状态 */
+    status: AccountGoldTransferStatus;
     // 是否是珍品转金
     isGem?: boolean;
     /** 珍品交易金额 */
