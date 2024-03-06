@@ -48,35 +48,33 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
       title: '收支情况',
       align: 'center',
       render: (row) =>
-        row.status === '1'
-          ? h(
-              NPopover,
-              {},
-              {
-                trigger: () =>
-                  h(
-                    NSpace,
-                    { justify: 'center' },
-                    {
-                      default: () => [
-                        renderGoldTrend(row.fromAfterGold - row.fromBeforeGold),
-                        h('span', '/'),
-                        renderGoldTrend(row.toAfterGold - row.toBeforeGold),
-                      ],
-                    },
-                  ),
-                default: () =>
-                  h('div', [
-                    h(
-                      'div',
-                      `损耗：${
-                        row.fromAfterGold - row.fromBeforeGold + row.toAfterGold - row.toBeforeGold
-                      }`,
-                    ),
-                  ]),
-              },
-            )
-          : null,
+        h(
+          NPopover,
+          {},
+          {
+            trigger: () =>
+              h(
+                NSpace,
+                { justify: 'center' },
+                {
+                  default: () => [
+                    renderGoldTrend(row.fromAfterGold - row.fromBeforeGold),
+                    h('span', '/'),
+                    renderGoldTrend(row.toAfterGold - row.toBeforeGold),
+                  ],
+                },
+              ),
+            default: () =>
+              h('div', [
+                h(
+                  'div',
+                  `损耗：${
+                    row.fromAfterGold - row.fromBeforeGold + row.toAfterGold - row.toBeforeGold
+                  }`,
+                ),
+              ]),
+          },
+        ),
     },
     {
       key: 'category',
@@ -124,13 +122,15 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
           { justify: 'center' },
           {
             default: () => [
-              h(PopoverBtn, {
-                msg: '完成',
-                icon: ButtonIconEnum.finish,
-                onClick: () => {
-                  setFinishId(row.id);
-                },
-              }),
+              row.status === '0'
+                ? h(PopoverBtn, {
+                    msg: '完成',
+                    icon: ButtonIconEnum.finish,
+                    onClick: () => {
+                      setFinishId(row.id);
+                    },
+                  })
+                : null,
             ],
           },
         );

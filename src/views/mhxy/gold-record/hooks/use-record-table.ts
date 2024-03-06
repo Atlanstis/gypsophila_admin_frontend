@@ -25,11 +25,6 @@ export function useRecordTable() {
 
   const columns: Ref<DataTableColumns<ApiMhxy.AccountGoldRecord>> = ref([
     {
-      key: 'createTime',
-      title: '记录时间',
-      align: 'center',
-    },
-    {
       key: 'name',
       title: '角色',
       align: 'center',
@@ -74,6 +69,11 @@ export function useRecordTable() {
               ]),
           },
         ),
+    },
+    {
+      key: 'createTime',
+      title: '记录时间',
+      align: 'center',
     },
   ]);
 

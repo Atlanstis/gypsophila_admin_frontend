@@ -21,7 +21,7 @@ export function renderTransferRelation(from: ApiMhxy.Account, to: ApiMhxy.Accoun
 export function renderGoldTrend(amount: number) {
   const { iconRender } = useIconRender();
   const themeStore = useThemeStore();
-  const { success, error } = themeStore.otherColor;
+  const { success, error, info } = themeStore.otherColor;
 
   return h(
     NSpace,
@@ -29,7 +29,7 @@ export function renderGoldTrend(amount: number) {
       justify: 'center',
       align: 'center',
       style: {
-        color: amount > 0 ? success : error,
+        color: amount > 0 ? success : amount === 0 ? info : error,
       },
     },
     {
@@ -43,7 +43,12 @@ export function renderGoldTrend(amount: number) {
         h(
           iconRender({
             fontSize: 18,
-            icon: amount > 0 ? ButtonIconEnum.increase : ButtonIconEnum.decrease,
+            icon:
+              amount > 0
+                ? ButtonIconEnum.increase
+                : amount === 0
+                ? ButtonIconEnum.flat
+                : ButtonIconEnum.decrease,
           }),
         ),
       ],

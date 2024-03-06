@@ -63,6 +63,8 @@ declare namespace ApiMhxy {
     sect: AccountSect['value'];
     /** 当前金币数 */
     gold: number;
+    /** 被锁金币数 */
+    lockGold: number;
   }
 
   /** 贸易种类 */

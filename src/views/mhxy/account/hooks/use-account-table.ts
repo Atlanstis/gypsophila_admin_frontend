@@ -14,6 +14,7 @@ import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
 import { useIconRender } from '@/composables';
 import { renderTableAccount } from '@/utils';
+import { useThemeStore } from '@/stores';
 
 export function useAccountTable(
   accountSects: Ref<ApiMhxy.AccountSect[]>,
@@ -39,6 +40,7 @@ export function useAccountTable(
   }
 
   const { iconRender } = useIconRender();
+  const { otherColor } = useThemeStore();
 
   const columns: Ref<DataTableColumns<ApiMhxy.Account>> = ref([
     {
@@ -82,7 +84,42 @@ export function useAccountTable(
       title: '金币数',
       align: 'center',
       render: (row) =>
-        h(NNumberAnimation, { from: 0, to: row.gold, 'show-separator': true, duration: 1000 }),
+        h(
+          NSpace,
+          { justify: 'center', align: 'center' },
+          {
+            default: () => [
+              h(NNumberAnimation, {
+                from: 0,
+                to: row.gold,
+                'show-separator': true,
+                duration: 1000,
+              }),
+              row.lockGold > 0
+                ? [
+                    h('span', {}, `/`),
+                    h(
+                      'div',
+                      { style: { color: otherColor.error } },
+                      h(NNumberAnimation, {
+                        from: 0,
+                        to: row.lockGold,
+                        'show-separator': true,
+                        duration: 1000,
+                      }),
+                    ),
+                    h(
+                      iconRender({
+                        fontSize: 18,
+                        icon: ButtonIconEnum.lock,
+                        color: otherColor.error,
+                      }),
+                    ),
+                  ]
+                : null,
+            ],
+          },
+        ),
     },
     {
       key: 'actions',

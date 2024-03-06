@@ -28,8 +28,12 @@ export enum ButtonIconEnum {
   increase = 'streamline:graph-arrow-increase',
   /** 下降 */
   decrease = 'streamline:graph-arrow-decrease',
+  /** 持平 */
+  flat = 'ic:twotone-trending-flat',
   /** 右箭头 */
   arrowRight = 'line-md:arrow-right',
   /** 完成 */
   finish = 'ep:finished',
+  /** 锁 */
+  lock = 'material-symbols-light:lock',
 }
