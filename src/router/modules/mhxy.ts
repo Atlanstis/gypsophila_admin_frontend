@@ -40,6 +40,15 @@ export const mhxyRoutes: AuthRoute.Route[] = [
           icon: 'icon-park-outline:list-middle',
         },
       },
+      {
+        name: RouteEnum.MhxyTradeCategory,
+        path: '/mhxy/trade-categoty',
+        component: getRouteView(RouteEnum.MhxyTradeCategory),
+        meta: {
+          title: '贸易种类管理',
+          icon: 'iconamoon:category-light',
+        },
+      },
     ],
   },
 ];

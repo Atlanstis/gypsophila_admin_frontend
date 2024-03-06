@@ -72,8 +72,10 @@ declare namespace ApiMhxy {
     id: number;
     /** 名称 */
     name: string;
+    /** 是否内置 */
+    isDefault: boolean;
     /** 状态:1生效,0失效 */
-    status?: 0 | 1;
+    status?: '0' | '1';
     /** 是否是转金项 */
     isTransfer: boolean;
     /** 是否是珍品 */

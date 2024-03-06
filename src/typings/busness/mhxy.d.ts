@@ -39,4 +39,9 @@ declare namespace BusinessMhxy {
     amount?: number;
     status: GoldTransferFinishStatus;
   }
+
+  /** 贸易种类表单类型 */
+  type GoldTradeCategory = Pick<ApiMhxy.GoldTradeCategory, 'name' | 'isTransfer' | 'isGem'> & {
+    id?: ApiMhxy.GoldTradeCategory['id'];
+  };
 }

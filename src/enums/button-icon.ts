@@ -36,4 +36,6 @@ export enum ButtonIconEnum {
   finish = 'ep:finished',
   /** 锁 */
   lock = 'material-symbols-light:lock',
+  circleConfirm = 'line-md:circle-to-confirm-circle-transition',
+  circleClose = 'line-md:close-circle',
 }

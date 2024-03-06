@@ -103,7 +103,7 @@
 import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
 import { type FormInst, type FormItemRule } from 'naive-ui';
 import { ref, reactive, computed } from 'vue';
-import { mhxyAccountAll, mhxyGoldTradeCategoryList, mhxyAccountGoldTransferAdd } from '@/service';
+import { mhxyAccountAll, mhxyGoldTradeCategoryAll, mhxyAccountGoldTransferAdd } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { renderAccountLabel } from '@/utils';
 
@@ -203,7 +203,7 @@ const toAccountList = computed(() => {
 /** 获取贸易种类数据 */
 async function getGoldTradeCatrgory() {
   if (goldTradeCategoryList.value.length > 0) return;
-  const { error, data } = await mhxyGoldTradeCategoryList(true);
+  const { error, data } = await mhxyGoldTradeCategoryAll(true);
   if (!error) {
     goldTradeCategoryList.value = data;
   }

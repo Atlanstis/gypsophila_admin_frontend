@@ -31,7 +31,11 @@ declare namespace PageRoute {
   /** 梦幻西游 无对应页面路由名 */
   type MhxyNoPageName = 'Mhxy';
   /** 梦幻西游 有对应页面路由名 */
-  type MhxyName = 'Mhxy_Account' | 'Mhxy_Gold_Record' | 'Mhxy_Gold_Transfer';
+  type MhxyName =
+    | 'Mhxy_Account'
+    | 'Mhxy_Gold_Record'
+    | 'Mhxy_Gold_Transfer'
+    | 'Mhxy_Trade_Category';
   /** 梦幻西游 路由名 */
   type AllMhxyName = MhxyNoPageName | MhxyName;
 
