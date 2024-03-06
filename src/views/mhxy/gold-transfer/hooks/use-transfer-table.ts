@@ -87,7 +87,7 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
       key: 'status',
       title: '状态',
       align: 'center',
-      width: '80',
+      width: '130',
       render: (row) => {
         const map: Record<ApiMhxy.AccountGoldTransferStatus, { text: string; color: string }> = {
           progress: {

@@ -39,13 +39,24 @@
           placeholder="请选择门派"
         />
       </NFormItem>
-      <NFormItem v-if="type === 'add'" path="gold" label="当前金币数">
+      <NFormItem v-if="type === 'add'" path="gold" label="金币数">
         <NInputNumber
           v-model:value="formModel.gold"
           :step="1"
           :min="0"
           :precision="0"
           :show-button="false"
+          class="w-full"
+        />
+      </NFormItem>
+      <NFormItem v-if="type === 'add'" path="gold" label="被锁金币数">
+        <NInputNumber
+          v-model:value="formModel.lockGold"
+          :step="1"
+          :min="0"
+          :precision="0"
+          :show-button="false"
+          class="w-full"
         />
       </NFormItem>
       <NFormItem v-if="type === 'add'" path="isPrimary" label="是否为主号">
@@ -141,6 +152,7 @@ function createFormModel(): FormModel {
     role: undefined,
     sect: undefined,
     gold: 0,
+    lockGold: 0,
   };
 }
 
