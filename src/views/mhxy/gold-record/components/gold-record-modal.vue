@@ -70,7 +70,7 @@ interface Emits {
   (e: 'on-success'): void;
 }
 
-type FormModel = BusinessMhxy.AccountGoldRecordFormModal;
+type FormModel = BusinessMhxy.GoldRecordFormModal;
 
 const props = withDefaults(defineProps<ModalProps>(), {
   visible: false,

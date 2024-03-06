@@ -30,4 +30,6 @@ export enum ButtonIconEnum {
   decrease = 'streamline:graph-arrow-decrease',
   /** 右箭头 */
   arrowRight = 'line-md:arrow-right',
+  /** 完成 */
+  finish = 'ep:finished',
 }

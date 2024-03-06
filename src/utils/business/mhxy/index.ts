@@ -5,6 +5,18 @@ import { useThemeStore } from '@/stores';
 import { NAvatar, NNumberAnimation, NSpace, NTag } from 'naive-ui';
 import { h } from 'vue';
 
+/** 绘制转金关系 */
+export function renderTransferRelation(from: ApiMhxy.Account, to: ApiMhxy.Account) {
+  const { iconRender } = useIconRender();
+  const themeStore = useThemeStore();
+  const { themeColor } = themeStore;
+  return [
+    renderTableAccount(from),
+    h(iconRender({ fontSize: 18, icon: ButtonIconEnum.arrowRight, color: themeColor })),
+    renderTableAccount(to),
+  ];
+}
+
 /** Table 组件，金币趋势 */
 export function renderGoldTrend(amount: number) {
   const { iconRender } = useIconRender();

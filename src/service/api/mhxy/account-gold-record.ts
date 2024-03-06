@@ -12,6 +12,6 @@ export function mhxyAccountGoldRecordList(page: number, size: number) {
 }
 
 /** 新增金币收支记录 */
-export function mhxyAccountGoldRecordAdd(record: BusinessMhxy.AccountGoldRecordFormModal) {
+export function mhxyAccountGoldRecordAdd(record: BusinessMhxy.GoldRecordFormModal) {
   return request.post('/mhxy/account/gold-record/add', record);
 }

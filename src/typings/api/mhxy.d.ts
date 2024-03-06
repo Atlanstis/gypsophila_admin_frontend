@@ -68,8 +68,18 @@ declare namespace ApiMhxy {
   /** 贸易种类 */
   interface GoldTradeCategory {
     id: number;
+    /** 名称 */
     name: string;
+    /** 状态:1生效,0失效 */
     status?: 0 | 1;
+    /** 是否是转金项 */
+    isTransfer: boolean;
+    /** 是否是珍品 */
+    isGem: boolean;
+    /** 转金额度 */
+    transterQuota?: number;
+    /** 转金周期(天) */
+    transferCycle?: number;
   }
 
   /** 金币收支记录 */
@@ -114,5 +124,13 @@ declare namespace ApiMhxy {
     category: GoldTradeCategory;
     /** 转金时间 */
     createTime: Date;
+    /** 状态:0-进行中;1-已完成;-1-审核失败 */
+    status: '0' | '1' | '-1';
+    // 是否是珍品转金
+    isGem?: boolean;
+    /** 珍品交易金额 */
+    goldAmount: number;
+    /** 珍品交易审核结束时间 */
+    auditEndTime: Date;
   }
 }

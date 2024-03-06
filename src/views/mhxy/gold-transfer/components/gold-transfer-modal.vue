@@ -14,6 +14,15 @@
       require-mark-placement="left"
       :rules="formRules"
     >
+      <NFormItem label="种类" path="categoryId">
+        <NSelect
+          v-model:value="formModel.categoryId"
+          :options="goldTradeCategoryList"
+          label-field="name"
+          value-field="id"
+          filterable
+        />
+      </NFormItem>
       <NFormItem label="发起账号" path="fromAccountId">
         <NSelect
           v-model:value="formModel.fromAccountId"
@@ -25,7 +34,11 @@
           :render-label="renderAccountLabel"
         />
       </NFormItem>
-      <NFormItem label="发起账号转金后金币数" path="fromNowGold">
+      <NFormItem
+        v-if="formModel.categoryId && !isCategoryGem"
+        label="发起账号转金后金币数"
+        path="fromNowGold"
+      >
         <NInputNumber
           v-model:value="formModel.fromNowGold"
           class="w-full"
@@ -44,7 +57,11 @@
           :render-label="renderAccountLabel"
         />
       </NFormItem>
-      <NFormItem label="接受账号转金后金币数" path="toNowGold">
+      <NFormItem
+        v-if="formModel.categoryId && !isCategoryGem"
+        label="接受账号转金后金币数"
+        path="toNowGold"
+      >
         <NInputNumber
           v-model:value="formModel.toNowGold"
           class="w-full"
@@ -52,14 +69,25 @@
           :show-button="false"
         ></NInputNumber>
       </NFormItem>
-      <NFormItem label="种类" path="categoryId">
-        <NSelect
-          v-model:value="formModel.categoryId"
-          :options="goldTradeCategoryList"
-          label-field="name"
-          value-field="id"
-          filterable
-        />
+      <NFormItem v-if="formModel.categoryId && isCategoryGem" label="交易金额" path="goldAmount">
+        <NInputNumber
+          v-model:value="formModel.goldAmount"
+          class="w-full"
+          :precision="0"
+          :show-button="false"
+        ></NInputNumber>
+      </NFormItem>
+      <NFormItem
+        v-if="formModel.categoryId && isCategoryGem"
+        label="审核所需时间（小时）"
+        path="auditEndHours"
+      >
+        <NInputNumber
+          v-model:value="formModel.auditEndHours"
+          class="w-full"
+          :precision="0"
+          :min="0"
+        ></NInputNumber>
       </NFormItem>
     </NForm>
     <template #footer>
@@ -87,7 +115,7 @@ interface Emits {
   (e: 'on-success'): void;
 }
 
-type FormModel = BusinessMhxy.AccountGoldTransferFormModal;
+type FormModel = BusinessMhxy.GoldTransferFormModal;
 
 const props = withDefaults(defineProps<ModalProps>(), {
   visible: false,
@@ -111,14 +139,20 @@ function createFormModel(): FormModel {
     categoryId: undefined,
     fromNowGold: undefined,
     toNowGold: undefined,
+    goldAmount: undefined,
+    auditEndHours: 20,
   };
 }
 
 const formModel = reactive<FormModel>(createFormModel());
 
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
-  fromNowGold: [{ required: true, message: '请输入当前金币数', type: 'number', trigger: 'blur' }],
-  toNowGold: [{ required: true, message: '请输入当前金币数', type: 'number', trigger: 'blur' }],
+  fromNowGold: [{ required: true, message: '请输入金币数', type: 'number', trigger: 'blur' }],
+  toNowGold: [{ required: true, message: '请输入金币数', type: 'number', trigger: 'blur' }],
+  goldAmount: [{ required: true, message: '请输入珍品交易金额', type: 'number', trigger: 'blur' }],
+  auditEndHours: [
+    { required: true, message: '请输入审核所需时间', type: 'number', trigger: 'blur' },
+  ],
   fromAccountId: [{ required: true, message: '请选择账号', trigger: 'change' }],
   toAccountId: [{ required: true, message: '请选择账号', trigger: 'change' }],
   categoryId: [{ required: true, message: '请选择种类', type: 'number', trigger: 'change' }],
@@ -174,6 +208,13 @@ async function getGoldTradeCatrgory() {
     goldTradeCategoryList.value = data;
   }
 }
+
+const isCategoryGem = computed(() => {
+  const selectCategory = goldTradeCategoryList.value.find(
+    (category) => category.id === formModel.categoryId,
+  );
+  return selectCategory ? selectCategory.isGem : false;
+});
 
 function afterOpenModal() {
   getAccountAll();

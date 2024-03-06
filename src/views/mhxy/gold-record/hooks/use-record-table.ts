@@ -49,6 +49,9 @@ export function useRecordTable() {
               row.isTransfer
                 ? h(NTag, { size: 'small', type: 'primary' }, { default: () => '转金' })
                 : null,
+              row.category.isGem
+                ? h(NTag, { size: 'small', type: 'primary' }, { default: () => '珍品' })
+                : null,
             ],
           },
         ),

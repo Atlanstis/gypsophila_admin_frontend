@@ -24,21 +24,26 @@
       </template>
     </TableContainer>
     <GoldTransferModal v-model:visible="visible" @on-success="getTableData"></GoldTransferModal>
+    <TransferFinishModal
+      v-model:visible="finishVisible"
+      :id="finishId"
+      @on-success="getTableData"
+    ></TransferFinishModal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { useTransferTable, useTransferModal } from './hooks';
-import { GoldTransferModal } from './components';
+import { useTransferTable, useTransferModal, useTransferFinishModal } from './hooks';
+import { GoldTransferModal, TransferFinishModal } from './components';
 
 defineOptions({
   name: 'MhxyGoldTransfer',
 });
 
 const { visible, openModal } = useTransferModal();
-
-const { loading, columns, tableData, pagination, getTableData } = useTransferTable();
+const { finishVisible, setFinishId, finishId } = useTransferFinishModal();
+const { loading, columns, tableData, pagination, getTableData } = useTransferTable(setFinishId);
 
 function onGoldRecordAdd() {
   openModal();
