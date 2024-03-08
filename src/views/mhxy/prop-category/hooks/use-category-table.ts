@@ -48,7 +48,6 @@ export function useCategoryTable(
     {
       key: 'name',
       title: '种类',
-      align: 'center',
     },
     {
       key: 'isGem',
