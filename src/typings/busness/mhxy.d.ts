@@ -8,7 +8,7 @@ declare namespace BusinessMhxy {
   /** 梦幻账号金币收支记录表单类型 */
   interface GoldRecordFormModal {
     accountId?: ApiMhxy.Account['id'];
-    categoryId?: ApiMhxy.GoldTradeCategory['id'];
+    categoryId?: ApiMhxy.PropCategory['id'];
     /** 账户当前金币数 */
     nowGold?: number;
     /** 备注 */
@@ -19,7 +19,7 @@ declare namespace BusinessMhxy {
   interface GoldTransferFormModal {
     fromAccountId?: ApiMhxy.Account['id'];
     toAccountId?: ApiMhxy.Account['id'];
-    categoryId?: ApiMhxy.GoldTradeCategory['id'];
+    categoryId?: ApiMhxy.PropCategory['id'];
     /** 转出账号转金后金币数量 */
     fromNowGold?: number;
     /** 转出账号转金后金币数量 */
@@ -40,8 +40,9 @@ declare namespace BusinessMhxy {
     status: GoldTransferFinishStatus;
   }
 
-  /** 贸易种类表单类型 */
-  type GoldTradeCategory = Pick<ApiMhxy.GoldTradeCategory, 'name' | 'isTransfer' | 'isGem'> & {
-    id?: ApiMhxy.GoldTradeCategory['id'];
+  /** 道具种类表单类型 */
+  type PropCategory = Pick<ApiMhxy.PropCategory, 'name' | 'isGem'> & {
+    id?: ApiMhxy.PropCategory['id'];
+    parentId?: ApiMhxy.PropCategory['id'];
   };
 }

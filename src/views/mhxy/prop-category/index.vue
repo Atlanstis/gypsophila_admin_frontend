@@ -16,10 +16,10 @@
           flex-height
           striped
           remote
+          :row-key="(row) => row.id"
           :loading="loading"
           :columns="columns"
           :data="tableData"
-          :pagination="pagination"
         ></NDataTable>
       </template>
     </TableContainer>
@@ -27,23 +27,24 @@
       v-model:visible="visible"
       :type="modalType"
       :edit-data="editData"
+      :categories="tableData"
       @on-success="getTableData"
     ></CategoryModal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { mhxyGoldTradeCategoryDelete } from '@/service';
+import { mhxyPropCategoryDelete } from '@/service';
 import { CategoryModal } from './components';
 import { useCategoryModal, useCategoryTable } from './hooks';
 import { onMounted } from 'vue';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
-  name: 'MhxyTradeCategoryView',
+  name: 'MhxyPropCategoryView',
 });
 
-const { loading, pagination, tableData, columns, getTableData } = useCategoryTable(
+const { loading, tableData, columns, getTableData } = useCategoryTable(
   onCategoryEdit,
   onCategoryDelete,
 );
@@ -54,14 +55,14 @@ function onCategoryAdd() {
   openModal();
 }
 
-function onCategoryEdit(data: ApiMhxy.GoldTradeCategory) {
+function onCategoryEdit(data: ApiMhxy.PropCategory) {
   setEditData(data);
   setModalType('edit');
   openModal();
 }
 
-async function onCategoryDelete(record: ApiMhxy.GoldTradeCategory) {
-  const { error } = await mhxyGoldTradeCategoryDelete(record.id);
+async function onCategoryDelete(record: ApiMhxy.PropCategory) {
+  const { error } = await mhxyPropCategoryDelete(record.id);
   if (!error) {
     window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
     getTableData();

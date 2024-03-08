@@ -103,7 +103,7 @@
 import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
 import { type FormInst, type FormItemRule } from 'naive-ui';
 import { ref, reactive, computed } from 'vue';
-import { mhxyAccountAll, mhxyGoldTradeCategoryAll, mhxyAccountGoldTransferAdd } from '@/service';
+import { mhxyAccountAll, mhxyPropCategoryAll, mhxyAccountGoldTransferAdd } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { renderAccountLabel } from '@/utils';
 
@@ -181,7 +181,7 @@ function emitSucess() {
 }
 
 const accountList = ref<ApiMhxy.Account[]>([]);
-const goldTradeCategoryList = ref<ApiMhxy.GoldTradeCategory[]>([]);
+const goldTradeCategoryList = ref<ApiMhxy.PropCategory[]>([]);
 
 /** 获取用户所有梦幻账号 */
 async function getAccountAll() {
@@ -200,10 +200,10 @@ const toAccountList = computed(() => {
   return accountList.value.filter((account) => account.id !== formModel.fromAccountId);
 });
 
-/** 获取贸易种类数据 */
+/** 获取道具种类数据 */
 async function getGoldTradeCatrgory() {
   if (goldTradeCategoryList.value.length > 0) return;
-  const { error, data } = await mhxyGoldTradeCategoryAll(true);
+  const { error, data } = await mhxyPropCategoryAll(true);
   if (!error) {
     goldTradeCategoryList.value = data;
   }

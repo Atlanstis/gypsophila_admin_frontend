@@ -41,11 +41,11 @@ export const mhxyRoutes: AuthRoute.Route[] = [
         },
       },
       {
-        name: RouteEnum.MhxyTradeCategory,
-        path: '/mhxy/trade-categoty',
-        component: getRouteView(RouteEnum.MhxyTradeCategory),
+        name: RouteEnum.MhxyPropCategory,
+        path: '/mhxy/prop-categoty',
+        component: getRouteView(RouteEnum.MhxyPropCategory),
         meta: {
-          title: '贸易种类管理',
+          title: '道具种类',
           icon: 'iconamoon:category-light',
         },
       },

@@ -1,5 +1,5 @@
-import { useBoolean, usePagination } from '@/hooks';
-import { mhxyGoldTradeCategoryList } from '@/service';
+import { useBoolean } from '@/hooks';
+import { mhxyPropCategoryList } from '@/service';
 import { NSpace, type DataTableColumns, NPopconfirm, NButton } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
 import { useIconRender } from '@/composables';
@@ -8,23 +8,18 @@ import { ButtonIconEnum } from '@/enums';
 import { PopoverBtn } from '@/components';
 
 export function useCategoryTable(
-  onCategoryEdit: (row: ApiMhxy.GoldTradeCategory) => void,
-  onCategoryDelete: (row: ApiMhxy.GoldTradeCategory) => void,
+  onCategoryEdit: (row: ApiMhxy.PropCategory) => void,
+  onCategoryDelete: (row: ApiMhxy.PropCategory) => void,
 ) {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
 
-  const tableData = ref<ApiMhxy.GoldTradeCategory[]>([]);
-
-  const { pagination, getPageParams, setItemCount } = usePagination(getTableData);
+  const tableData = ref<ApiMhxy.PropCategory[]>([]);
 
   async function getTableData() {
     startLoading();
-    const { page, size } = getPageParams();
-    const { data, error } = await mhxyGoldTradeCategoryList(page, size);
+    const { data, error } = await mhxyPropCategoryList();
     if (!error) {
-      const { list, total } = data;
-      tableData.value = list;
-      setItemCount(total);
+      tableData.value = data;
     }
     endLoading();
   }
@@ -32,7 +27,7 @@ export function useCategoryTable(
   const { iconRender } = useIconRender();
   const { otherColor } = useThemeStore();
 
-  function renderCircle(bool: boolean) {
+  function renderBoolean(bool: boolean) {
     return h(
       NSpace,
       { justify: 'center', align: 'center' },
@@ -49,29 +44,17 @@ export function useCategoryTable(
     );
   }
 
-  const columns: Ref<DataTableColumns<ApiMhxy.GoldTradeCategory>> = ref([
+  const columns: Ref<DataTableColumns<ApiMhxy.PropCategory>> = ref([
     {
       key: 'name',
       title: '种类',
       align: 'center',
     },
     {
-      key: 'isTransfer',
-      title: '是否是转金项',
-      align: 'center',
-      render: (row) => renderCircle(row.isTransfer),
-    },
-    {
       key: 'isGem',
       title: '是否是珍品',
       align: 'center',
-      render: (row) => renderCircle(row.isGem),
-    },
-    {
-      key: 'status',
-      title: '状态',
-      align: 'center',
-      render: (row) => renderCircle(row.status === '1'),
+      render: (row) => renderBoolean(row.isGem),
     },
     {
       key: 'actions',
@@ -83,14 +66,12 @@ export function useCategoryTable(
           { justify: 'center' },
           {
             default: () => [
-              !row.isDefault
-                ? h(
-                    PopoverBtn,
-                    { msg: '编辑', icon: ButtonIconEnum.edit, onClick: () => onCategoryEdit(row) },
-                    { default: () => '编辑' },
-                  )
-                : null,
-              !row.isDefault
+              h(
+                PopoverBtn,
+                { msg: '编辑', icon: ButtonIconEnum.edit, onClick: () => onCategoryEdit(row) },
+                { default: () => '编辑' },
+              ),
+              !row.children.length
                 ? h(
                     NPopconfirm,
                     { onPositiveClick: () => onCategoryDelete(row), trigger: 'hover' },
@@ -114,5 +95,5 @@ export function useCategoryTable(
     },
   ]);
 
-  return { loading, tableData, pagination, columns, getTableData };
+  return { loading, tableData, columns, getTableData };
 }

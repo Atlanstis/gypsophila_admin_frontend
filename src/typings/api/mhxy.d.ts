@@ -67,23 +67,17 @@ declare namespace ApiMhxy {
     lockGold: number;
   }
 
-  /** 贸易种类 */
-  interface GoldTradeCategory {
+  /** 道具种类 */
+  interface PropCategory {
     id: number;
     /** 名称 */
     name: string;
-    /** 是否内置 */
-    isDefault: boolean;
-    /** 状态:1生效,0失效 */
-    status?: '0' | '1';
-    /** 是否是转金项 */
-    isTransfer: boolean;
     /** 是否是珍品 */
     isGem: boolean;
-    /** 转金额度 */
-    transterQuota?: number;
-    /** 转金周期(天) */
-    transferCycle?: number;
+    /** 父种类 */
+    parentId: PropCategory['id'];
+    /** 子种类 */
+    children: PropCategory[];
   }
 
   /** 金币收支记录 */
@@ -97,8 +91,8 @@ declare namespace ApiMhxy {
     afterGold: number;
     /** 记录类型: expenditure-支出,revenue-收入 */
     type: 'expenditure' | 'revenue';
-    /** 贸易种类 */
-    category: GoldTradeCategory;
+    /** 道具种类 */
+    category: PropCategory;
     /** 归属梦幻账户 */
     account: Account;
     /** 备注 */
@@ -134,8 +128,8 @@ declare namespace ApiMhxy {
     toBeforeGold: number;
     /** 转入账号转金后金币数量 */
     toAfterGold: number;
-    /** 贸易种类 */
-    category: GoldTradeCategory;
+    /** 道具种类 */
+    category: PropCategory;
     /** 转金时间 */
     createTime: Date;
     /** 状态 */

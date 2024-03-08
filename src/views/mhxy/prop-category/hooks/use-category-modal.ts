@@ -10,14 +10,14 @@ export function useCategoryModal() {
     modalType.value = val;
   }
 
-  const editData = ref<Partial<BusinessMhxy.GoldTradeCategory> | null>(null);
+  const editData = ref<Partial<BusinessMhxy.PropCategory> | null>(null);
 
-  function setEditData(data: ApiMhxy.GoldTradeCategory) {
-    const { id, name, isTransfer, isGem } = data;
+  function setEditData(data: ApiMhxy.PropCategory) {
+    const { id, name, isGem, parentId } = data;
     editData.value = {
       id,
       name,
-      isTransfer,
+      parentId,
       isGem,
     };
   }

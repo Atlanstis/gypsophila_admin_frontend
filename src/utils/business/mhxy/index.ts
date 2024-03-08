@@ -86,7 +86,7 @@ export function renderTableAccount(account: ApiMhxy.Account) {
           ? h(
               NTag,
               { size: 'small', type: 'primary', style: { marginLeft: '8px' } },
-              { default: () => '主号' },
+              { default: () => '主' },
             )
           : null,
       ],
