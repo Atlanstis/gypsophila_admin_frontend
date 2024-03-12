@@ -29,6 +29,8 @@ export enum RouteEnum {
   MhxyGoldTransfer = 'Mhxy_Gold_Transfer',
   /** 梦幻西游 道具种类  */
   MhxyPropCategory = 'Mhxy_Prop_Category',
+  /** 梦幻西游 途径  */
+  MhxyChannel = 'Mhxy_Channel',
   /** 系统管理 */
   Management = 'Management',
   /** 用户管理 */

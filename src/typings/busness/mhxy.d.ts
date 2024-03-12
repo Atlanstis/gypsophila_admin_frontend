@@ -45,4 +45,10 @@ declare namespace BusinessMhxy {
     id?: ApiMhxy.PropCategory['id'];
     parentId?: ApiMhxy.PropCategory['id'];
   };
+
+  /** 途径 */
+  type Channel = Pick<ApiMhxy.Channel, 'name'> & {
+    id?: ApiMhxy.Channel['id'];
+    parentId?: ApiMhxy.Channel['id'];
+  };
 }

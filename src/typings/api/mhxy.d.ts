@@ -74,10 +74,24 @@ declare namespace ApiMhxy {
     name: string;
     /** 是否是珍品 */
     isGem: boolean;
-    /** 父种类 */
+    /** 父种类 id */
     parentId: PropCategory['id'];
     /** 子种类 */
     children: PropCategory[];
+  }
+
+  /** 途径 */
+  interface Channel {
+    id: number;
+    /** 名称 */
+    name: string;
+    key: string;
+    /** 是否默认 */
+    isDefault: boolean;
+    /** 父种类 id */
+    parentId: Channel['id'];
+    /** 子种类 */
+    children: Channel[];
   }
 
   /** 金币收支记录 */

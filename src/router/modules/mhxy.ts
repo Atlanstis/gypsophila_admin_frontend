@@ -49,6 +49,15 @@ export const mhxyRoutes: AuthRoute.Route[] = [
           icon: 'iconamoon:category-light',
         },
       },
+      {
+        name: RouteEnum.MhxyChannel,
+        path: '/mhxy/channel',
+        component: getRouteView(RouteEnum.MhxyChannel),
+        meta: {
+          title: '途径管理',
+          icon: 'clarity:two-way-arrows-line',
+        },
+      },
     ],
   },
 ];
