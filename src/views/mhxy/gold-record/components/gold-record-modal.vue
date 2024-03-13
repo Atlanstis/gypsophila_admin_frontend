@@ -27,7 +27,6 @@
       <NFormItem label="途径" path="channelId">
         <NTreeSelect
           v-model:value="formModel.channelId"
-          clearable
           filterable
           cascade
           checkable
@@ -67,7 +66,7 @@
           ></NInputNumber>
         </NFormItem>
         <NFormItem label="收支类型" path="type">
-          <NRadioGroup v-model:value="formModel.type" name="type">
+          <NRadioGroup v-model:value="formModel.type" name="type" :disabled="fieldDisabled">
             <NRadio v-for="opt of MHXY_GOLD_RECORD_TYPE_OPT" :key="opt.value" :value="opt.value">
               {{ opt.label }}
             </NRadio>
@@ -75,7 +74,7 @@
         </NFormItem>
       </template>
       <NFormItem label="状态" path="status">
-        <NRadioGroup v-model:value="formModel.status" name="status">
+        <NRadioGroup v-model:value="formModel.status" name="status" :disabled="fieldDisabled">
           <NRadio v-for="opt of MHXY_GOLD_RECORD_STATUS_OPT" :key="opt.value" :value="opt.value">
             {{ opt.label }}
           </NRadio>
@@ -247,6 +246,16 @@ function afterCloseModal() {
   formRef.value?.restoreValidation();
 }
 
+const fieldDisabled = computed(() => {
+  const key = activeChannel.value?.key;
+  if (!key) return false;
+  return !![
+    MHXY_CHANNEL_DEFAULT_KEY.GOLD_DEDUCT,
+    MHXY_CHANNEL_DEFAULT_KEY.GOLD_LOCK,
+    MHXY_CHANNEL_DEFAULT_KEY.GOLD_UNLOCK,
+  ].find((key) => key === key);
+});
+
 watchEffect(() => {
   if (activeChannel.value) {
     handleUpdateFormModel({
@@ -263,6 +272,24 @@ watchEffect(() => {
       // 途径是活动的情况
       handleUpdateFormModel({
         amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT,
+      });
+    } else if (activeChannel.value.key === MHXY_CHANNEL_DEFAULT_KEY.GOLD_LOCK) {
+      // 金币被锁的情况
+      handleUpdateFormModel({
+        amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT,
+        type: MHXY_GOLD_RECORD_TYPE.EXPENDITURE,
+      });
+    } else if (activeChannel.value.key === MHXY_CHANNEL_DEFAULT_KEY.GOLD_UNLOCK) {
+      // 金币解锁的情况
+      handleUpdateFormModel({
+        amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT,
+        type: MHXY_GOLD_RECORD_TYPE.REVENUE,
+      });
+    } else if (activeChannel.value.key === MHXY_CHANNEL_DEFAULT_KEY.GOLD_DEDUCT) {
+      // 金币扣除的情况
+      handleUpdateFormModel({
+        amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT,
+        type: MHXY_GOLD_RECORD_TYPE.EXPENDITURE,
       });
     } else {
       // 其他情况
