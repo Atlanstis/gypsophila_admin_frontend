@@ -253,7 +253,7 @@ const fieldDisabled = computed(() => {
     MHXY_CHANNEL_DEFAULT_KEY.GOLD_DEDUCT,
     MHXY_CHANNEL_DEFAULT_KEY.GOLD_LOCK,
     MHXY_CHANNEL_DEFAULT_KEY.GOLD_UNLOCK,
-  ].find((key) => key === key);
+  ].find((item) => item === key);
 });
 
 watchEffect(() => {
