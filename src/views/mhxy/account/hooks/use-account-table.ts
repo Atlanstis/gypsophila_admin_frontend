@@ -13,7 +13,7 @@ import { mhxySectImgMap } from '@/assets';
 import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
 import { useIconRender } from '@/composables';
-import { renderTableAccount } from '@/utils';
+import { renderMhxyAccount } from '@/utils';
 import { useThemeStore } from '@/stores';
 
 export function useAccountTable(
@@ -45,9 +45,9 @@ export function useAccountTable(
   const columns: Ref<DataTableColumns<ApiMhxy.Account>> = ref([
     {
       key: 'name',
-      title: '角色',
+      title: '账号',
       align: 'center',
-      render: (row) => renderTableAccount(row),
+      render: (row) => renderMhxyAccount(row),
     },
     {
       key: 'sect',

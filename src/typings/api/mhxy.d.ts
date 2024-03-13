@@ -97,22 +97,20 @@ declare namespace ApiMhxy {
   /** 金币收支记录 */
   interface AccountGoldRecord {
     id: number;
+    /** 途径 */
+    channel: Channel;
+    /** 关联道具 */
+    propCategory?: PropCategory;
     /** 数额 */
     amount: number;
-    /** 操作前金币数量 */
-    beforeGold: number;
-    /** 操作后金币数量 */
-    afterGold: number;
     /** 记录类型: expenditure-支出,revenue-收入 */
     type: 'expenditure' | 'revenue';
-    /** 道具种类 */
-    category: PropCategory;
     /** 归属梦幻账户 */
     account: Account;
+    /** 状态: 0-进行中,1-已完成 */
+    status: 0 | 1;
     /** 备注 */
     remark: string;
-    /** 是否是转金 */
-    isTransfer: boolean;
     /** 记录时间 */
     createTime: Date;
   }

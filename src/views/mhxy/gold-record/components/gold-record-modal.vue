@@ -1,7 +1,7 @@
 <template>
   <NModal
     v-model:show="modalVisible"
-    :title="'转金'"
+    :title="'新增金币记录'"
     preset="card"
     :segmented="true"
     class="w-500px"
@@ -24,22 +24,62 @@
           :render-label="renderAccountLabel"
         />
       </NFormItem>
-      <NFormItem label="种类" path="categoryId">
-        <NSelect
-          v-model:value="formModel.categoryId"
-          :options="goldTradeCategoryList"
-          label-field="name"
-          value-field="id"
+      <NFormItem label="途径" path="channelId">
+        <NTreeSelect
+          v-model:value="formModel.channelId"
+          clearable
           filterable
-        />
+          cascade
+          checkable
+          :options="channelTree"
+        ></NTreeSelect>
       </NFormItem>
-      <NFormItem label="当前金币数" path="nowGold">
+      <NFormItem label="计算方式" path="amountType">
+        <NRadioGroup v-model:value="formModel.amountType" name="amountType">
+          <NRadio
+            v-for="opt of MHXY_GOLD_RECORD_AMOUNT_TYPE_OPT"
+            :key="opt.value"
+            :value="opt.value"
+          >
+            {{ opt.label }}
+          </NRadio>
+        </NRadioGroup>
+      </NFormItem>
+      <NFormItem
+        v-if="formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_ACCOUNT_NOW_AMOUNT"
+        label="当前金币数"
+        path="nowAmount"
+      >
         <NInputNumber
-          v-model:value="formModel.nowGold"
+          v-model:value="formModel.nowAmount"
           class="w-full"
           :precision="0"
           :show-button="false"
         ></NInputNumber>
+      </NFormItem>
+      <template v-if="formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT">
+        <NFormItem label="涉及金额" path="amount">
+          <NInputNumber
+            v-model:value="formModel.amount"
+            class="w-full"
+            :precision="0"
+            :show-button="false"
+          ></NInputNumber>
+        </NFormItem>
+        <NFormItem label="收支类型" path="type">
+          <NRadioGroup v-model:value="formModel.type" name="type">
+            <NRadio v-for="opt of MHXY_GOLD_RECORD_TYPE_OPT" :key="opt.value" :value="opt.value">
+              {{ opt.label }}
+            </NRadio>
+          </NRadioGroup>
+        </NFormItem>
+      </template>
+      <NFormItem label="状态" path="status">
+        <NRadioGroup v-model:value="formModel.status" name="status">
+          <NRadio v-for="opt of MHXY_GOLD_RECORD_STATUS_OPT" :key="opt.value" :value="opt.value">
+            {{ opt.label }}
+          </NRadio>
+        </NRadioGroup>
       </NFormItem>
       <NFormItem label="备注" path="remark">
         <NInput v-model:value="formModel.remark" type="textarea"></NInput>
@@ -56,11 +96,20 @@
 
 <script lang="ts" setup>
 import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
-import { type FormInst, type FormItemRule } from 'naive-ui';
-import { ref, reactive } from 'vue';
-import { mhxyAccountAll, mhxyPropCategoryAll, mhxyAccountGoldRecordAdd } from '@/service';
+import { type FormInst, type FormItemRule, type TreeSelectOption } from 'naive-ui';
+import { ref, reactive, computed, watchEffect } from 'vue';
+import { mhxyAccountAll, mhxyAccountGoldRecordAdd, mhxyChannelList } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { renderAccountLabel } from '@/utils';
+import {
+  MHXY_CHANNEL_DEFAULT_KEY,
+  MHXY_GOLD_RECORD_AMOUNT_TYPE,
+  MHXY_GOLD_RECORD_AMOUNT_TYPE_OPT,
+  MHXY_GOLD_RECORD_STATUS,
+  MHXY_GOLD_RECORD_STATUS_OPT,
+  MHXY_GOLD_RECORD_TYPE,
+  MHXY_GOLD_RECORD_TYPE_OPT,
+} from '@/constants';
 
 defineOptions({
   name: 'MhxyAccountGoldRecordModal',
@@ -89,25 +138,35 @@ const formRef = ref<HTMLElement & FormInst>();
 
 function createFormModel(): FormModel {
   return {
-    nowGold: undefined,
-    remark: '',
     accountId: undefined,
-    categoryId: undefined,
+    channelId: undefined,
+    propCategoryId: undefined,
+    type: MHXY_GOLD_RECORD_TYPE.REVENUE,
+    amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_ACCOUNT_NOW_AMOUNT,
+    amount: undefined,
+    nowAmount: undefined,
+    status: MHXY_GOLD_RECORD_STATUS.COMPLETE,
+    remark: '',
   };
 }
 
 const formModel = reactive<FormModel>(createFormModel());
 
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
-  nowGold: [{ required: true, message: '请输入当前金币数', type: 'number', trigger: 'blur' }],
+  amount: [{ required: true, message: '请输入金币数', type: 'number', trigger: 'blur' }],
+  nowAmount: [{ required: true, message: '请输入金币数', type: 'number', trigger: 'blur' }],
   accountId: [{ required: true, message: '请选择账号', trigger: 'change' }],
-  categoryId: [{ required: true, message: '请选择种类', type: 'number', trigger: 'change' }],
+  channelId: [{ required: true, message: '请选择途径', type: 'number', trigger: 'change' }],
 };
 
+// 选中的途径
+const activeChannel = computed(() => {
+  return channelFlat.value.find((item) => item.id === formModel.channelId) || null;
+});
+
 /** 更新表单数据 */
-function handleUpdateFormModel() {
-  const defaultFormModal = createFormModel();
-  Object.assign(formModel, defaultFormModal);
+function handleUpdateFormModel(modal: Partial<FormModel>) {
+  Object.assign(formModel, modal);
 }
 
 async function formSubmit() {
@@ -127,7 +186,8 @@ function emitSucess() {
 }
 
 const accountList = ref<ApiMhxy.Account[]>([]);
-const goldTradeCategoryList = ref<ApiMhxy.PropCategory[]>([]);
+const channelTree = ref<TreeSelectOption[]>([]);
+const channelFlat = ref<Partial<ApiMhxy.Channel>[]>([]);
 
 /** 获取用户所有梦幻账号 */
 async function getAccountAll() {
@@ -138,24 +198,81 @@ async function getAccountAll() {
   }
 }
 
-/** 获取道具种类数据 */
-async function getGoldTradeCatrgory() {
-  if (goldTradeCategoryList.value.length > 0) return;
-  const { error, data } = await mhxyPropCategoryAll();
+/** 获取途径数据 */
+async function getChannel() {
+  if (channelTree.value.length > 0) return;
+  const { error, data } = await mhxyChannelList();
   if (!error) {
-    goldTradeCategoryList.value = data;
+    const channel = data.filter((item) => item.key !== MHXY_CHANNEL_DEFAULT_KEY.GOLD_TRANSFER);
+    channelTree.value = transferKey(channel);
+    flatTree(channel, channelFlat.value);
   }
+}
+
+/** 将途径扁平化处理 */
+function flatTree(list: ApiMhxy.Channel[], arr: Partial<ApiMhxy.Channel>[]) {
+  return list.forEach((item) => {
+    const children = item.children || [];
+    if (children.length) {
+      flatTree(children, arr);
+    }
+    const copy: Partial<ApiMhxy.Channel> = { ...item };
+    delete copy.children;
+    arr.push(copy);
+  });
+}
+
+/** 转换父种类字段映射 */
+function transferKey(list: ApiMhxy.Channel[]): TreeSelectOption[] {
+  return list.map((item) => {
+    const children = transferKey(item.children);
+    const opt: TreeSelectOption = {
+      label: item.name,
+      key: item.id,
+    };
+    if (children.length) {
+      opt.children = children;
+    }
+    return opt;
+  });
 }
 
 function afterOpenModal() {
   getAccountAll();
-  getGoldTradeCatrgory();
-  handleUpdateFormModel();
+  getChannel();
+  handleUpdateFormModel(createFormModel());
 }
 
 function afterCloseModal() {
   formRef.value?.restoreValidation();
 }
+
+watchEffect(() => {
+  if (activeChannel.value) {
+    handleUpdateFormModel({
+      amount: undefined,
+      nowAmount: undefined,
+    });
+    if (activeChannel.value.key === MHXY_CHANNEL_DEFAULT_KEY.TRADE) {
+      // 途径是交易的情况
+      handleUpdateFormModel({
+        amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT,
+        status: MHXY_GOLD_RECORD_STATUS.IN_PROGRESS,
+      });
+    } else if (activeChannel.value.key === MHXY_CHANNEL_DEFAULT_KEY.ACTIVITY) {
+      // 途径是活动的情况
+      handleUpdateFormModel({
+        amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT,
+      });
+    } else {
+      // 其他情况
+      handleUpdateFormModel({
+        amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_ACCOUNT_NOW_AMOUNT,
+        status: MHXY_GOLD_RECORD_STATUS.COMPLETE,
+      });
+    }
+  }
+});
 </script>
 
 <style lang="scss" scoped></style>

@@ -2,7 +2,7 @@ import { useBoolean, usePagination } from '@/hooks';
 import { mhxyAccountGoldTransferList } from '@/service';
 import { NSpace, type DataTableColumns, NPopover } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
-import { renderGoldTrend, renderTransferRelation } from '@/utils';
+import { renderTransferRelation } from '@/utils';
 import { ButtonIconEnum } from '@/enums';
 import { useThemeStore } from '@/stores';
 import { PopoverBtn } from '@/components';
@@ -58,9 +58,9 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
                 { justify: 'center' },
                 {
                   default: () => [
-                    renderGoldTrend(row.fromAfterGold - row.fromBeforeGold),
+                    // renderGoldTrend(row.fromAfterGold - row.fromBeforeGold),
                     h('span', '/'),
-                    renderGoldTrend(row.toAfterGold - row.toBeforeGold),
+                    // renderGoldTrend(row.toAfterGold - row.toBeforeGold),
                   ],
                 },
               ),

@@ -1,3 +1,6 @@
+export * from './channel';
+export * from './gold-record';
+
 /** 珍品转金完成状态选项 */
 export const GoldTransferFinishStatsOpt: {
   label: string;

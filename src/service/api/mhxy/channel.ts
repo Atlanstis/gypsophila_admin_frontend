@@ -1,6 +1,6 @@
 import { request } from '@/service';
 
-/** 途径-分页 */
+/** 途径-数据 */
 export function mhxyChannelList() {
   return request.post<ApiMhxy.Channel[]>('/mhxy/channel/list', {});
 }

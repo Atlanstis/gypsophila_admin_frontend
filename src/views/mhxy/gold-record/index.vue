@@ -24,21 +24,26 @@
       </template>
     </TableContainer>
     <GoldRecordModal v-model:visible="visible" @on-success="getTableData"></GoldRecordModal>
+    <RecordCompleteModal
+      v-model:visible="completeVisible"
+      :id="recordId"
+      @on-success="getTableData"
+    ></RecordCompleteModal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted } from 'vue';
-import { useRecordModal, useRecordTable } from './hooks';
-import { GoldRecordModal } from './components';
+import { useRecordModal, useRecordTable, useRecordCompleteModal } from './hooks';
+import { GoldRecordModal, RecordCompleteModal } from './components';
 
 defineOptions({
   name: 'MhxyGoldRecord',
 });
 
+const { completeVisible, setRecordId, recordId } = useRecordCompleteModal();
 const { visible, openModal } = useRecordModal();
-
-const { loading, columns, tableData, pagination, getTableData } = useRecordTable();
+const { loading, columns, tableData, pagination, getTableData } = useRecordTable(setRecordId);
 
 function onGoldRecordAdd() {
   openModal();

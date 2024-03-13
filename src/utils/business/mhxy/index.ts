@@ -1,5 +1,6 @@
 import { mhxyRoleImgMap } from '@/assets';
 import { useIconRender } from '@/composables';
+import { MHXY_GOLD_RECORD_TYPE } from '@/constants';
 import { ButtonIconEnum } from '@/enums';
 import { useThemeStore } from '@/stores';
 import { NAvatar, NNumberAnimation, NSpace, NTag } from 'naive-ui';
@@ -11,14 +12,14 @@ export function renderTransferRelation(from: ApiMhxy.Account, to: ApiMhxy.Accoun
   const themeStore = useThemeStore();
   const { themeColor } = themeStore;
   return [
-    renderTableAccount(from),
+    renderMhxyAccount(from),
     h(iconRender({ fontSize: 18, icon: ButtonIconEnum.arrowRight, color: themeColor })),
-    renderTableAccount(to),
+    renderMhxyAccount(to),
   ];
 }
 
 /** Table 组件，金币趋势 */
-export function renderGoldTrend(amount: number) {
+export function renderGoldTrend(amount: number, type: BusinessMhxy.GoldRecordType) {
   const { iconRender } = useIconRender();
   const themeStore = useThemeStore();
   const { success, error, info } = themeStore.otherColor;
@@ -29,7 +30,12 @@ export function renderGoldTrend(amount: number) {
       justify: 'center',
       align: 'center',
       style: {
-        color: amount > 0 ? success : amount === 0 ? info : error,
+        color:
+          type === MHXY_GOLD_RECORD_TYPE.REVENUE
+            ? success
+            : type === MHXY_GOLD_RECORD_TYPE.EXPENDITURE
+            ? error
+            : info,
       },
     },
     {
@@ -44,11 +50,11 @@ export function renderGoldTrend(amount: number) {
           iconRender({
             fontSize: 18,
             icon:
-              amount > 0
+              type === MHXY_GOLD_RECORD_TYPE.REVENUE
                 ? ButtonIconEnum.increase
-                : amount === 0
-                ? ButtonIconEnum.flat
-                : ButtonIconEnum.decrease,
+                : type === MHXY_GOLD_RECORD_TYPE.EXPENDITURE
+                ? ButtonIconEnum.decrease
+                : ButtonIconEnum.flat,
           }),
         ),
       ],
@@ -57,7 +63,7 @@ export function renderGoldTrend(amount: number) {
 }
 
 /** Table 组件，账号信息展示 */
-export function renderTableAccount(account: ApiMhxy.Account) {
+export function renderMhxyAccount(account: ApiMhxy.Account) {
   return h(
     'div',
     {

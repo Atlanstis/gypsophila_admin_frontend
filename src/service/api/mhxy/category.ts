@@ -1,15 +1,6 @@
 import { request } from '@/service';
 
-/** 获取道具种类数据 */
-export function mhxyPropCategoryAll(isTransfer?: boolean) {
-  const params: Record<string, any> = {};
-  if (isTransfer !== undefined) {
-    params.isTransfer = isTransfer;
-  }
-  return request.post<ApiMhxy.PropCategory[]>('/mhxy/gold-prop-category/all', params);
-}
-
-/** 获取道具种类数据-分页 */
+/** 道具种类-数据 */
 export function mhxyPropCategoryList() {
   return request.post<ApiMhxy.PropCategory[]>('/mhxy/prop-category/list', {});
 }
