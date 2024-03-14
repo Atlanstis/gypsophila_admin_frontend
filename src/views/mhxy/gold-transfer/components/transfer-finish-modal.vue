@@ -15,10 +15,10 @@
       :rules="formRules"
     >
       <NFormItem label="转移关系">
-        <component :is="TransferRelation" />
+        <TransferRelationComp />
       </NFormItem>
       <NFormItem label="预计收支情况">
-        <component :is="TransferAmount" />
+        <TransferAmountComp />
       </NFormItem>
       <NFormItem label="实际金额" path="amount">
         <NInputNumber
@@ -47,7 +47,7 @@
 <script lang="ts" setup>
 import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
 import { NSpace, type FormInst, type FormItemRule } from 'naive-ui';
-import { ref, reactive, h, computed, watchEffect } from 'vue';
+import { ref, reactive, h, watchEffect, defineComponent } from 'vue';
 import { mhxyAccountGoldTransferFinish, mhxyAccountGoldTransferInfo } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { renderTransferAmount, renderTransferRelation } from '@/utils';
@@ -131,29 +131,35 @@ watchEffect(() => {
 });
 
 /** 转移关系组件 */
-const TransferRelation = computed(() => {
-  if (!transferInfo.value) return null;
-  const { fromAccount, toAccount } = transferInfo.value;
-  return h(
-    NSpace,
-    { justify: 'center', align: 'center' },
-    {
-      default: () => renderTransferRelation(fromAccount, toAccount),
-    },
-  );
+const TransferRelationComp = defineComponent({
+  name: 'TransferRelationComp',
+  render() {
+    if (!transferInfo.value) return null;
+    const { fromAccount, toAccount } = transferInfo.value;
+    return h(
+      NSpace,
+      { justify: 'center', align: 'center' },
+      {
+        default: () => renderTransferRelation(fromAccount, toAccount),
+      },
+    );
+  },
 });
 
 /** 预计收支情况组件 */
-const TransferAmount = computed(() => {
-  if (!transferInfo.value) return null;
-  const { expenditureAmount } = transferInfo.value;
-  return h(
-    NSpace,
-    { justify: 'center', align: 'center' },
-    {
-      default: () => renderTransferAmount(expenditureAmount, formModel.amount || 0),
-    },
-  );
+const TransferAmountComp = defineComponent({
+  name: 'TransferRelationComp',
+  render() {
+    if (!transferInfo.value) return null;
+    const { expenditureAmount } = transferInfo.value;
+    return h(
+      NSpace,
+      { justify: 'center', align: 'center' },
+      {
+        default: () => renderTransferAmount(expenditureAmount, formModel.amount || 0),
+      },
+    );
+  },
 });
 
 /** 获取转金信息 */

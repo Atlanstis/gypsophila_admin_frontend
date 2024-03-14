@@ -15,15 +15,13 @@
       :rules="formRules"
     >
       <NFormItem label="账号">
-        <component :is="recordInfo ? renderMhxyAccount(recordInfo.account) : null"></component>
+        <AccountComp />
       </NFormItem>
       <NFormItem label="途径">
         {{ recordInfo?.channel.name }}
       </NFormItem>
       <NFormItem label="涉及金额">
-        <component
-          :is="recordInfo ? renderGoldTrend(recordInfo.amount, recordInfo.type) : null"
-        ></component>
+        <GoldTrendComp />
       </NFormItem>
       <NFormItem label="实际金额" path="realAmount">
         <NInputNumber
@@ -52,7 +50,7 @@
 <script lang="ts" setup>
 import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
 import { NSpace, type FormInst, type FormItemRule } from 'naive-ui';
-import { ref, reactive } from 'vue';
+import { ref, reactive, defineComponent } from 'vue';
 import { mhxyAccountGoldRecordComplete, mhxyAccountGoldRecordInfo } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import {
@@ -90,6 +88,22 @@ const { modalVisible, closeModal, submitLoading, showLoading, closeLoading } = u
 );
 
 const formRef = ref<HTMLElement & FormInst>();
+
+const GoldTrendComp = defineComponent({
+  name: 'GoldTrendComp',
+  render() {
+    return recordInfo.value
+      ? renderGoldTrend(recordInfo.value.amount, recordInfo.value.type)
+      : null;
+  },
+});
+
+const AccountComp = defineComponent({
+  name: 'GoldTrendComp',
+  render() {
+    return recordInfo.value ? renderMhxyAccount(recordInfo.value.account) : null;
+  },
+});
 
 function createFormModel(): FormModel {
   return {
