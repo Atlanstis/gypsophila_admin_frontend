@@ -1,7 +1,7 @@
 <template>
   <NModal
     v-model:show="modalVisible"
-    :title="'完成转金'"
+    :title="'转金处理'"
     preset="card"
     :segmented="true"
     class="w-500px"
@@ -15,17 +15,12 @@
       :rules="formRules"
     >
       <NFormItem label="转移关系">
-        <component :is="TransferRelation"></component>
+        <component :is="TransferRelation" />
       </NFormItem>
-      <NFormItem label="珍品交易价格">
-        <NNumberAnimation
-          :from="0"
-          :to="transferInfo?.goldAmount"
-          :duration="1000"
-          :show-separator="true"
-        ></NNumberAnimation>
+      <NFormItem label="预计收支情况">
+        <component :is="TransferAmount" />
       </NFormItem>
-      <NFormItem label="实际到手价格" path="amount">
+      <NFormItem label="实际金额" path="amount">
         <NInputNumber
           v-model:value="formModel.amount"
           class="w-full"
@@ -34,7 +29,10 @@
         ></NInputNumber>
       </NFormItem>
       <NFormItem label="状态">
-        <NSelect v-model:value="formModel.status" :options="GoldTransferFinishStatsOpt"></NSelect>
+        <NSelect
+          v-model:value="formModel.status"
+          :options="MHXY_GOLD_TRANSFER_STATUS_OPT"
+        ></NSelect>
       </NFormItem>
     </NForm>
     <template #footer>
@@ -49,11 +47,11 @@
 <script lang="ts" setup>
 import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
 import { NSpace, type FormInst, type FormItemRule } from 'naive-ui';
-import { ref, reactive, h, computed } from 'vue';
+import { ref, reactive, h, computed, watchEffect } from 'vue';
 import { mhxyAccountGoldTransferFinish, mhxyAccountGoldTransferInfo } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
-import { renderTransferRelation } from '@/utils';
-import { GoldTransferFinishStatsOpt } from '@/constants';
+import { renderTransferAmount, renderTransferRelation } from '@/utils';
+import { MHXY_GOLD_TRANSFER_STATUS_OPT, MHXY_GOLD_TRANSFER_STATUS } from '@/constants';
 
 defineOptions({
   name: 'MhxyAccountGoldTransferFinishModal',
@@ -95,13 +93,12 @@ function createFormModel(): FormModel {
 const formModel = reactive<FormModel>(createFormModel());
 
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
-  amount: [{ required: true, message: '请输入实际到手价格', type: 'number', trigger: 'blur' }],
+  amount: [{ required: true, message: '请输入实际到手金额', type: 'number', trigger: 'blur' }],
 };
 
 /** 更新表单数据 */
-function handleUpdateFormModel() {
-  const defaultFormModal = createFormModel();
-  Object.assign(formModel, defaultFormModal);
+function handleUpdateFormModel(modal: Partial<FormModel>) {
+  Object.assign(formModel, modal);
 }
 
 async function formSubmit() {
@@ -121,8 +118,19 @@ function emitSucess() {
   emit('on-success');
 }
 
-const transferInfo = ref<ApiMhxy.AccountGoldTransfer>();
+const transferInfo = ref<ApiMhxy.AccountGoldTransferGem>();
 
+/** 状态发生变化时，修改实际金额 */
+watchEffect(() => {
+  if (!transferInfo.value) return;
+  if (formModel.status === MHXY_GOLD_TRANSFER_STATUS.FAIL_FROM_LOCK) {
+    handleUpdateFormModel({ amount: transferInfo.value.expenditureAmount });
+  } else if (formModel.status === MHXY_GOLD_TRANSFER_STATUS.SUCCESS) {
+    handleUpdateFormModel({ amount: transferInfo.value.realAmount });
+  }
+});
+
+/** 转移关系组件 */
 const TransferRelation = computed(() => {
   if (!transferInfo.value) return null;
   const { fromAccount, toAccount } = transferInfo.value;
@@ -135,6 +143,19 @@ const TransferRelation = computed(() => {
   );
 });
 
+/** 预计收支情况组件 */
+const TransferAmount = computed(() => {
+  if (!transferInfo.value) return null;
+  const { expenditureAmount } = transferInfo.value;
+  return h(
+    NSpace,
+    { justify: 'center', align: 'center' },
+    {
+      default: () => renderTransferAmount(expenditureAmount, formModel.amount || 0),
+    },
+  );
+});
+
 /** 获取转金信息 */
 async function getTransferInfo() {
   if (!props.id) return;
@@ -142,7 +163,7 @@ async function getTransferInfo() {
   if (!error) {
     transferInfo.value = data;
     // 未处于进行状态，跳过
-    if (data.status !== 'progress') {
+    if (data.status !== MHXY_GOLD_TRANSFER_STATUS.PROGRESS) {
       window.$message?.error(`该记录已处于完成状态，请选择其他记录`, {
         duration: DEFAULT_MESSAGE_DURATION,
       });
@@ -150,13 +171,12 @@ async function getTransferInfo() {
       emitSucess();
       return;
     }
-    formModel.amount = Math.round(transferInfo.value.goldAmount * (1 - 0.09));
   }
 }
 
 function afterOpenModal() {
   getTransferInfo();
-  handleUpdateFormModel();
+  handleUpdateFormModel(createFormModel());
 }
 
 function afterCloseModal() {

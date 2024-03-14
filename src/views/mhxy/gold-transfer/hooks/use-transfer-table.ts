@@ -1,11 +1,12 @@
 import { useBoolean, usePagination } from '@/hooks';
 import { mhxyAccountGoldTransferList } from '@/service';
-import { NSpace, type DataTableColumns, NPopover } from 'naive-ui';
+import { NSpace, type DataTableColumns } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
-import { renderTransferRelation } from '@/utils';
+import { renderTransferAmount, renderTransferRelation } from '@/utils';
 import { ButtonIconEnum } from '@/enums';
 import { useThemeStore } from '@/stores';
 import { PopoverBtn } from '@/components';
+import { MHXY_GOLD_TRANSFER_STATUS, MHXY_GOLD_TRANSFER_STATUS_TEXT } from '@/constants';
 
 export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['id']) => void) {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
@@ -47,41 +48,14 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
       key: 'situation',
       title: '收支情况',
       align: 'center',
-      render: (row) =>
-        h(
-          NPopover,
-          {},
-          {
-            trigger: () =>
-              h(
-                NSpace,
-                { justify: 'center' },
-                {
-                  default: () => [
-                    // renderGoldTrend(row.fromAfterGold - row.fromBeforeGold),
-                    h('span', '/'),
-                    // renderGoldTrend(row.toAfterGold - row.toBeforeGold),
-                  ],
-                },
-              ),
-            default: () =>
-              h('div', [
-                h(
-                  'div',
-                  `损耗：${
-                    row.fromAfterGold - row.fromBeforeGold + row.toAfterGold - row.toBeforeGold
-                  }`,
-                ),
-              ]),
-          },
-        ),
+      render: (row) => renderTransferAmount(row.expenditureAmount, row.revenueAmount),
     },
     {
-      key: 'category',
-      title: '种类',
+      key: 'propCategory',
+      title: '道具种类',
       align: 'center',
       width: '80',
-      render: (row) => h('span', row.category.name),
+      render: (row) => h('span', row.propCategory.name),
     },
     {
       key: 'status',
@@ -89,17 +63,17 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
       align: 'center',
       width: '130',
       render: (row) => {
-        const map: Record<ApiMhxy.AccountGoldTransferStatus, { text: string; color: string }> = {
-          progress: {
-            text: '进行中',
+        const map: Record<MHXY_GOLD_TRANSFER_STATUS, { text: string; color: string }> = {
+          [MHXY_GOLD_TRANSFER_STATUS.PROGRESS]: {
+            text: MHXY_GOLD_TRANSFER_STATUS_TEXT[MHXY_GOLD_TRANSFER_STATUS.PROGRESS],
             color: otherColor.info,
           },
-          success: {
-            text: '转金成功',
+          [MHXY_GOLD_TRANSFER_STATUS.SUCCESS]: {
+            text: MHXY_GOLD_TRANSFER_STATUS_TEXT[MHXY_GOLD_TRANSFER_STATUS.SUCCESS],
             color: otherColor.success,
           },
-          failFromLock: {
-            text: '转金失败，转出账号金币被锁',
+          [MHXY_GOLD_TRANSFER_STATUS.FAIL_FROM_LOCK]: {
+            text: MHXY_GOLD_TRANSFER_STATUS_TEXT[MHXY_GOLD_TRANSFER_STATUS.FAIL_FROM_LOCK],
             color: otherColor.error,
           },
         };
@@ -124,7 +98,7 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
             default: () => [
               row.status === 'progress'
                 ? h(PopoverBtn, {
-                    msg: '完成',
+                    msg: '操作',
                     icon: ButtonIconEnum.finish,
                     onClick: () => {
                       setFinishId(row.id);

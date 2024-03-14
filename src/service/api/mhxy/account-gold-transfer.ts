@@ -18,7 +18,7 @@ export function mhxyAccountGoldTransferList(page: number, size: number) {
 
 /** 转金-单条信息 */
 export function mhxyAccountGoldTransferInfo(id: ApiMhxy.AccountGoldTransfer['id']) {
-  return request.post<ApiMhxy.AccountGoldTransfer>('/mhxy/account/gold-transfer/info', {
+  return request.post<ApiMhxy.AccountGoldTransferGem>('/mhxy/account/gold-transfer/info', {
     id,
   });
 }

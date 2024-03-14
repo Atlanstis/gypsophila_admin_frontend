@@ -29,6 +29,7 @@ declare namespace BusinessMhxy {
     remark: ApiMhxy.AccountGoldRecord['remark'];
   }
 
+  /** 转金记录处理表单类型 */
   interface GoldRecordCompleteFormModal {
     id: ApiMhxy.AccountGoldRecord['id'];
     /** 实际金额 */
@@ -46,25 +47,20 @@ declare namespace BusinessMhxy {
   interface GoldTransferFormModal {
     fromAccountId?: ApiMhxy.Account['id'];
     toAccountId?: ApiMhxy.Account['id'];
-    categoryId?: ApiMhxy.PropCategory['id'];
+    propCategoryId?: ApiMhxy.PropCategory['id'];
     /** 转出账号转金后金币数量 */
     fromNowGold?: number;
     /** 转出账号转金后金币数量 */
     toNowGold?: number;
     /** 珍品交易金额 */
     goldAmount?: number;
-    /** 审核所需时间（小时） */
-    auditEndHours?: number;
   }
-
-  /** 珍品转金完成状态 */
-  type GoldTransferFinishStatus = 'success' | 'fail-from-lock';
 
   /** 梦幻账号珍品转金记录完成时表单类型 */
   interface GoldTransferFinishFormModal {
     id: ApiMhxy.AccountGoldTransfer['id'];
     amount?: number;
-    status: GoldTransferFinishStatus;
+    status: 'success' | 'fail_from_lock';
   }
 
   /** 道具种类表单类型 */

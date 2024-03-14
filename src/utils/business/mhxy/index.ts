@@ -3,8 +3,35 @@ import { useIconRender } from '@/composables';
 import { MHXY_GOLD_RECORD_TYPE } from '@/constants';
 import { ButtonIconEnum } from '@/enums';
 import { useThemeStore } from '@/stores';
-import { NAvatar, NNumberAnimation, NSpace, NTag } from 'naive-ui';
+import { NAvatar, NNumberAnimation, NPopover, NSpace, NTag } from 'naive-ui';
 import { h } from 'vue';
+
+/**
+ * 绘制收支情况
+ * @param expenditureAmount 支出金额
+ * @param revenueAmount 收入金额
+ */
+export function renderTransferAmount(expenditureAmount: number, revenueAmount: number) {
+  return h(
+    NPopover,
+    {},
+    {
+      trigger: () =>
+        h(
+          NSpace,
+          { justify: 'center' },
+          {
+            default: () => [
+              renderGoldTrend(expenditureAmount, 'expenditure'),
+              h('span', '/'),
+              renderGoldTrend(revenueAmount, revenueAmount !== 0 ? 'revenue' : undefined),
+            ],
+          },
+        ),
+      default: () => h('div', [h('div', `损耗：${expenditureAmount - revenueAmount}`)]),
+    },
+  );
+}
 
 /** 绘制转金关系 */
 export function renderTransferRelation(from: ApiMhxy.Account, to: ApiMhxy.Account) {
@@ -19,7 +46,7 @@ export function renderTransferRelation(from: ApiMhxy.Account, to: ApiMhxy.Accoun
 }
 
 /** Table 组件，金币趋势 */
-export function renderGoldTrend(amount: number, type: BusinessMhxy.GoldRecordType) {
+export function renderGoldTrend(amount: number, type?: BusinessMhxy.GoldRecordType) {
   const { iconRender } = useIconRender();
   const themeStore = useThemeStore();
   const { success, error, info } = themeStore.otherColor;
