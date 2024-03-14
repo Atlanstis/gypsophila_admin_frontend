@@ -278,18 +278,21 @@ watchEffect(() => {
       handleUpdateFormModel({
         amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT,
         type: MHXY_GOLD_RECORD_TYPE.EXPENDITURE,
+        status: MHXY_GOLD_RECORD_STATUS.COMPLETE,
       });
     } else if (activeChannel.value.key === MHXY_CHANNEL_DEFAULT_KEY.GOLD_UNLOCK) {
       // 金币解锁的情况
       handleUpdateFormModel({
         amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT,
         type: MHXY_GOLD_RECORD_TYPE.REVENUE,
+        status: MHXY_GOLD_RECORD_STATUS.COMPLETE,
       });
     } else if (activeChannel.value.key === MHXY_CHANNEL_DEFAULT_KEY.GOLD_DEDUCT) {
       // 金币扣除的情况
       handleUpdateFormModel({
         amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT,
         type: MHXY_GOLD_RECORD_TYPE.EXPENDITURE,
+        status: MHXY_GOLD_RECORD_STATUS.COMPLETE,
       });
     } else {
       // 其他情况
