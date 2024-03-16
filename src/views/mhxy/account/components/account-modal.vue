@@ -4,64 +4,82 @@
     :title="title"
     preset="card"
     :segmented="true"
-    class="w-500px"
+    class="w-800px"
   >
     <NForm
       ref="formRef"
       :model="formModel"
       label-placement="left"
-      :label-width="type === 'add' ? 100 : 80"
+      :label-width="100"
       require-mark-placement="left"
       :rules="formRules"
     >
-      <NFormItem v-if="type === 'add'" path="id" label="账号 Id" first>
-        <NInput v-model:value="formModel.id" placeholder="请输入账号 Id"></NInput>
-      </NFormItem>
-      <NFormItem path="name" label="名称">
-        <NInput v-model:value="formModel.name" placeholder="请输入名称"></NInput>
-      </NFormItem>
-
-      <NFormItem path="role" label="角色">
-        <n-select
-          v-model:value="formModel.role"
-          :options="roleOpts"
-          :render-label="renderRoleLabel"
-          filterable
-          placeholder="请选择角色"
-        />
-      </NFormItem>
-      <NFormItem path="sect" label="门派">
-        <n-select
-          v-model:value="formModel.sect"
-          :options="sectOpts"
-          :render-label="renderSectLabel"
-          filterable
-          placeholder="请选择门派"
-        />
-      </NFormItem>
-      <NFormItem v-if="type === 'add'" path="gold" label="金币数">
-        <NInputNumber
-          v-model:value="formModel.gold"
-          :step="1"
-          :min="0"
-          :precision="0"
-          :show-button="false"
-          class="w-full"
-        />
-      </NFormItem>
-      <NFormItem v-if="type === 'add'" path="gold" label="被锁金币数">
-        <NInputNumber
-          v-model:value="formModel.lockGold"
-          :step="1"
-          :min="0"
-          :precision="0"
-          :show-button="false"
-          class="w-full"
-        />
-      </NFormItem>
-      <NFormItem v-if="type === 'add'" path="isPrimary" label="是否为主号">
-        <NSwitch v-model:value="formModel.isPrimary" />
-      </NFormItem>
+      <div>
+        <NH5 prefix="bar">
+          <NText type="primary"> 基本信息 </NText>
+        </NH5>
+        <NGrid x-gap="12" :cols="2">
+          <NGi v-if="type === 'add'">
+            <NFormItem path="id" label="账号 Id" first>
+              <NInput v-model:value="formModel.id" placeholder="请输入账号 Id"></NInput>
+            </NFormItem>
+          </NGi>
+          <NGi :span="type === 'add' ? 1 : 2">
+            <NFormItem path="name" label="名称">
+              <NInput v-model:value="formModel.name" placeholder="请输入名称"></NInput>
+            </NFormItem>
+          </NGi>
+          <NGi>
+            <NFormItem path="role" label="角色">
+              <n-select
+                v-model:value="formModel.role"
+                :options="roleOpts"
+                :render-label="renderRoleLabel"
+                filterable
+                placeholder="请选择角色"
+              />
+            </NFormItem>
+          </NGi>
+          <NGi>
+            <NFormItem path="sect" label="门派">
+              <n-select
+                v-model:value="formModel.sect"
+                :options="sectOpts"
+                :render-label="renderSectLabel"
+                filterable
+                placeholder="请选择门派"
+              />
+            </NFormItem>
+          </NGi>
+          <NGi v-if="type === 'add'">
+            <NFormItem path="gold" label="金币数">
+              <NInputNumber
+                v-model:value="formModel.gold"
+                :step="1"
+                :min="0"
+                :precision="0"
+                :show-button="false"
+                class="w-full"
+              /> </NFormItem
+          ></NGi>
+          <NGi v-if="type === 'add'">
+            <NFormItem path="gold" label="被锁金币数">
+              <NInputNumber
+                v-model:value="formModel.lockGold"
+                :step="1"
+                :min="0"
+                :precision="0"
+                :show-button="false"
+                class="w-full"
+              /> </NFormItem
+          ></NGi>
+          <NGi>
+            <NFormItem path="isPrimary" label="是否为主号">
+              <NSwitch v-model:value="formModel.isPrimary" />
+            </NFormItem>
+          </NGi>
+        </NGrid>
+      </div>
     </NForm>
     <template #footer>
       <NSpace justify="end">
