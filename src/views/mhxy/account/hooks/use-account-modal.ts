@@ -13,12 +13,13 @@ export function useAccountModal() {
   const editData = ref<Partial<BusinessMhxy.AccountFormModel> | null>(null);
 
   function setEditData(data: ApiMhxy.Account) {
-    const { id, name, role, sect } = data;
+    const { id, name, role, sect, isPrimary } = data;
     editData.value = {
       id,
       name,
       role,
       sect,
+      isPrimary,
     };
   }
 
