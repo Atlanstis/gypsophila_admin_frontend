@@ -19,6 +19,18 @@ export enum RouteEnum {
   PlayStation_Search = 'PlayStation_Search',
   /** PlayStation 游戏分析 */
   PlayStation_Analysis = 'PlayStation_Analysis',
+  /** 梦幻西游 */
+  Mhxy = 'Mhxy',
+  /** 梦幻西游 账号 */
+  MhxyAccount = 'Mhxy_Account',
+  /** 梦幻西游 金币收支记录 */
+  MhxyGoldRecord = 'Mhxy_Gold_Record',
+  /** 梦幻西游 转金 */
+  MhxyGoldTransfer = 'Mhxy_Gold_Transfer',
+  /** 梦幻西游 道具种类  */
+  MhxyPropCategory = 'Mhxy_Prop_Category',
+  /** 梦幻西游 途径  */
+  MhxyChannel = 'Mhxy_Channel',
   /** 系统管理 */
   Management = 'Management',
   /** 用户管理 */

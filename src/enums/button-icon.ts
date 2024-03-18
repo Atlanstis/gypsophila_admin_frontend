@@ -24,4 +24,18 @@ export enum ButtonIconEnum {
   favoriteFilled = 'line-md:star-filled',
   /** 链接 */
   link = 'line-md:external-link',
+  /** 上升 */
+  increase = 'streamline:graph-arrow-increase',
+  /** 下降 */
+  decrease = 'streamline:graph-arrow-decrease',
+  /** 持平 */
+  flat = 'ic:twotone-trending-flat',
+  /** 右箭头 */
+  arrowRight = 'line-md:arrow-right',
+  /** 完成 */
+  finish = 'ep:finished',
+  /** 锁 */
+  lock = 'material-symbols-light:lock',
+  circleConfirm = 'line-md:circle-to-confirm-circle-transition',
+  circleClose = 'line-md:close-circle',
 }
