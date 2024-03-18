@@ -50,6 +50,19 @@ export function useRecordTable(setRecordId: (id: ApiMhxy.AccountGoldRecord['id']
         ),
     },
     {
+      key: 'propCategory',
+      title: '道具种类',
+      align: 'center',
+      render: (row) =>
+        h(
+          NSpace,
+          { justify: 'center' },
+          {
+            default: () => [h('span', row.propCategory?.name)],
+          },
+        ),
+    },
+    {
       key: 'situation',
       title: '收支情况',
       align: 'center',

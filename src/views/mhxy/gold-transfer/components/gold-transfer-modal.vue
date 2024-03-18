@@ -92,10 +92,16 @@
 </template>
 
 <script lang="ts" setup>
-import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
-import { type FormInst, type FormItemRule, type TreeSelectOption } from 'naive-ui';
+import {
+  useModal,
+  type ModalEmits,
+  type ModalProps,
+  usePropCategoryList,
+  useAccountAll,
+} from '@/hooks';
+import { type FormInst, type FormItemRule } from 'naive-ui';
 import { ref, reactive, computed } from 'vue';
-import { mhxyAccountAll, mhxyPropCategoryList, mhxyAccountGoldTransferAdd } from '@/service';
+import { mhxyAccountGoldTransferAdd } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { renderAccountLabel } from '@/utils';
 
@@ -168,18 +174,9 @@ function emitSucess() {
   emit('on-success');
 }
 
-const accountList = ref<ApiMhxy.Account[]>([]);
-const propCategoryTree = ref<TreeSelectOption[]>([]);
-const propCategoryFlat = ref<Partial<ApiMhxy.PropCategory>[]>([]);
+const { accountList, getAccountAll } = useAccountAll();
 
-/** 获取用户所有梦幻账号 */
-async function getAccountAll() {
-  if (accountList.value.length > 0) return;
-  const { error, data } = await mhxyAccountAll();
-  if (!error) {
-    accountList.value = data;
-  }
-}
+const { propCategoryTree, propCategoryFlat, getPropCatrgory } = usePropCategoryList();
 
 const fromAccountList = computed(() => {
   return accountList.value.filter((account) => account.id !== formModel.toAccountId);
@@ -188,43 +185,6 @@ const fromAccountList = computed(() => {
 const toAccountList = computed(() => {
   return accountList.value.filter((account) => account.id !== formModel.fromAccountId);
 });
-
-/** 转换父种类字段映射 */
-function transferKey(list: ApiMhxy.PropCategory[]): TreeSelectOption[] {
-  return list.map((item) => {
-    const children = transferKey(item.children);
-    const opt: TreeSelectOption = {
-      label: item.name,
-      key: item.id,
-    };
-    if (children.length) {
-      opt.children = children;
-    }
-    return opt;
-  });
-}
-
-/** 获取道具种类数据 */
-async function getPropCatrgory() {
-  if (propCategoryTree.value.length > 0) return;
-  const { error, data } = await mhxyPropCategoryList();
-  if (!error) {
-    propCategoryTree.value = transferKey(data);
-    flatTree(data, propCategoryFlat.value);
-  }
-}
-
-function flatTree(list: ApiMhxy.PropCategory[], arr: Partial<ApiMhxy.PropCategory>[]) {
-  return list.forEach((item) => {
-    const children = item.children || [];
-    if (children.length) {
-      flatTree(children, arr);
-    }
-    const copy: Partial<ApiMhxy.PropCategory> = { ...item };
-    delete copy.children;
-    arr.push(copy);
-  });
-}
 
 const isCategoryGem = computed(() => {
   const selectCategory = propCategoryFlat.value.find(
