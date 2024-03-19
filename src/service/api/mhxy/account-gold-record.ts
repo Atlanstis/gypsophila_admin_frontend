@@ -27,3 +27,10 @@ export function mhxyAccountGoldRecordInfo(id: ApiMhxy.AccountGoldRecord['id']) {
 export function mhxyAccountGoldRecordComplete(dto: BusinessMhxy.GoldRecordCompleteFormModal) {
   return request.post('/mhxy/account/gold-record/complete', dto);
 }
+
+/** 撤销单条收支记录信息 */
+export function mhxyAccountGoldRecordRevert(id: ApiMhxy.AccountGoldRecord['id']) {
+  return request.post('/mhxy/account/gold-record/revert', {
+    id,
+  });
+}

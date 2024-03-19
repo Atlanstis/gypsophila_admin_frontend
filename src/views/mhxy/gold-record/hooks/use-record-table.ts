@@ -1,12 +1,14 @@
 import { useBoolean, usePagination } from '@/hooks';
-import { mhxyAccountGoldRecordList } from '@/service';
-import { type DataTableColumns, NSpace } from 'naive-ui';
+import { mhxyAccountGoldRecordList, mhxyAccountGoldRecordRevert } from '@/service';
+import { type DataTableColumns, NSpace, NPopconfirm, NButton } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
 import { renderGoldTrend, renderMhxyAccount } from '@/utils';
 import { MHXY_GOLD_RECORD_STATUS, MHXY_GOLD_RECORD_STATUS_OPT } from '@/constants';
 import { useThemeStore } from '@/stores';
 import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
+import { useIconRender } from '@/composables';
+import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 export function useRecordTable(setRecordId: (id: ApiMhxy.AccountGoldRecord['id']) => void) {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
@@ -28,6 +30,8 @@ export function useRecordTable(setRecordId: (id: ApiMhxy.AccountGoldRecord['id']
     }
     endLoading();
   }
+
+  const { iconRender } = useIconRender();
 
   const columns: Ref<DataTableColumns<ApiMhxy.AccountGoldRecord>> = ref([
     {
@@ -91,7 +95,7 @@ export function useRecordTable(setRecordId: (id: ApiMhxy.AccountGoldRecord['id']
       key: 'operation',
       title: '操作',
       align: 'center',
-      width: 80,
+      width: 120,
       render: (row) => {
         return h(
           NSpace,
@@ -107,12 +111,35 @@ export function useRecordTable(setRecordId: (id: ApiMhxy.AccountGoldRecord['id']
                     },
                   })
                 : null,
+              h(
+                NPopconfirm,
+                { onPositiveClick: () => onRevertRecord(row), trigger: 'hover' },
+                {
+                  default: () => '是否撤销此次记录？',
+                  trigger: () =>
+                    h(
+                      NButton,
+                      { type: 'error', size: 'small' },
+                      {
+                        icon: iconRender({ fontSize: 18, icon: ButtonIconEnum.revert }),
+                      },
+                    ),
+                },
+              ),
             ],
           },
         );
       },
     },
   ]);
+
+  async function onRevertRecord(row: ApiMhxy.AccountGoldRecord) {
+    const { error } = await mhxyAccountGoldRecordRevert(row.id);
+    if (!error) {
+      window.$message?.success('撤销成功', { duration: DEFAULT_MESSAGE_DURATION });
+      getTableData();
+    }
+  }
 
   return { loading, tableData, pagination, columns, getTableData };
 }

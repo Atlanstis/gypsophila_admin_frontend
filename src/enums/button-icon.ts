@@ -38,4 +38,6 @@ export enum ButtonIconEnum {
   lock = 'material-symbols-light:lock',
   circleConfirm = 'line-md:circle-to-confirm-circle-transition',
   circleClose = 'line-md:close-circle',
+  /** 撤销 */
+  revert = 'grommet-icons:revert',
 }
