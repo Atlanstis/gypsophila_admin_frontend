@@ -1,12 +1,14 @@
 import { useBoolean, usePagination } from '@/hooks';
-import { mhxyAccountGoldTransferList } from '@/service';
-import { NSpace, type DataTableColumns } from 'naive-ui';
+import { mhxyAccountGoldTransferList, mhxyAccountGoldTransferRevert } from '@/service';
+import { NSpace, type DataTableColumns, NPopconfirm, NButton } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
 import { renderTransferAmount, renderTransferRelation } from '@/utils';
 import { ButtonIconEnum } from '@/enums';
 import { useThemeStore } from '@/stores';
 import { PopoverBtn } from '@/components';
 import { MHXY_GOLD_TRANSFER_STATUS, MHXY_GOLD_TRANSFER_STATUS_TEXT } from '@/constants';
+import { useIconRender } from '@/composables';
+import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['id']) => void) {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
@@ -29,6 +31,8 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
     }
     endLoading();
   }
+
+  const { iconRender } = useIconRender();
 
   const columns: Ref<DataTableColumns<ApiMhxy.AccountGoldTransfer>> = ref([
     {
@@ -105,12 +109,35 @@ export function useTransferTable(setFinishId: (id: ApiMhxy.AccountGoldTransfer['
                     },
                   })
                 : null,
+              h(
+                NPopconfirm,
+                { onPositiveClick: () => onRevertTransfer(row), trigger: 'hover' },
+                {
+                  default: () => '是否撤销此次记录？',
+                  trigger: () =>
+                    h(
+                      NButton,
+                      { type: 'error', size: 'small' },
+                      {
+                        icon: iconRender({ fontSize: 18, icon: ButtonIconEnum.revert }),
+                      },
+                    ),
+                },
+              ),
             ],
           },
         );
       },
     },
   ]);
+
+  async function onRevertTransfer(row: ApiMhxy.AccountGoldTransfer) {
+    const { error } = await mhxyAccountGoldTransferRevert(row.id);
+    if (!error) {
+      window.$message?.success('撤销成功', { duration: DEFAULT_MESSAGE_DURATION });
+      getTableData();
+    }
+  }
 
   return { loading, tableData, pagination, columns, getTableData };
 }

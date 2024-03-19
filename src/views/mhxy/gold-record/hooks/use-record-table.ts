@@ -3,7 +3,11 @@ import { mhxyAccountGoldRecordList, mhxyAccountGoldRecordRevert } from '@/servic
 import { type DataTableColumns, NSpace, NPopconfirm, NButton } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
 import { renderGoldTrend, renderMhxyAccount } from '@/utils';
-import { MHXY_GOLD_RECORD_STATUS, MHXY_GOLD_RECORD_STATUS_OPT } from '@/constants';
+import {
+  MHXY_GOLD_RECORD_STATUS,
+  MHXY_GOLD_RECORD_STATUS_OPT,
+  MHXY_CHANNEL_DEFAULT_KEY,
+} from '@/constants';
 import { useThemeStore } from '@/stores';
 import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
@@ -111,21 +115,23 @@ export function useRecordTable(setRecordId: (id: ApiMhxy.AccountGoldRecord['id']
                     },
                   })
                 : null,
-              h(
-                NPopconfirm,
-                { onPositiveClick: () => onRevertRecord(row), trigger: 'hover' },
-                {
-                  default: () => '是否撤销此次记录？',
-                  trigger: () =>
-                    h(
-                      NButton,
-                      { type: 'error', size: 'small' },
-                      {
-                        icon: iconRender({ fontSize: 18, icon: ButtonIconEnum.revert }),
-                      },
-                    ),
-                },
-              ),
+              row.channel.key !== MHXY_CHANNEL_DEFAULT_KEY.GOLD_TRANSFER
+                ? h(
+                    NPopconfirm,
+                    { onPositiveClick: () => onRevertRecord(row), trigger: 'hover' },
+                    {
+                      default: () => '是否撤销此次记录？',
+                      trigger: () =>
+                        h(
+                          NButton,
+                          { type: 'error', size: 'small' },
+                          {
+                            icon: iconRender({ fontSize: 18, icon: ButtonIconEnum.revert }),
+                          },
+                        ),
+                    },
+                  )
+                : null,
             ],
           },
         );
