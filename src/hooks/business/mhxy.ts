@@ -1,7 +1,13 @@
 import { MHXY_CHANNEL_DEFAULT_KEY } from '@/constants';
-import { mhxyAccountAll, mhxyChannelList, mhxyPropCategoryList } from '@/service';
+import {
+  mhxyAccountAll,
+  mhxyChannelList,
+  mhxyPropCategoryList,
+  mhxyAccountGroupList,
+} from '@/service';
 import type { TreeSelectOption } from 'naive-ui';
 import { ref } from 'vue';
+import { useBoolean } from '@/hooks';
 
 interface TransferItem {
   name: string;
@@ -55,6 +61,7 @@ export function usePropCategoryList() {
   return { propCategoryTree, propCategoryFlat, getPropCatrgory };
 }
 
+/** 获取途径 */
 export function useChannelList() {
   const channelTree = ref<TreeSelectOption[]>([]);
   const channelFlat = ref<Partial<ApiMhxy.Channel>[]>([]);
@@ -73,6 +80,7 @@ export function useChannelList() {
   return { channelTree, channelFlat, getChannel };
 }
 
+/** 获取所有账号 */
 export function useAccountAll() {
   const accountList = ref<ApiMhxy.Account[]>([]);
 
@@ -88,5 +96,33 @@ export function useAccountAll() {
   return {
     accountList,
     getAccountAll,
+  };
+}
+
+/** 获取账号分组列表 */
+export function useAccountGroupList(showItem = false) {
+  const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean();
+
+  const groupData = ref<ApiMhxy.AccountGroup[]>([]);
+
+  async function getTableData() {
+    clearGroupData();
+    startLoading();
+    const { data, error } = await mhxyAccountGroupList(showItem);
+    if (!error) {
+      groupData.value = data;
+    }
+    endLoading();
+  }
+
+  function clearGroupData() {
+    groupData.value = [];
+  }
+
+  return {
+    loading,
+    groupData,
+    getTableData,
+    clearGroupData,
   };
 }

@@ -1,8 +1,14 @@
 declare namespace BusinessMhxy {
   /** 梦幻账号表单类型 */
   type AccountFormModel = Omit<ApiMhxy.Account, 'role' | 'sect'> & {
+    /** 角色 */
     role?: ApiMhxy.AccountRole['value'];
+    /** 门派 */
     sect?: ApiMhxy.AccountSect['value'];
+    /** 分组 id */
+    groupId?: ApiMhxy.AccountGroup['id'];
+    /** 分组备注 */
+    groupRemark: ApiMhxy.AccountGroupItem['remark'];
   };
 
   type GoldRecordType = 'expenditure' | 'revenue';
@@ -73,5 +79,10 @@ declare namespace BusinessMhxy {
   type Channel = Pick<ApiMhxy.Channel, 'name'> & {
     id?: ApiMhxy.Channel['id'];
     parentId?: ApiMhxy.Channel['id'];
+  };
+
+  /** 账号分组表单 */
+  type AccountGroupFormModel = Pick<ApiMhxy.AccountGroup, 'name'> & {
+    id: null | number;
   };
 }

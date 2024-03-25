@@ -80,6 +80,12 @@ export function useAccountTable(
       },
     },
     {
+      key: 'group',
+      title: '分组',
+      align: 'center',
+      render: (row) => h('span', row.groupItem ? row.groupItem.group?.name : ''),
+    },
+    {
       key: 'gold',
       title: '金币数',
       align: 'center',
