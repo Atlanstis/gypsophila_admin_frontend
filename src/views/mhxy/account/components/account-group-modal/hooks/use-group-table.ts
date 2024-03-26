@@ -47,7 +47,7 @@ export function useGroupTable(
         }));
         return h(
           NAvatarGroup,
-          { options: accounts, size: 40, max: 3 },
+          { options: accounts, max: 3 },
           {
             avatar: ({ option }: { option: { name: string; src: string } }) =>
               h(
