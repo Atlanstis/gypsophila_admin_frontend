@@ -82,6 +82,14 @@
               <NSwitch v-model:value="formModel.isPrimary" />
             </NFormItem>
           </NGi>
+          <NGi v-if="type === 'edit'">
+            <NFormItem path="status" label="状态">
+              <NSelect
+                v-model:value="formModel.status"
+                :options="MHXY_ACCOUNT_STATUS_OPT"
+              ></NSelect>
+            </NFormItem>
+          </NGi>
         </NGrid>
         <NH5 prefix="bar">
           <NText type="primary">分组信息</NText>
@@ -125,6 +133,7 @@ import { computed, ref, reactive, h } from 'vue';
 import { mhxyAccountAdd, mhxyAccountEdit } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { mhxyRoleImgMap, mhxySectImgMap } from '@/assets';
+import { MHXY_ACCOUNT_STATUS, MHXY_ACCOUNT_STATUS_OPT } from '@/constants';
 
 defineOptions({
   name: 'MhxyAccountModal',
@@ -201,6 +210,7 @@ function createFormModel(): FormModel {
     lockGold: 0,
     groupId: undefined,
     groupRemark: '',
+    status: MHXY_ACCOUNT_STATUS.ACTIVE,
   };
 }
 

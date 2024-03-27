@@ -67,6 +67,8 @@ declare namespace ApiMhxy {
     lockGold: number;
     /** 分组信息 */
     groupItem?: AccountGroupItem;
+    /** 状态 */
+    status: 'active' | 'banned';
   }
 
   /** 道具种类 */
