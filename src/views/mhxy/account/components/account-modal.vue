@@ -93,7 +93,7 @@
                 v-model:value="formModel.groupId"
                 filterable
                 placeholder="请选择分组"
-                :options="groupData"
+                :options="accountGroupData"
                 :loading="loading"
                 clearable
                 label-field="name"
@@ -204,7 +204,7 @@ function createFormModel(): FormModel {
   };
 }
 
-const { loading, getTableData, groupData } = useAccountGroupList();
+const { loading, getAccountGroupData, accountGroupData } = useAccountGroupList();
 
 const formModel = reactive<FormModel>(createFormModel());
 
@@ -253,7 +253,7 @@ function emitSucess() {
 
 function afterOpenModal() {
   handleUpdateFormModelByFormType();
-  getTableData();
+  getAccountGroupData();
 }
 
 function afterCloseModal() {

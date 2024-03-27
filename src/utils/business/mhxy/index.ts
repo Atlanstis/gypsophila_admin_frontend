@@ -129,30 +129,32 @@ export function renderMhxyAccount(account: ApiMhxy.Account) {
 
 /** Select 组件，梦幻账号 Label */
 export function renderAccountLabel(account: ApiMhxy.Account) {
-  return h(
-    'div',
-    {
-      style: {
-        display: 'flex',
-        alignItems: 'center',
-      },
-    },
-    [
-      h(NAvatar, {
-        src: mhxyRoleImgMap[account.role],
-        round: true,
-        size: 'small',
-      }),
-      h(
+  return account.role
+    ? h(
         'div',
         {
           style: {
-            marginLeft: '12px',
-            padding: '4px 0',
+            display: 'flex',
+            alignItems: 'center',
           },
         },
-        [account.name],
-      ),
-    ],
-  );
+        [
+          h(NAvatar, {
+            src: mhxyRoleImgMap[account.role],
+            round: true,
+            size: 'small',
+          }),
+          h(
+            'div',
+            {
+              style: {
+                marginLeft: '12px',
+                padding: '4px 0',
+              },
+            },
+            [account.name],
+          ),
+        ],
+      )
+    : h('div', account.name);
 }

@@ -103,26 +103,49 @@ export function useAccountAll() {
 export function useAccountGroupList(showItem = false) {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean();
 
-  const groupData = ref<ApiMhxy.AccountGroup[]>([]);
+  const accountGroupData = ref<ApiMhxy.AccountGroup[]>([]);
 
-  async function getTableData() {
+  async function getAccountGroupData() {
     clearGroupData();
     startLoading();
     const { data, error } = await mhxyAccountGroupList(showItem);
     if (!error) {
-      groupData.value = data;
+      accountGroupData.value = data;
     }
     endLoading();
   }
 
   function clearGroupData() {
-    groupData.value = [];
+    accountGroupData.value = [];
+  }
+
+  /**
+   * 将账号分组数据转换成符合 Select 组件的数据
+   * @param exclude 需排除的账号 id 数组
+   */
+  function transferGroupSelect(exclude: ApiMhxy.Account['id'][] = []) {
+    return accountGroupData.value
+      .map((group) => {
+        const children = group.items
+          .map((item) => {
+            return item.account;
+          })
+          .filter((account) => !exclude.includes(account.id));
+        return {
+          type: 'group',
+          key: group.id,
+          name: group.name,
+          children,
+        };
+      })
+      .filter((group) => group.children.length > 0);
   }
 
   return {
     loading,
-    groupData,
-    getTableData,
+    accountGroupData,
+    getAccountGroupData,
     clearGroupData,
+    transferGroupSelect,
   };
 }

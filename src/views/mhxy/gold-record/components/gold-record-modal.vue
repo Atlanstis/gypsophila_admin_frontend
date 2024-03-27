@@ -113,7 +113,7 @@ import {
   type ModalProps,
   usePropCategoryList,
   useChannelList,
-  useAccountAll,
+  useAccountGroupList,
 } from '@/hooks';
 import { type FormInst, type FormItemRule } from 'naive-ui';
 import { ref, reactive, computed, watchEffect } from 'vue';
@@ -204,14 +204,16 @@ function emitSucess() {
   emit('on-success');
 }
 
-const { accountList, getAccountAll } = useAccountAll();
 const { propCategoryTree, getPropCatrgory } = usePropCategoryList();
 const { channelTree, channelFlat, getChannel } = useChannelList();
+const { transferGroupSelect, getAccountGroupData } = useAccountGroupList(true);
+
+const accountList = computed(() => transferGroupSelect());
 
 function afterOpenModal() {
-  getAccountAll();
   getChannel();
   getPropCatrgory();
+  getAccountGroupData();
   handleUpdateFormModel(createFormModel());
 }
 

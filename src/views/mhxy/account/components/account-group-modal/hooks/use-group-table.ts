@@ -26,7 +26,8 @@ export function useGroupTable(
   handleEdit: (row: ApiMhxy.AccountGroup) => void,
   handleDelete: (id: number) => void,
 ) {
-  const { loading, getTableData, groupData, clearGroupData } = useAccountGroupList(true);
+  const { loading, getAccountGroupData, accountGroupData, clearGroupData } =
+    useAccountGroupList(true);
 
   const { iconRender } = useIconRender();
 
@@ -106,11 +107,11 @@ export function useGroupTable(
     /** 列表字段 */
     columns,
     /** 列表数据 */
-    tableData: groupData,
+    tableData: accountGroupData,
     /** 列表加载状态 */
     loading,
     /** 获取列表数据 */
-    getTableData,
+    getTableData: getAccountGroupData,
     /** 清除列表数据 */
     clearTableData: clearGroupData,
   };
