@@ -29,6 +29,8 @@ declare namespace BusinessMhxy {
     amount?: number;
     /** 账号现有金币数 */
     nowAmount?: number;
+    /** 账号现有被锁金币数 */
+    nowLockAmount?: number;
     /** 状态: 0-进行中,1-已完成 */
     status: 0 | 1;
     /** 备注 */
