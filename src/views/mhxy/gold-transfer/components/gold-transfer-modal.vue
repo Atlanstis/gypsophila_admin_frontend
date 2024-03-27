@@ -97,7 +97,7 @@ import {
   type ModalEmits,
   type ModalProps,
   usePropCategoryList,
-  useAccountAll,
+  useAccountGroupList,
 } from '@/hooks';
 import { type FormInst, type FormItemRule } from 'naive-ui';
 import { ref, reactive, computed } from 'vue';
@@ -174,16 +174,15 @@ function emitSucess() {
   emit('on-success');
 }
 
-const { accountList, getAccountAll } = useAccountAll();
-
 const { propCategoryTree, propCategoryFlat, getPropCatrgory } = usePropCategoryList();
+const { transferGroupSelect, getAccountGroupData } = useAccountGroupList(true);
 
 const fromAccountList = computed(() => {
-  return accountList.value.filter((account) => account.id !== formModel.toAccountId);
+  return transferGroupSelect(formModel.toAccountId ? [formModel.toAccountId] : []);
 });
 
 const toAccountList = computed(() => {
-  return accountList.value.filter((account) => account.id !== formModel.fromAccountId);
+  return transferGroupSelect(formModel.fromAccountId ? [formModel.fromAccountId] : []);
 });
 
 const isCategoryGem = computed(() => {
@@ -194,7 +193,7 @@ const isCategoryGem = computed(() => {
 });
 
 function afterOpenModal() {
-  getAccountAll();
+  getAccountGroupData();
   getPropCatrgory();
   handleUpdateFormModel();
 }

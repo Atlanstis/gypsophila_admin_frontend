@@ -16,15 +16,19 @@
     >
       <div>
         <NH5 prefix="bar">
-          <NText type="primary"> 基本信息 </NText>
+          <NText type="primary">基本信息</NText>
         </NH5>
         <NGrid x-gap="12" :cols="2">
-          <NGi v-if="type === 'add'">
-            <NFormItem path="id" label="账号 Id" first>
-              <NInput v-model:value="formModel.id" placeholder="请输入账号 Id"></NInput>
+          <NGi>
+            <NFormItem path="id" label="账号 Id">
+              <NInput
+                v-model:value="formModel.id"
+                placeholder="请输入账号 Id"
+                :disabled="type === 'edit'"
+              ></NInput>
             </NFormItem>
           </NGi>
-          <NGi :span="type === 'add' ? 1 : 2">
+          <NGi>
             <NFormItem path="name" label="名称">
               <NInput v-model:value="formModel.name" placeholder="请输入名称"></NInput>
             </NFormItem>
@@ -78,6 +82,38 @@
               <NSwitch v-model:value="formModel.isPrimary" />
             </NFormItem>
           </NGi>
+          <NGi v-if="type === 'edit'">
+            <NFormItem path="status" label="状态">
+              <NSelect
+                v-model:value="formModel.status"
+                :options="MHXY_ACCOUNT_STATUS_OPT"
+              ></NSelect>
+            </NFormItem>
+          </NGi>
+        </NGrid>
+        <NH5 prefix="bar">
+          <NText type="primary">分组信息</NText>
+        </NH5>
+        <NGrid x-gap="12" :cols="2">
+          <NGi>
+            <NFormItem path="groupId" label="分组">
+              <NSelect
+                v-model:value="formModel.groupId"
+                filterable
+                placeholder="请选择分组"
+                :options="accountGroupData"
+                :loading="loading"
+                clearable
+                label-field="name"
+                value-field="id"
+              ></NSelect>
+            </NFormItem>
+          </NGi>
+          <NGi v-if="formModel.groupId" :span="2">
+            <NFormItem path="groupRemark" label="备注">
+              <NInput v-model:value="formModel.groupRemark" type="textarea"></NInput>
+            </NFormItem>
+          </NGi>
         </NGrid>
       </div>
     </NForm>
@@ -91,12 +127,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
+import { useModal, type ModalEmits, type ModalProps, useAccountGroupList } from '@/hooks';
 import { NAvatar, type FormInst, type FormItemRule, type SelectRenderLabel } from 'naive-ui';
 import { computed, ref, reactive, h } from 'vue';
 import { mhxyAccountAdd, mhxyAccountEdit } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { mhxyRoleImgMap, mhxySectImgMap } from '@/assets';
+import { MHXY_ACCOUNT_STATUS, MHXY_ACCOUNT_STATUS_OPT } from '@/constants';
 
 defineOptions({
   name: 'MhxyAccountModal',
@@ -171,8 +208,13 @@ function createFormModel(): FormModel {
     sect: undefined,
     gold: 0,
     lockGold: 0,
+    groupId: undefined,
+    groupRemark: '',
+    status: MHXY_ACCOUNT_STATUS.ACTIVE,
   };
 }
+
+const { loading, getAccountGroupData, accountGroupData } = useAccountGroupList();
 
 const formModel = reactive<FormModel>(createFormModel());
 
@@ -221,10 +263,12 @@ function emitSucess() {
 
 function afterOpenModal() {
   handleUpdateFormModelByFormType();
+  getAccountGroupData();
 }
 
 function afterCloseModal() {
   formRef.value?.restoreValidation();
+  handleUpdateFormModel(createFormModel());
 }
 
 const createRenderLabel: (type: 'sect' | 'role') => SelectRenderLabel = (type) => {

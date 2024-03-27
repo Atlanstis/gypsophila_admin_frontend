@@ -1,7 +1,13 @@
 import { MHXY_CHANNEL_DEFAULT_KEY } from '@/constants';
-import { mhxyAccountAll, mhxyChannelList, mhxyPropCategoryList } from '@/service';
+import {
+  mhxyAccountAll,
+  mhxyChannelList,
+  mhxyPropCategoryList,
+  mhxyAccountGroupList,
+} from '@/service';
 import type { TreeSelectOption } from 'naive-ui';
 import { ref } from 'vue';
+import { useBoolean } from '@/hooks';
 
 interface TransferItem {
   name: string;
@@ -55,6 +61,7 @@ export function usePropCategoryList() {
   return { propCategoryTree, propCategoryFlat, getPropCatrgory };
 }
 
+/** 获取途径 */
 export function useChannelList() {
   const channelTree = ref<TreeSelectOption[]>([]);
   const channelFlat = ref<Partial<ApiMhxy.Channel>[]>([]);
@@ -73,6 +80,7 @@ export function useChannelList() {
   return { channelTree, channelFlat, getChannel };
 }
 
+/** 获取所有账号 */
 export function useAccountAll() {
   const accountList = ref<ApiMhxy.Account[]>([]);
 
@@ -88,5 +96,56 @@ export function useAccountAll() {
   return {
     accountList,
     getAccountAll,
+  };
+}
+
+/** 获取账号分组列表 */
+export function useAccountGroupList(showItem = false) {
+  const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean();
+
+  const accountGroupData = ref<ApiMhxy.AccountGroup[]>([]);
+
+  async function getAccountGroupData() {
+    clearGroupData();
+    startLoading();
+    const { data, error } = await mhxyAccountGroupList(showItem);
+    if (!error) {
+      accountGroupData.value = data;
+    }
+    endLoading();
+  }
+
+  function clearGroupData() {
+    accountGroupData.value = [];
+  }
+
+  /**
+   * 将账号分组数据转换成符合 Select 组件的数据
+   * @param exclude 需排除的账号 id 数组
+   */
+  function transferGroupSelect(exclude: ApiMhxy.Account['id'][] = []) {
+    return accountGroupData.value
+      .map((group) => {
+        const children = group.items
+          .map((item) => {
+            return item.account;
+          })
+          .filter((account) => !exclude.includes(account.id));
+        return {
+          type: 'group',
+          key: group.id,
+          name: group.name,
+          children,
+        };
+      })
+      .filter((group) => group.children.length > 0);
+  }
+
+  return {
+    loading,
+    accountGroupData,
+    getAccountGroupData,
+    clearGroupData,
+    transferGroupSelect,
   };
 }

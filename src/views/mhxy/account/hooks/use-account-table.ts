@@ -8,6 +8,7 @@ import {
   NPopconfirm,
   NButton,
 } from 'naive-ui';
+import { MHXY_ACCOUNT_STATUS_OPT, MHXY_ACCOUNT_STATUS } from '@/constants';
 import { h, ref, type Ref } from 'vue';
 import { mhxySectImgMap } from '@/assets';
 import { PopoverBtn } from '@/components';
@@ -53,6 +54,7 @@ export function useAccountTable(
       key: 'sect',
       title: '门派',
       align: 'center',
+      width: 140,
       render: (row) => {
         const sectName = accountSects.value.find((item) => item.value === row.sect)?.label;
         return h(
@@ -78,6 +80,13 @@ export function useAccountTable(
           },
         );
       },
+    },
+    {
+      key: 'group',
+      title: '分组',
+      align: 'center',
+      width: 100,
+      render: (row) => h('span', row.groupItem ? row.groupItem.group?.name : ''),
     },
     {
       key: 'gold',
@@ -122,9 +131,24 @@ export function useAccountTable(
         ),
     },
     {
+      key: 'status',
+      title: '状态',
+      align: 'center',
+      width: 100,
+      render: (row) => {
+        const opt = MHXY_ACCOUNT_STATUS_OPT.find((item) => item.value === row.status);
+        const colorMap = {
+          [MHXY_ACCOUNT_STATUS.ACTIVE]: otherColor.success,
+          [MHXY_ACCOUNT_STATUS.BANNED]: otherColor.error,
+        };
+        return h('span', { style: { color: colorMap[row.status] } }, opt?.label);
+      },
+    },
+    {
       key: 'actions',
       title: '操作',
       align: 'center',
+      width: 140,
       render: (row) => {
         return h(
           NSpace,

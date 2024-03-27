@@ -16,7 +16,7 @@
           flex-height
           striped
           remote
-          :row-key="(row) => row.id"
+          :row-key="(row: ApiMhxy.PropCategory) => row.id"
           :loading="loading"
           :columns="columns"
           :data="tableData"

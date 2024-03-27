@@ -3,12 +3,14 @@
     <TableContainer>
       <template #header>
         <NSpace class="pb-12px" justify="space-between">
-          <NSpace>
-            <NButton type="primary" @click="onAccountAdd">
-              <icon-ic-round-plus class="mr-4px text-20px" />
-              新增
-            </NButton>
-          </NSpace>
+          <NButton type="primary" @click="onAccountAdd">
+            <icon-ic-round-plus class="mr-4px text-20px" />
+            新增
+          </NButton>
+          <NButton type="primary" @click="openGroupManageModal">
+            <IconMingcuteSettings6Line class="mr-4px text-20px" />
+            分组管理
+          </NButton>
         </NSpace>
       </template>
       <template #content>
@@ -31,13 +33,14 @@
       :account-sects="accountSects"
       @on-success="getTableData"
     ></AccountModal>
+    <AccountGroupModal v-model:visible="groupManageVisible"></AccountGroupModal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { mhxyAccountDelete, mhxyAccountRole, mhxyAccountSect } from '@/service';
-import { AccountModal } from './components';
-import { useAccountModal, useAccountTable } from './hooks';
+import { AccountModal, AccountGroupModal } from './components';
+import { useAccountGroupModal, useAccountModal, useAccountTable } from './hooks';
 import { onMounted, ref } from 'vue';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
@@ -54,6 +57,7 @@ const { loading, pagination, tableData, columns, getTableData } = useAccountTabl
   onAccountDelete,
 );
 const { modalType, visible, openModal, setModalType, setEditData, editData } = useAccountModal();
+const { groupManageVisible, openGroupManageModal } = useAccountGroupModal();
 
 function onAccountAdd() {
   setModalType('add');

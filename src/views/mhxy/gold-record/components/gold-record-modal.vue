@@ -47,7 +47,11 @@
         ></NTreeSelect>
       </NFormItem>
       <NFormItem label="计算方式" path="amountType">
-        <NRadioGroup v-model:value="formModel.amountType" name="amountType">
+        <NRadioGroup
+          v-model:value="formModel.amountType"
+          name="amountType"
+          :disabled="amountTypeDisabled"
+        >
           <NRadio
             v-for="opt of MHXY_GOLD_RECORD_AMOUNT_TYPE_OPT"
             :key="opt.value"
@@ -64,6 +68,14 @@
       >
         <NInputNumber
           v-model:value="formModel.nowAmount"
+          class="w-full"
+          :precision="0"
+          :show-button="false"
+        ></NInputNumber>
+      </NFormItem>
+      <NFormItem v-if="showLockAmount" label="当前被锁金币数" path="nowLockAmount">
+        <NInputNumber
+          v-model:value="formModel.nowLockAmount"
           class="w-full"
           :precision="0"
           :show-button="false"
@@ -113,7 +125,7 @@ import {
   type ModalProps,
   usePropCategoryList,
   useChannelList,
-  useAccountAll,
+  useAccountGroupList,
 } from '@/hooks';
 import { type FormInst, type FormItemRule } from 'naive-ui';
 import { ref, reactive, computed, watchEffect } from 'vue';
@@ -164,6 +176,7 @@ function createFormModel(): FormModel {
     amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_ACCOUNT_NOW_AMOUNT,
     amount: undefined,
     nowAmount: undefined,
+    nowLockAmount: undefined,
     status: MHXY_GOLD_RECORD_STATUS.COMPLETE,
     remark: '',
   };
@@ -174,6 +187,7 @@ const formModel = reactive<FormModel>(createFormModel());
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
   amount: [{ required: true, message: '请输入金币数', type: 'number', trigger: 'blur' }],
   nowAmount: [{ required: true, message: '请输入金币数', type: 'number', trigger: 'blur' }],
+  nowLockAmount: [{ required: true, message: '请输入金币数', type: 'number', trigger: 'blur' }],
   accountId: [{ required: true, message: '请选择账号', trigger: 'change' }],
   channelId: [{ required: true, message: '请选择途径', type: 'number', trigger: 'change' }],
 };
@@ -204,14 +218,16 @@ function emitSucess() {
   emit('on-success');
 }
 
-const { accountList, getAccountAll } = useAccountAll();
 const { propCategoryTree, getPropCatrgory } = usePropCategoryList();
 const { channelTree, channelFlat, getChannel } = useChannelList();
+const { transferGroupSelect, getAccountGroupData } = useAccountGroupList(true);
+
+const accountList = computed(() => transferGroupSelect());
 
 function afterOpenModal() {
-  getAccountAll();
   getChannel();
   getPropCatrgory();
+  getAccountGroupData();
   handleUpdateFormModel(createFormModel());
 }
 
@@ -226,7 +242,19 @@ const fieldDisabled = computed(() => {
     MHXY_CHANNEL_DEFAULT_KEY.GOLD_DEDUCT,
     MHXY_CHANNEL_DEFAULT_KEY.GOLD_LOCK,
     MHXY_CHANNEL_DEFAULT_KEY.GOLD_UNLOCK,
+    MHXY_CHANNEL_DEFAULT_KEY.MANUAL_CALIBRATION,
   ].find((item) => item === key);
+});
+
+const amountTypeDisabled = computed(() => {
+  const key = activeChannel.value?.key;
+  if (!key) return false;
+  return MHXY_CHANNEL_DEFAULT_KEY.MANUAL_CALIBRATION === key;
+});
+
+const showLockAmount = computed(() => {
+  const key = activeChannel.value?.key;
+  return MHXY_CHANNEL_DEFAULT_KEY.MANUAL_CALIBRATION === key;
 });
 
 watchEffect(() => {
@@ -265,6 +293,12 @@ watchEffect(() => {
       handleUpdateFormModel({
         amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT,
         type: MHXY_GOLD_RECORD_TYPE.EXPENDITURE,
+        status: MHXY_GOLD_RECORD_STATUS.COMPLETE,
+      });
+    } else if (activeChannel.value.key === MHXY_CHANNEL_DEFAULT_KEY.MANUAL_CALIBRATION) {
+      // 人工校正
+      handleUpdateFormModel({
+        amountType: MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_ACCOUNT_NOW_AMOUNT,
         status: MHXY_GOLD_RECORD_STATUS.COMPLETE,
       });
     } else {

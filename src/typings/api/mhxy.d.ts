@@ -65,6 +65,10 @@ declare namespace ApiMhxy {
     gold: number;
     /** 被锁金币数 */
     lockGold: number;
+    /** 分组信息 */
+    groupItem?: AccountGroupItem;
+    /** 状态 */
+    status: 'active' | 'banned';
   }
 
   /** 道具种类 */
@@ -138,5 +142,20 @@ declare namespace ApiMhxy {
   interface AccountGoldTransferGem extends AccountGoldTransfer {
     /** 实际到手金额 */
     realAmount: number;
+  }
+
+  /** 账号分组 */
+  interface AccountGroup {
+    id: number;
+    name: string;
+    items: AccountGroupItem[];
+  }
+
+  /** 账号分组子项 */
+  interface AccountGroupItem {
+    id: number;
+    remark: string;
+    account: Account;
+    group?: AccountGroup;
   }
 }

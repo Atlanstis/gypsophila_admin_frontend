@@ -27,3 +27,10 @@ export function mhxyAccountGoldTransferInfo(id: ApiMhxy.AccountGoldTransfer['id'
 export function mhxyAccountGoldTransferFinish(dto: BusinessMhxy.GoldTransferFinishFormModal) {
   return request.post<ApiMhxy.AccountGoldTransfer>('/mhxy/account/gold-transfer/finish', dto);
 }
+
+/** 转金-撤销 */
+export function mhxyAccountGoldTransferRevert(id: ApiMhxy.AccountGoldTransfer['id']) {
+  return request.post('/mhxy/account/gold-transfer/revert', {
+    id,
+  });
+}
