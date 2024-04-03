@@ -17,3 +17,17 @@ export const SCHEDULE_TASK_STATUS_OPT: { label: string; value: SCHEDULE_TASK_STA
   { label: '执行中', value: SCHEDULE_TASK_STATUS.IN_PROGRESS },
   { label: '已关闭', value: SCHEDULE_TASK_STATUS.CLOSE },
 ];
+
+/** 定时任务日志状态 */
+export const enum SCHEDULE_TASK_LOG_STATUS {
+  /** 成功 */
+  SUCCESS = 'success',
+  /** 失败 */
+  FAIL = 'fail',
+}
+
+/** 定时任务日志状态选项 */
+export const SCHEDULE_TASK_LOG_STATUS_OPT: { label: string; value: SCHEDULE_TASK_LOG_STATUS }[] = [
+  { label: '成功', value: SCHEDULE_TASK_LOG_STATUS.SUCCESS },
+  { label: '失败', value: SCHEDULE_TASK_LOG_STATUS.FAIL },
+];

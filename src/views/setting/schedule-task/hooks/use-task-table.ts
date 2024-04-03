@@ -11,6 +11,7 @@ import { SCHEDULE_TASK_STATUS, SCHEDULE_TASK_STATUS_OPT } from '@/constants';
 import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
 import { useThemeStore } from '@/stores';
+import { TaskLog } from '../components';
 
 /** 有关列表的操作 */
 export function useTaskTable() {
@@ -42,6 +43,12 @@ export function useTaskTable() {
   }
 
   const columns: Ref<DataTableColumns<ApiScheduleTask.ScheduleTask>> = ref([
+    {
+      type: 'expand',
+      renderExpand: (rowData) => {
+        return h(TaskLog, { taskId: rowData.id });
+      },
+    },
     {
       key: 'name',
       title: '任务名称',

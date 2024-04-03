@@ -15,4 +15,17 @@ declare namespace ApiScheduleTask {
     /** 上次执行时间 */
     lastRunTime: Date;
   }
+
+  /** 执行日志 */
+  interface ScheduleTaskLog {
+    id: number;
+    /** 执行时间 */
+    executionTime: Date;
+    /** 耗时(秒) */
+    consumingTime: number;
+    /** 执行状态 */
+    status: 'success' | 'fail';
+    /** 执行结果 */
+    result: string;
+  }
 }

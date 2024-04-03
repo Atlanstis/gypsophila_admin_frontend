@@ -38,3 +38,21 @@ export function scheduleTaskOpen(key: ApiScheduleTask.ScheduleTask['key']) {
     key,
   });
 }
+
+/**
+ * 定时任务-执行日志
+ */
+export function scheduleTaskLogList(
+  page: number,
+  size: number,
+  taskId: ApiScheduleTask.ScheduleTask['id'],
+) {
+  return request.post<ApiCommon.TableData<ApiScheduleTask.ScheduleTaskLog[]>>(
+    '/schedule-task/log/list',
+    {
+      page,
+      size,
+      taskId,
+    },
+  );
+}
