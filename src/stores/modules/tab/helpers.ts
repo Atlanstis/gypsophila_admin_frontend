@@ -33,10 +33,16 @@ export function isInTabs(tabs: Layout.AdminTab[], fullPath: string) {
  */
 export function getTabByVueRoute(route: RouteRecordNormalized | RouteLocationNormalizedLoaded) {
   const fullPath = hasFullPath(route) ? route.fullPath : route.path;
+  let meta = route.meta;
+  if (hasMatched(route)) {
+    if (route.matched.length > 0) {
+      meta = route.matched[route.matched.length - 1].meta;
+    }
+  }
   const tab: Layout.AdminTab = {
     name: route.name,
     fullPath,
-    meta: route.meta,
+    meta,
     scrollPosition: {
       left: 0,
       top: 0,
@@ -53,4 +59,14 @@ function hasFullPath(
   route: RouteRecordNormalized | RouteLocationNormalizedLoaded,
 ): route is RouteLocationNormalizedLoaded {
   return Boolean((route as RouteLocationNormalizedLoaded).fullPath);
+}
+
+/**
+ * 判断路由是否有 matched 属性
+ * @param route 路由
+ */
+function hasMatched(
+  route: RouteRecordNormalized | RouteLocationNormalizedLoaded,
+): route is RouteLocationNormalizedLoaded {
+  return Boolean((route as RouteLocationNormalizedLoaded).matched);
 }
