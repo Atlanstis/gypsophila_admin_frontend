@@ -13,6 +13,15 @@ export const settingRoutes: AuthRoute.Route[] = [
     },
     children: [
       {
+        name: RouteEnum.Schedule_Task,
+        path: '/setting/schedule-task',
+        component: getRouteView(RouteEnum.Schedule_Task),
+        meta: {
+          title: '定时任务',
+          icon: 'akar-icons:schedule',
+        },
+      },
+      {
         name: RouteEnum.Setting_Common,
         path: '/setting/common',
         component: getRouteView(RouteEnum.Setting_Common),

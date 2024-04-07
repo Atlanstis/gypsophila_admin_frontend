@@ -19,4 +19,5 @@ export const Views: Record<PageRoute.HasPageRoute, Common.AsyncComponent> = {
   [RouteEnum.Management_Role]: () => import('./management/role/index.vue'),
   [RouteEnum.Management_Menu]: () => import('./management/menu/index.vue'),
   [RouteEnum.Setting_Common]: () => import('./setting/common/index.vue'),
+  [RouteEnum.Schedule_Task]: () => import('./setting/schedule-task/index.vue'),
 };

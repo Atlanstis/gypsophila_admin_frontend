@@ -47,7 +47,7 @@ declare namespace PageRoute {
 
   /** 系统设置 */
   type SettingNoPageName = 'Setting';
-  type SettingName = 'Setting_Common';
+  type SettingName = 'Setting_Common' | 'Schedule_Task';
   type AllSettingName = SettingNoPageName | SettingName;
 
   /** 全部路由名 */

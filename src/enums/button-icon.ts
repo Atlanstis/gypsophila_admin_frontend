@@ -40,4 +40,8 @@ export enum ButtonIconEnum {
   circleClose = 'line-md:close-circle',
   /** 撤销 */
   revert = 'grommet-icons:revert',
+  /** 开始 */
+  play = 'solar:play-bold-duotone',
+  check = 'akar-icons:check',
+  cross = 'akar-icons:cross',
 }

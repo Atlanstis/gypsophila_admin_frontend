@@ -43,4 +43,6 @@ export enum RouteEnum {
   Setting = 'Setting',
   /** 通用设置 */
   Setting_Common = 'Setting_Common',
+  /** 定时任务 */
+  Schedule_Task = 'Schedule_Task',
 }
