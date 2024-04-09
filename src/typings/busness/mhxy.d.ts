@@ -87,4 +87,11 @@ declare namespace BusinessMhxy {
   type AccountGroupFormModel = Pick<ApiMhxy.AccountGroup, 'name'> & {
     id: null | number;
   };
+
+  /** 转金策略-表单 */
+  type GoldTransferPolicyFormModel = Partial<
+    Omit<ApiMhxy.GoldTransferPolicy, 'propCategory'> & {
+      propCategoryId?: ApiMhxy.PropCategory['id'];
+    }
+  >;
 }

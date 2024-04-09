@@ -158,4 +158,17 @@ declare namespace ApiMhxy {
     account: Account;
     group?: AccountGroup;
   }
+
+  /** 转金策略 */
+  interface GoldTransferPolicy {
+    id: number;
+    /** 策略名称 */
+    name: string;
+    /** 道具种类 */
+    propCategory: PropCategory;
+    /** 额度 */
+    quota: number;
+    /** 周期(天) */
+    cycleByDay: number;
+  }
 }
