@@ -94,4 +94,13 @@ declare namespace BusinessMhxy {
       propCategoryId?: ApiMhxy.PropCategory['id'];
     }
   >;
+
+  /** 转金策略-应用到账号表单 */
+  type GoldTransferPolicyApplyFormModel = Partial<
+    Omit<ApiMhxy.GoldTransferPolicyApply, 'account' | 'policy' | 'nextApplyTime'> & {
+      nextApplyTime: number | string;
+      accountId: ApiMhxy.Account['id'];
+      policyId: ApiMhxy.GoldTransferPolicy['id'];
+    }
+  >;
 }

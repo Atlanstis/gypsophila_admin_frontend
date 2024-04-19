@@ -78,6 +78,7 @@ export function usePaginationWithDefinePageSize(cb: () => void, pageSize: number
   function getPageParams() {
     return {
       page: pagination.page as number,
+      size: pagination.pageSize as number,
     };
   }
 

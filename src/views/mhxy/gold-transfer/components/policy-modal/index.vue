@@ -18,6 +18,9 @@
       :columns="columns"
       :data="tableData"
       :pagination="pagination"
+      :row-key="(row: ApiMhxy.GoldTransferPolicy) => row.id"
+      :expanded-row-keys="expandedRowKeys"
+      :on-update:expanded-row-keys="onUpdateExpandedRowKeys"
     ></NDataTable>
     <PolicyOperationModal
       v-model:visible="operationModalVisible"
@@ -25,14 +28,21 @@
       :edit-data="operationEditData"
       @on-success="getTableData"
     ></PolicyOperationModal>
+    <PolicyApplyModal
+      v-model:visible="applyVisible"
+      :type="applyModalType"
+      :policy="activePolicy"
+      :edit-data="editApply"
+      @on-success="onPolicyApplied"
+    ></PolicyApplyModal>
   </NModal>
 </template>
 
 <script lang="ts" setup>
 import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
-import { usePolicyOperationModal, usePolicyTable } from './hooks';
+import { usePolicyApplyModal, usePolicyOperationModal, usePolicyTable } from './hooks';
 import { mhxyGoldTransferPolicyDelete } from '@/service';
-import { PolicyOperationModal } from '..';
+import { PolicyOperationModal, PolicyApplyModal } from '..';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
@@ -61,11 +71,19 @@ async function handleDelete(id: number) {
   }
 }
 
-const { columns, tableData, getTableData, loading, pagination } = usePolicyTable(
-  handleEdit,
-  handleDelete,
-);
+const {
+  columns,
+  tableData,
+  getTableData,
+  loading,
+  pagination,
+  expandedRowKeys,
+  onUpdateExpandedRowKeys,
+  changeRefreshSignal,
+} = usePolicyTable(handleEdit, onApply, onApplyEdit, handleDelete);
+
 const { modalVisible } = useModal(props, emits, openHandle, closeHandle);
+
 const {
   operationModalVisible,
   operationModalType,
@@ -74,6 +92,40 @@ const {
   setOperationModalType,
   setOperationEditData,
 } = usePolicyOperationModal();
+
+const {
+  applyVisible,
+  openApplyModal,
+  applyModalType,
+  setApplyModalType,
+  activePolicy,
+  setActivePolicy,
+  editApply,
+  setEditApply,
+} = usePolicyApplyModal();
+
+async function onApply(policy: ApiMhxy.GoldTransferPolicy) {
+  setActivePolicy(policy);
+  setApplyModalType('add');
+  openApplyModal();
+}
+
+async function onApplyEdit(
+  policy: ApiMhxy.GoldTransferPolicy,
+  apply: ApiMhxy.GoldTransferPolicyApply,
+) {
+  setActivePolicy(policy);
+  setApplyModalType('edit');
+  setEditApply(apply);
+  openApplyModal();
+}
+
+/**
+ * 应用策略到新的账号时，刷新展开的账号应用数据
+ */
+function onPolicyApplied() {
+  changeRefreshSignal();
+}
 
 function onPolicyAdd() {
   setOperationModalType('add');
@@ -86,7 +138,9 @@ function openHandle() {
 }
 
 /** 模态框关闭，执行的操作 */
-function closeHandle() {}
+function closeHandle() {
+  onUpdateExpandedRowKeys([]);
+}
 </script>
 
 <style lang="scss" scoped></style>

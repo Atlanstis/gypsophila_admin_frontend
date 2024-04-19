@@ -44,4 +44,5 @@ export enum ButtonIconEnum {
   play = 'solar:play-bold-duotone',
   check = 'akar-icons:check',
   cross = 'akar-icons:cross',
+  userAdd = 'mingcute:user-add-fill',
 }

@@ -5,6 +5,9 @@ import { useIconRender } from '@/composables';
 import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
 import { mhxyGoldTransferPolicyList } from '@/service';
+import { PolicyApplyTable } from '../..';
+
+type PolicyKeys = ApiMhxy.GoldTransferPolicy['id'][];
 
 /**
  * 列表的相关操作
@@ -14,11 +17,20 @@ import { mhxyGoldTransferPolicyList } from '@/service';
  */
 export function usePolicyTable(
   handleEdit: (row: ApiMhxy.GoldTransferPolicy) => void,
+  handleApply: (policy: ApiMhxy.GoldTransferPolicy) => void,
+  onEditApply: (policy: ApiMhxy.GoldTransferPolicy, apply: ApiMhxy.GoldTransferPolicyApply) => void,
   handleDelete: (id: number) => void,
 ) {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean();
 
   const { pagination, getPageParams, setItemCount } = usePagination(getTableData);
+
+  /** 策略被应用后，更改该数字，达到刷新策略应用数据 */
+  const tableRefreshSignal = ref(0);
+
+  function changeRefreshSignal() {
+    tableRefreshSignal.value += 1;
+  }
 
   async function getTableData() {
     startLoading();
@@ -37,6 +49,16 @@ export function usePolicyTable(
   const { iconRender } = useIconRender();
 
   const columns: Ref<DataTableColumns<ApiMhxy.GoldTransferPolicy>> = ref([
+    {
+      type: 'expand',
+      renderExpand: (rowData) => {
+        return h(PolicyApplyTable, {
+          policyId: rowData.id,
+          signal: tableRefreshSignal.value,
+          onEdit: (apply) => onEditApply(rowData, apply),
+        });
+      },
+    },
     {
       key: 'name',
       title: '策略名称',
@@ -62,7 +84,7 @@ export function usePolicyTable(
       key: 'actions',
       title: '操作',
       align: 'center',
-      width: '120px',
+      width: '170px',
       render: (row) => {
         return h(
           NSpace,
@@ -73,6 +95,11 @@ export function usePolicyTable(
                 msg: '编辑',
                 icon: ButtonIconEnum.edit,
                 onClick: () => handleEdit(row),
+              }),
+              h(PopoverBtn, {
+                msg: '应用策略',
+                icon: ButtonIconEnum.userAdd,
+                onClick: () => handleApply(row),
               }),
               h(
                 NPopconfirm,
@@ -96,6 +123,11 @@ export function usePolicyTable(
     },
   ]);
 
+  const expandedRowKeys = ref<PolicyKeys>([]);
+  function onUpdateExpandedRowKeys(keys: PolicyKeys) {
+    expandedRowKeys.value = keys.length ? keys.slice(-1) : [];
+  }
+
   return {
     /** 列表字段 */
     columns,
@@ -107,5 +139,8 @@ export function usePolicyTable(
     getTableData,
     /** 分页信息 */
     pagination,
+    expandedRowKeys,
+    onUpdateExpandedRowKeys,
+    changeRefreshSignal,
   };
 }

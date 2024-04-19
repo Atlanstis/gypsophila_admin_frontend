@@ -171,4 +171,13 @@ declare namespace ApiMhxy {
     /** 周期(天) */
     cycleByDay: number;
   }
+
+  /** 转金策略-应用信息 */
+  interface GoldTransferPolicyApply {
+    id: number;
+    account: Account;
+    policy: GoldTransferPolicy;
+    nextApplyTime: string;
+    status: 'open' | 'close';
+  }
 }

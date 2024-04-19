@@ -26,3 +26,11 @@ export const MHXY_GOLD_TRANSFER_STATUS_OPT: { label: string; value: MHXY_GOLD_TR
       value: MHXY_GOLD_TRANSFER_STATUS.FAIL_FROM_LOCK,
     },
   ];
+
+/** 转金策略应用状态 */
+export const enum ENUM_MHXY_GOLD_TRANSFER_POLICY_APPLY_STATUS {
+  /** 开启 */
+  OPEN = 'open',
+  /** 关闭 */
+  CLOSE = 'close',
+}
