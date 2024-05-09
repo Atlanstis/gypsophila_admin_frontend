@@ -37,7 +37,7 @@
           </div>
         </NPopover>
       </NFormItem>
-      <NFormItem label="应用账号">
+      <NFormItem label="应用账号" path="accountId">
         <NSelect
           v-model:value="formModel.accountId"
           :options="accountList"
@@ -48,8 +48,8 @@
           :render-label="renderAccountLabel"
         />
       </NFormItem>
-      <NFormItem label="执行时间" path="nextApplyTime">
-        <NDatePicker v-model:value="formModel.nextApplyTime" type="date" class="w-full" />
+      <NFormItem label="执行时间" path="nextExecuteTime">
+        <NDatePicker v-model:value="formModel.nextExecuteTime" type="date" class="w-full" />
       </NFormItem>
       <NFormItem label="状态" path="status">
         <n-switch
@@ -117,7 +117,7 @@ const formRef = ref<HTMLElement & FormInst>();
 function createFormModel(): FormModel {
   return {
     id: undefined,
-    nextApplyTime: new Date().getTime(),
+    nextExecuteTime: new Date().getTime(),
     accountId: undefined,
     policyId: undefined,
     status: ENUM_MHXY_GOLD_TRANSFER_POLICY_APPLY_STATUS.OPEN,
@@ -128,6 +128,7 @@ const formModel = reactive<FormModel>(createFormModel());
 
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
   name: [{ required: true, message: '请选择策略名称', trigger: 'blur' }],
+  accountId: [{ required: true, message: '请选择账号', trigger: 'blur' }],
   propCategoryId: [{ required: true, message: '请选择种类', type: 'number', trigger: 'change' }],
 };
 
@@ -157,10 +158,12 @@ async function formSubmit() {
     props.type === 'add' ? mhxyGoldTransferPolicyApplyAdd : mhxyGoldTransferPolicyApplyEdit;
   const { error } = await api({
     ...formModel,
-    nextApplyTime: transformMsToDateStr(formModel.nextApplyTime as number),
+    nextExecuteTime: transformMsToDateStr(formModel.nextExecuteTime as number),
   });
   if (!error) {
-    window.$message?.success(`应用成功`, { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success(props.type === 'add' ? '添加成功' : '编辑成功', {
+      duration: DEFAULT_MESSAGE_DURATION,
+    });
     closeModal();
     emitSucess();
   }

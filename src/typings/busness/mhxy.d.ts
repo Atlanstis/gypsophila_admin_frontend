@@ -97,8 +97,8 @@ declare namespace BusinessMhxy {
 
   /** 转金策略-应用到账号表单 */
   type GoldTransferPolicyApplyFormModel = Partial<
-    Omit<ApiMhxy.GoldTransferPolicyApply, 'account' | 'policy' | 'nextApplyTime'> & {
-      nextApplyTime: number | string;
+    Omit<ApiMhxy.GoldTransferPolicyApply, 'account' | 'policy' | 'nextExecuteTime'> & {
+      nextExecuteTime: number | string;
       accountId: ApiMhxy.Account['id'];
       policyId: ApiMhxy.GoldTransferPolicy['id'];
     }

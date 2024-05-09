@@ -20,11 +20,11 @@ export function usePolicyApplyModal() {
   const editApply = ref<BusinessMhxy.GoldTransferPolicyApplyFormModel | null>(null);
 
   function setEditApply(apply: ApiMhxy.GoldTransferPolicyApply) {
-    const { id, status, nextApplyTime, account } = apply;
+    const { id, status, nextExecuteTime, account } = apply;
     editApply.value = {
       id,
       status,
-      nextApplyTime: dayjs(nextApplyTime).valueOf(),
+      nextExecuteTime: nextExecuteTime ? dayjs(nextExecuteTime).valueOf() : dayjs().valueOf(),
       accountId: account.id,
     };
   }

@@ -67,7 +67,12 @@ const columns: Ref<DataTableColumns<ApiMhxy.GoldTransferPolicyApply>> = ref([
     },
   },
   {
-    key: 'nextApplyTime',
+    key: 'lastExecuteTime',
+    title: '上次执行时间',
+    align: 'center',
+  },
+  {
+    key: 'nextExecuteTime',
     title: '下次执行时间',
     align: 'center',
   },

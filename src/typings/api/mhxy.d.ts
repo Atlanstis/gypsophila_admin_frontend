@@ -177,7 +177,7 @@ declare namespace ApiMhxy {
     id: number;
     account: Account;
     policy: GoldTransferPolicy;
-    nextApplyTime: string;
+    nextExecuteTime: string;
     status: 'open' | 'close';
   }
 }
