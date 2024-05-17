@@ -104,6 +104,8 @@ import { ref, reactive, computed } from 'vue';
 import { mhxyAccountGoldTransferAdd } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { renderAccountLabel } from '@/utils';
+import { useNoticeStore } from '@/stores';
+import { isMhxyGoldTransferNotice } from '../utils';
 
 defineOptions({
   name: 'MhxyAccountGoldTransferModal',
@@ -128,17 +130,22 @@ const { modalVisible, closeModal, submitLoading, showLoading, closeLoading } = u
   afterCloseModal,
 );
 
+const noticeStore = useNoticeStore();
+
 const formRef = ref<HTMLElement & FormInst>();
 
-function createFormModel(): FormModel {
-  return {
-    toAccountId: undefined,
-    fromAccountId: undefined,
-    propCategoryId: undefined,
-    fromNowGold: undefined,
-    toNowGold: undefined,
-    goldAmount: undefined,
-  };
+function createFormModel(modal: Partial<FormModel> = {}): FormModel {
+  return Object.assign(
+    {
+      toAccountId: undefined,
+      fromAccountId: undefined,
+      propCategoryId: undefined,
+      fromNowGold: undefined,
+      toNowGold: undefined,
+      goldAmount: undefined,
+    },
+    modal,
+  );
 }
 
 const formModel = reactive<FormModel>(createFormModel());
@@ -154,7 +161,19 @@ const formRules: Record<string, FormItemRule | FormItemRule[]> = {
 
 /** 更新表单数据 */
 function handleUpdateFormModel() {
-  const defaultFormModal = createFormModel();
+  // 处理待办携带的参数
+  const modal: Partial<FormModel> = {};
+  if (isMhxyGoldTransferNotice(noticeStore.activeTodo)) {
+    const {
+      link: { account, propCategory, fromAccountId },
+    } = noticeStore.activeTodo;
+    modal.toAccountId = account.id;
+    modal.propCategoryId = propCategory.id;
+    if (fromAccountId) {
+      modal.fromAccountId = fromAccountId;
+    }
+  }
+  const defaultFormModal = createFormModel(modal);
   Object.assign(formModel, defaultFormModal);
 }
 
@@ -171,6 +190,9 @@ async function formSubmit() {
 }
 
 function emitSucess() {
+  if (noticeStore.activeTodo) {
+    noticeStore.getNoticePolymeric();
+  }
   emit('on-success');
 }
 
@@ -200,6 +222,7 @@ function afterOpenModal() {
 
 function afterCloseModal() {
   formRef.value?.restoreValidation();
+  noticeStore.clearActiveTodo();
 }
 </script>
 

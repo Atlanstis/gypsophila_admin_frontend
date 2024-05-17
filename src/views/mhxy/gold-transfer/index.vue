@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, watchEffect } from 'vue';
 import {
   useTransferTable,
   useTransferModal,
@@ -45,6 +45,8 @@ import {
   usePolicyModal,
 } from './hooks';
 import { GoldTransferModal, TransferFinishModal, PolicyModal } from './components';
+import { useNoticeStore } from '@/stores';
+import { isMhxyGoldTransferNotice } from './utils';
 
 defineOptions({
   name: 'MhxyGoldTransfer',
@@ -54,12 +56,18 @@ const { visible, openModal } = useTransferModal();
 const { policyVisible, openPolicyModal } = usePolicyModal();
 const { finishVisible, setFinishId, finishId } = useTransferFinishModal();
 const { loading, columns, tableData, pagination, getTableData } = useTransferTable(setFinishId);
+const noticeStore = useNoticeStore();
 
 function onGoldRecordAdd() {
   openModal();
 }
 
 onMounted(() => {
+  watchEffect(() => {
+    if (isMhxyGoldTransferNotice(noticeStore.activeTodo)) {
+      onGoldRecordAdd();
+    }
+  });
   getTableData();
 });
 </script>
