@@ -5,13 +5,14 @@
       <BreadcrumbNav />
     </div>
     <div class="flex justify-end h-full">
+      <Notification />
       <UserAvatar />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { BtnCollapse, UserAvatar, BreadcrumbNav } from './components';
+import { BtnCollapse, UserAvatar, BreadcrumbNav, Notification } from './components';
 
 defineOptions({
   name: 'AdminLayoutHeader',

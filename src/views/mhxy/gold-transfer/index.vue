@@ -6,8 +6,11 @@
           <NSpace>
             <NButton type="primary" @click="onGoldRecordAdd">
               <icon-ic-round-plus class="text-20px" />
-              开始转金
+              新增记录
             </NButton>
+          </NSpace>
+          <NSpace>
+            <NButton type="primary" @click="openPolicyModal">策略管理</NButton>
           </NSpace>
         </NSpace>
       </template>
@@ -29,27 +32,42 @@
       :id="finishId"
       @on-success="getTableData"
     ></TransferFinishModal>
+    <PolicyModal v-model:visible="policyVisible"></PolicyModal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import { useTransferTable, useTransferModal, useTransferFinishModal } from './hooks';
-import { GoldTransferModal, TransferFinishModal } from './components';
+import { onMounted, watchEffect } from 'vue';
+import {
+  useTransferTable,
+  useTransferModal,
+  useTransferFinishModal,
+  usePolicyModal,
+} from './hooks';
+import { GoldTransferModal, TransferFinishModal, PolicyModal } from './components';
+import { useNoticeStore } from '@/stores';
+import { isMhxyGoldTransferNotice } from './utils';
 
 defineOptions({
   name: 'MhxyGoldTransfer',
 });
 
 const { visible, openModal } = useTransferModal();
+const { policyVisible, openPolicyModal } = usePolicyModal();
 const { finishVisible, setFinishId, finishId } = useTransferFinishModal();
 const { loading, columns, tableData, pagination, getTableData } = useTransferTable(setFinishId);
+const noticeStore = useNoticeStore();
 
 function onGoldRecordAdd() {
   openModal();
 }
 
 onMounted(() => {
+  watchEffect(() => {
+    if (isMhxyGoldTransferNotice(noticeStore.activeTodo)) {
+      onGoldRecordAdd();
+    }
+  });
   getTableData();
 });
 </script>

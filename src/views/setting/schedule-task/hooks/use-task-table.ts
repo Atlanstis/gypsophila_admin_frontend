@@ -13,14 +13,21 @@ import { ButtonIconEnum } from '@/enums';
 import { useThemeStore } from '@/stores';
 import { TaskLog } from '../components';
 
+function getMathRandom() {
+  return Math.random();
+}
+
 /** 有关列表的操作 */
 export function useTaskTable() {
   const theme = useThemeStore();
+  // 通过 改变 random 值 强制刷新 table
+  const random = ref(getMathRandom());
 
   /** 立即执行当前任务 */
   async function onTaskExecute(row: ApiScheduleTask.ScheduleTask) {
     const { error } = await scheduleTaskExecute(row.key);
     if (!error) {
+      random.value = getMathRandom();
       window.$message?.success('执行成功');
       getTableData();
     }
@@ -46,7 +53,7 @@ export function useTaskTable() {
     {
       type: 'expand',
       renderExpand: (rowData) => {
-        return h(TaskLog, { taskId: rowData.id });
+        return h(TaskLog, { taskId: rowData.id, random: random.value });
       },
     },
     {

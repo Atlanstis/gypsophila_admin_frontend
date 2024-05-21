@@ -4,3 +4,4 @@ export * from './account-gold-record';
 export * from './account-gold-transfer';
 export * from './channel';
 export * from './account-group';
+export * from './gold-transfer-policy';

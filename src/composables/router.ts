@@ -90,5 +90,7 @@ export function useRouterPush(isInSetup = true) {
     toLogin,
     toHome,
     toLoginRedirect,
+    router,
+    route,
   };
 }
