@@ -18,7 +18,7 @@
 import { useIconRender } from '@/composables';
 import { ButtonIconEnum } from '@/enums';
 import { useThemeStore } from '@/stores';
-import { computed } from 'vue';
+import { computed, defineComponent } from 'vue';
 
 defineOptions({
   name: 'MhxyAccountGoldChange',
@@ -40,17 +40,20 @@ const diff = computed(() => {
   return props.toGold - props.fromGold;
 });
 
-const DiverIcon = computed(() => {
-  if (diff.value === undefined) return undefined;
-  return iconRender({
-    icon:
-      diff.value > 0
-        ? ButtonIconEnum.increase
-        : diff.value < 0
-        ? ButtonIconEnum.decrease
-        : ButtonIconEnum.flat,
-    fontSize: 16,
-  });
+const DiverIcon = defineComponent({
+  name: 'DiverIcon',
+  render() {
+    if (diff.value === undefined) return undefined;
+    return iconRender({
+      icon:
+        diff.value > 0
+          ? ButtonIconEnum.increase
+          : diff.value < 0
+          ? ButtonIconEnum.decrease
+          : ButtonIconEnum.flat,
+      fontSize: 16,
+    });
+  },
 });
 
 const style = computed(() => {
