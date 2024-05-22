@@ -108,6 +108,9 @@
       <NFormItem label="备注" path="remark">
         <NInput v-model:value="formModel.remark" type="textarea"></NInput>
       </NFormItem>
+      <NFormItem label="预估金币变化" v-if="formModel.accountId">
+        <MhxyAccountGoldChange :from-gold="activeAccountGold" :to-gold="estimatedGold" />
+      </NFormItem>
     </NForm>
     <template #footer>
       <NSpace justify="end">
@@ -223,6 +226,28 @@ const { channelTree, channelFlat, getChannel } = useChannelList();
 const { transferGroupSelect, getAccountGroupData } = useAccountGroupList(true);
 
 const accountList = computed(() => transferGroupSelect());
+
+/** 当前选中的账号的金币数 */
+const activeAccountGold = computed(() => {
+  if (!formModel.accountId) return undefined;
+  const allList = accountList.value.map((item) => item.children).flat(1);
+  const account = allList.find((item) => item.id === formModel.accountId) || null;
+  return account ? account.gold : undefined;
+});
+
+/** 账号预计金币 */
+const estimatedGold = computed(() => {
+  if (!formModel.accountId) return undefined;
+  if (formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_ACCOUNT_NOW_AMOUNT) {
+    return formModel.nowAmount;
+  } else if (formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT) {
+    if (!formModel.amount || !activeAccountGold.value) return undefined;
+    return formModel.type === MHXY_GOLD_RECORD_TYPE.EXPENDITURE
+      ? activeAccountGold.value - formModel.amount
+      : activeAccountGold.value + formModel.amount;
+  }
+  return undefined;
+});
 
 function afterOpenModal() {
   getChannel();
