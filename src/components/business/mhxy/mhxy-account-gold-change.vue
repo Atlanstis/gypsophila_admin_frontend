@@ -8,8 +8,14 @@
       :showSeparator="true"
     />
     <template v-if="toGold !== undefined">
-      <component :is="DiverIcon" />
+      <FlatIcon />
       <NNumberAnimation :from="0" :to="toGold" :duration="1000" :showSeparator="true" />
+      <template v-if="diff">
+        (
+        <NNumberAnimation :from="0" :to="diff" :duration="1000" :showSeparator="true" />
+        <TrendIcon />
+        )
+      </template>
     </template>
   </NSpace>
 </template>
@@ -18,7 +24,7 @@
 import { useIconRender } from '@/composables';
 import { ButtonIconEnum } from '@/enums';
 import { useThemeStore } from '@/stores';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, h } from 'vue';
 
 defineOptions({
   name: 'MhxyAccountGoldChange',
@@ -40,19 +46,33 @@ const diff = computed(() => {
   return props.toGold - props.fromGold;
 });
 
-const DiverIcon = defineComponent({
-  name: 'DiverIcon',
+const TrendIcon = defineComponent({
+  name: 'TrendIcon',
   render() {
     if (diff.value === undefined) return undefined;
-    return iconRender({
-      icon:
-        diff.value > 0
-          ? ButtonIconEnum.increase
-          : diff.value < 0
-          ? ButtonIconEnum.decrease
-          : ButtonIconEnum.flat,
-      fontSize: 16,
-    });
+    return h(
+      iconRender({
+        icon:
+          diff.value > 0
+            ? ButtonIconEnum.increase
+            : diff.value < 0
+            ? ButtonIconEnum.decrease
+            : ButtonIconEnum.flat,
+        fontSize: 16,
+      }),
+    );
+  },
+});
+
+const FlatIcon = defineComponent({
+  name: 'FlatIcon',
+  render() {
+    return h(
+      iconRender({
+        icon: ButtonIconEnum.flat,
+        fontSize: 16,
+      }),
+    );
   },
 });
 
