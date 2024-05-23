@@ -17,7 +17,7 @@
       <NFormItem label="账号" path="accountId">
         <NSelect
           v-model:value="formModel.accountId"
-          :options="accountList"
+          :options="accountOpts"
           label-field="name"
           value-field="id"
           filterable
@@ -88,6 +88,7 @@
             class="w-full"
             :precision="0"
             :show-button="false"
+            :on-update:value="onCalcRealAmount"
           ></NInputNumber>
         </NFormItem>
         <NFormItem label="收支类型" path="type">
@@ -132,7 +133,7 @@ import {
 } from '@/hooks';
 import { type FormInst, type FormItemRule } from 'naive-ui';
 import { ref, reactive, computed, watchEffect } from 'vue';
-import { mhxyAccountGoldRecordAdd } from '@/service';
+import { mhxyAccountGoldRecordAdd, mhxyAmountCalc } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { renderAccountLabel } from '@/utils';
 import {
@@ -205,6 +206,21 @@ function handleUpdateFormModel(modal: Partial<FormModel>) {
   Object.assign(formModel, modal);
 }
 
+/** 计算税后的价格 */
+const afterCalcVal = ref<number | undefined>(undefined);
+
+/** 计算收完税后的价格 */
+async function onCalcRealAmount(amount: number | null) {
+  afterCalcVal.value = undefined;
+  formModel.amount = amount !== null ? amount : undefined;
+  if (formModel.amount !== undefined && formModel.type === MHXY_GOLD_RECORD_TYPE.REVENUE) {
+    const { data, error } = await mhxyAmountCalc(formModel.amount);
+    if (!error) {
+      afterCalcVal.value = data;
+    }
+  }
+}
+
 async function formSubmit() {
   await formRef.value?.validate();
   showLoading();
@@ -223,15 +239,14 @@ function emitSucess() {
 
 const { propCategoryTree, getPropCatrgory } = usePropCategoryList();
 const { channelTree, channelFlat, getChannel } = useChannelList();
-const { transferGroupSelect, getAccountGroupData } = useAccountGroupList(true);
+const { transferGroupSelect, getAccountGroupData, accountList } = useAccountGroupList(true);
 
-const accountList = computed(() => transferGroupSelect());
+const accountOpts = computed(() => transferGroupSelect());
 
 /** 当前选中的账号的金币数 */
 const activeAccountGold = computed(() => {
   if (!formModel.accountId) return undefined;
-  const allList = accountList.value.map((item) => item.children).flat(1);
-  const account = allList.find((item) => item.id === formModel.accountId) || null;
+  const account = accountList.value.find((item) => item.id === formModel.accountId) || null;
   return account ? account.gold : undefined;
 });
 
@@ -242,9 +257,13 @@ const estimatedGold = computed(() => {
     return formModel.nowAmount;
   } else if (formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT) {
     if (!formModel.amount || !activeAccountGold.value) return undefined;
-    return formModel.type === MHXY_GOLD_RECORD_TYPE.EXPENDITURE
-      ? activeAccountGold.value - formModel.amount
-      : activeAccountGold.value + formModel.amount;
+    if (formModel.type === MHXY_GOLD_RECORD_TYPE.EXPENDITURE) {
+      return activeAccountGold.value - formModel.amount;
+    }
+    if (formModel.type === MHXY_GOLD_RECORD_TYPE.REVENUE) {
+      if (afterCalcVal.value === undefined) return undefined;
+      return activeAccountGold.value + afterCalcVal.value;
+    }
   }
   return undefined;
 });
