@@ -46,6 +46,12 @@
           :show-button="false"
         ></NInputNumber>
       </NFormItem>
+      <NFormItem label="转出账号预估金币变化" v-if="formModel.fromAccountId">
+        <MhxyAccountGoldChange
+          :from-gold="fromAccountNowGold"
+          :to-gold="fromAccountEstimatedGold"
+        />
+      </NFormItem>
       <NFormItem label="转入账号" path="toAccountId">
         <NSelect
           v-model:value="formModel.toAccountId"
@@ -69,6 +75,9 @@
           :show-button="false"
         ></NInputNumber>
       </NFormItem>
+      <NFormItem label="转入账号预估金币变化" v-if="formModel.toAccountId">
+        <MhxyAccountGoldChange :from-gold="toAccountNowGold" :to-gold="toAccountEstimatedGold" />
+      </NFormItem>
       <NFormItem
         v-if="formModel.propCategoryId && isCategoryGem"
         label="交易金额"
@@ -79,6 +88,7 @@
           class="w-full"
           :precision="0"
           :show-button="false"
+          :on-update:value="onCalcRealAmount"
         ></NInputNumber>
       </NFormItem>
     </NForm>
@@ -101,7 +111,7 @@ import {
 } from '@/hooks';
 import { type FormInst, type FormItemRule } from 'naive-ui';
 import { ref, reactive, computed } from 'vue';
-import { mhxyAccountGoldTransferAdd } from '@/service';
+import { mhxyAccountGoldTransferAdd, mhxyAmountCalc } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { renderAccountLabel } from '@/utils';
 import { useNoticeStore } from '@/stores';
@@ -159,6 +169,9 @@ const formRules: Record<string, FormItemRule | FormItemRule[]> = {
   propCategoryId: [{ required: true, message: '请选择种类', type: 'number', trigger: 'change' }],
 };
 
+/** 计算税后的价格 */
+const afterCalcVal = ref<number | undefined>(undefined);
+
 /** 更新表单数据 */
 function handleUpdateFormModel() {
   // 处理待办携带的参数
@@ -197,7 +210,42 @@ function emitSucess() {
 }
 
 const { propCategoryTree, propCategoryFlat, getPropCatrgory } = usePropCategoryList();
-const { transferGroupSelect, getAccountGroupData } = useAccountGroupList(true);
+const { transferGroupSelect, getAccountGroupData, accountList } = useAccountGroupList(true);
+
+const fromAccountNowGold = computed(() => {
+  if (!formModel.fromAccountId) return undefined;
+  const active = accountList.value.find((item) => item.id === formModel.fromAccountId);
+  return active ? active.gold : undefined;
+});
+
+const fromAccountEstimatedGold = computed(() => {
+  if (!formModel.fromAccountId) return undefined;
+  if (isCategoryGem.value) {
+    if (fromAccountNowGold.value === undefined || formModel.goldAmount === undefined)
+      return undefined;
+    return fromAccountNowGold.value - formModel.goldAmount;
+  } else {
+    return formModel.fromNowGold;
+  }
+});
+
+const toAccountNowGold = computed(() => {
+  if (!formModel.toAccountId) return undefined;
+  const active = accountList.value.find((item) => item.id === formModel.toAccountId);
+  return active ? active.gold : undefined;
+});
+
+const toAccountEstimatedGold = computed(() => {
+  if (!formModel.toAccountId) return undefined;
+  if (isCategoryGem.value) {
+    if (toAccountNowGold.value === undefined || formModel.goldAmount === undefined)
+      return undefined;
+    if (afterCalcVal.value === undefined) return undefined;
+    return toAccountNowGold.value + afterCalcVal.value;
+  } else {
+    return formModel.toNowGold;
+  }
+});
 
 const fromAccountList = computed(() => {
   return transferGroupSelect(formModel.toAccountId ? [formModel.toAccountId] : []);
@@ -213,6 +261,18 @@ const isCategoryGem = computed(() => {
   );
   return selectCategory ? selectCategory.isGem : false;
 });
+
+/** 计算收完税后的价格 */
+async function onCalcRealAmount(amount: number | null) {
+  afterCalcVal.value = undefined;
+  formModel.goldAmount = amount !== null ? amount : undefined;
+  if (formModel.goldAmount !== undefined) {
+    const { data, error } = await mhxyAmountCalc(formModel.goldAmount);
+    if (!error) {
+      afterCalcVal.value = data;
+    }
+  }
+}
 
 function afterOpenModal() {
   getAccountGroupData();

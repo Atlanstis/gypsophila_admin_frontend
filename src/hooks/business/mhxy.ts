@@ -6,7 +6,7 @@ import {
   mhxyAccountGroupList,
 } from '@/service';
 import type { TreeSelectOption } from 'naive-ui';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useBoolean } from '@/hooks';
 
 interface TransferItem {
@@ -105,6 +105,15 @@ export function useAccountGroupList(showItem = false) {
 
   const accountGroupData = ref<ApiMhxy.AccountGroup[]>([]);
 
+  /** 所有账号数据 */
+  const accountList = computed(() => {
+    return accountGroupData.value
+      .map((group) => {
+        return group.items.map((item) => item.account);
+      })
+      .flat(1);
+  });
+
   async function getAccountGroupData() {
     clearGroupData();
     startLoading();
@@ -147,5 +156,6 @@ export function useAccountGroupList(showItem = false) {
     getAccountGroupData,
     clearGroupData,
     transferGroupSelect,
+    accountList,
   };
 }
