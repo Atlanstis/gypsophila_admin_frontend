@@ -254,7 +254,7 @@ const activeAccountGold = computed(() => {
 const estimatedGold = computed(() => {
   if (!formModel.accountId) return undefined;
   if (formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_ACCOUNT_NOW_AMOUNT) {
-    return formModel.nowAmount || undefined;
+    return formModel.nowAmount !== null ? formModel.nowAmount : undefined;
   } else if (formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT) {
     if (!formModel.amount || !activeAccountGold.value) return undefined;
     if (formModel.type === MHXY_GOLD_RECORD_TYPE.EXPENDITURE) {
