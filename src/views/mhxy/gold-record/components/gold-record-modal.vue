@@ -254,7 +254,7 @@ const activeAccountGold = computed(() => {
 const estimatedGold = computed(() => {
   if (!formModel.accountId) return undefined;
   if (formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_ACCOUNT_NOW_AMOUNT) {
-    return formModel.nowAmount;
+    return formModel.nowAmount || undefined;
   } else if (formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT) {
     if (!formModel.amount || !activeAccountGold.value) return undefined;
     if (formModel.type === MHXY_GOLD_RECORD_TYPE.EXPENDITURE) {
@@ -304,8 +304,8 @@ const showLockAmount = computed(() => {
 watchEffect(() => {
   if (activeChannel.value) {
     handleUpdateFormModel({
-      amount: undefined,
-      nowAmount: undefined,
+      amount: null,
+      nowAmount: null,
     });
     if (activeChannel.value.key === MHXY_CHANNEL_DEFAULT_KEY.TRADE) {
       // 途径是交易的情况

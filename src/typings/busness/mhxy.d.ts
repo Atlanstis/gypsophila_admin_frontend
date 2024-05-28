@@ -26,11 +26,11 @@ declare namespace BusinessMhxy {
     /** 类型 0-按涉及金额、1-按账号现有金币数 */
     amountType: 0 | 1;
     /** 涉及金额 */
-    amount?: number;
+    amount?: number | null;
     /** 账号现有金币数 */
-    nowAmount?: number;
+    nowAmount?: number | null;
     /** 账号现有被锁金币数 */
-    nowLockAmount?: number;
+    nowLockAmount?: number | null;
     /** 状态: 0-进行中,1-已完成 */
     status: 0 | 1;
     /** 备注 */
