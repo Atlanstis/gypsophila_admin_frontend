@@ -201,6 +201,11 @@ const activeChannel = computed(() => {
   return channelFlat.value.find((item) => item.id === formModel.channelId) || null;
 });
 
+// 选择途径是交易的情况
+const activeChannelIsTrade = computed(() => {
+  return activeChannel.value ? activeChannel.value.key === MHXY_CHANNEL_DEFAULT_KEY.TRADE : false;
+});
+
 /** 更新表单数据 */
 function handleUpdateFormModel(modal: Partial<FormModel>) {
   Object.assign(formModel, modal);
@@ -209,8 +214,10 @@ function handleUpdateFormModel(modal: Partial<FormModel>) {
 /** 计算税后的价格 */
 const afterCalcVal = ref<number | undefined>(undefined);
 
-/** 计算收完税后的价格 */
+/** 途径为交易的情况，计算收完税后的价格 */
 async function onCalcRealAmount(amount: number | null) {
+  formModel.amount = amount !== null ? amount : undefined;
+  if (!activeChannelIsTrade.value) return;
   afterCalcVal.value = undefined;
   formModel.amount = amount !== null ? amount : undefined;
   if (formModel.amount !== undefined && formModel.type === MHXY_GOLD_RECORD_TYPE.REVENUE) {
@@ -254,15 +261,24 @@ const activeAccountGold = computed(() => {
 const estimatedGold = computed(() => {
   if (!formModel.accountId) return undefined;
   if (formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_ACCOUNT_NOW_AMOUNT) {
+    // 按账号现有金币数
     return formModel.nowAmount !== null ? formModel.nowAmount : undefined;
   } else if (formModel.amountType === MHXY_GOLD_RECORD_AMOUNT_TYPE.BY_AMOUNT) {
+    // 按涉及金额
     if (!formModel.amount || !activeAccountGold.value) return undefined;
     if (formModel.type === MHXY_GOLD_RECORD_TYPE.EXPENDITURE) {
+      // 支出的情况
       return activeAccountGold.value - formModel.amount;
     }
     if (formModel.type === MHXY_GOLD_RECORD_TYPE.REVENUE) {
-      if (afterCalcVal.value === undefined) return undefined;
-      return activeAccountGold.value + afterCalcVal.value;
+      // 收入
+      if (activeChannelIsTrade.value) {
+        // 途径是交易时，涉及金额需计算当前税率
+        if (afterCalcVal.value === undefined) return undefined;
+        return activeAccountGold.value + afterCalcVal.value;
+      }
+      // 途径不是交易时，直接计算涉及金额
+      return activeAccountGold.value + formModel.amount;
     }
   }
   return undefined;
