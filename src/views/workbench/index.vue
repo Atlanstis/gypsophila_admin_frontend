@@ -1,5 +1,5 @@
 <template>
-  <div>工作台</div>
+  <div class="h-full w-full"></div>
 </template>
 
 <script lang="ts" setup>
