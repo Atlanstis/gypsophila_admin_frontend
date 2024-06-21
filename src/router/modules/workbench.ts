@@ -14,4 +14,16 @@ export const workbenchRoutes: AuthRoute.Route[] = [
       layout: Layouts[LayoutEnum.Admin],
     },
   },
+  {
+    name: RouteEnum.WorkbenckSetting,
+    path: '/workbench/setting',
+    component: getRouteView(RouteEnum.WorkbenckSetting),
+    meta: {
+      title: '工作台设置',
+      icon: 'icon-park-outline:workbench',
+      hide: true,
+      layout: Layouts[LayoutEnum.Admin],
+      activeMenu: RouteEnum.Workbench,
+    },
+  },
 ];

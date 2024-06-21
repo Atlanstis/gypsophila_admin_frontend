@@ -5,6 +5,7 @@ export const Views: Record<PageRoute.HasPageRoute, Common.AsyncComponent> = {
   [RouteEnum.NotFound]: () => import('./__function__/not-found/index.vue'),
   [RouteEnum.Login]: () => import('./login/index.vue'),
   [RouteEnum.Workbench]: () => import('./workbench/index.vue'),
+  [RouteEnum.WorkbenckSetting]: () => import('./workbench/setting/index.vue'),
   [RouteEnum.PlayStation_Profile]: () => import('./play-station/profile/index.vue'),
   [RouteEnum.PlayStation_Profile_Game]: () => import('./play-station/profile-game/index.vue'),
   [RouteEnum.PlayStation_Game]: () => import('./play-station/game/index.vue'),

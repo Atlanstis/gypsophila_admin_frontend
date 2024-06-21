@@ -12,7 +12,7 @@ declare namespace PageRoute {
   type FunctionName = RootName | LoginName | NotFoundName;
 
   /** 工作台 */
-  type WorkbenchName = 'Workbench';
+  type WorkbenchName = 'Workbench' | 'Workbench_Setting';
 
   /** PlayStation 无对应页面路由名 */
   type PlayStationNoPageName = 'PlayStation';

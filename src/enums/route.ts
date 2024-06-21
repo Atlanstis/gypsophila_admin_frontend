@@ -7,6 +7,8 @@ export enum RouteEnum {
   NotFound = 'NotFound',
   /** 工作台 */
   Workbench = 'Workbench',
+  /** 工作台设置 */
+  WorkbenckSetting = 'Workbench_Setting',
   /** PlayStation */
   PlayStation = 'PlayStation',
   /** PlayStation PSN 概览 */
