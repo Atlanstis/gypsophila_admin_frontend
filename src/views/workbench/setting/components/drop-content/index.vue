@@ -67,7 +67,7 @@ const mask = reactive<IMoveMask>({
   row: 0,
 });
 
-/** 移动模块是否可放置 */
+/** 模块是否可放置 */
 const canDrop = computed(() => {
   const dragCoordinate: ICoordinate = [mask.x, mask.y, mask.x + mask.column, mask.y + mask.row];
   const coordinates = list
@@ -84,6 +84,7 @@ const canDrop = computed(() => {
 const DropContentRef = ref<HTMLElement>();
 const boxSize = useBoxSize(DropContentRef, column.value, row.value, gap.value);
 
+/** 拖拽进入布局 */
 function onDragenter(e: DragEvent) {
   e.preventDefault();
   const dragData = dragStore.get();
@@ -97,21 +98,26 @@ function onDragenter(e: DragEvent) {
   }
 }
 
+/** 拖拽进行中 */
 function onDragover(e: DragEvent) {
   e.preventDefault();
   const dragData = dragStore.get();
   if (dragData) {
-    mask.x = getX(e.offsetX) - getX(dragData.offsetX ?? 0);
-    mask.y = getY(e.offsetY) - getY(dragData.offsetY ?? 0);
+    const x = getX(e.offsetX) - getX(dragData.offsetX ?? 0);
+    const y = getY(e.offsetY) - getY(dragData.offsetY ?? 0);
+    mask.x = x < 0 ? 0 : x + mask.column > column.value ? column.value - mask.column : x;
+    mask.y = y < 0 ? 0 : y + mask.row > row.value ? row.value - mask.row : y;
   }
 }
 
+/** 拖拽离开布局 */
 function onDragleave(e: DragEvent) {
   e.preventDefault();
   mask.show = false;
   mask.id = '';
 }
 
+/** 拖拽放置组件 */
 function onDrop(e: DragEvent) {
   e.preventDefault();
   mask.show = false;
@@ -135,7 +141,7 @@ function onDrop(e: DragEvent) {
   }
 }
 
-// 调整大小开始
+/** 调整大小开始 */
 function onResizeStart() {
   const dragData = dragStore.get();
   if (dragData) {
@@ -148,13 +154,13 @@ function onResizeStart() {
   }
 }
 
-// 调正大小时
+/** 调正大小时 */
 function onResizeing(size: { width: number; height: number }) {
   mask.column = getColumn(size.width);
   mask.row = getRow(size.height);
 }
 
-// 调整大小结束
+/** 调整大小结束 */
 const onResizeEnd = async () => {
   mask.show = false;
   const dragData = dragStore.get();
@@ -168,17 +174,17 @@ const onResizeEnd = async () => {
   }
 };
 
-// 计算 x 坐标
+/** 计算 x 坐标 */
 const getX = (num: number) => Math.floor(num / (boxSize.value.width + gap.value));
-// 计算 y 坐标
+/** 计算 y 坐标 */
 const getY = (num: number) => Math.floor(num / (boxSize.value.height + gap.value));
 
 const ceil = (num: number, min: number = 0.2) =>
   num > 1 && num % 1 > min ? Math.ceil(num) : parseInt(num.toString());
 
-// 计算列数
+/** 计算列数 */
 const getColumn = (num: number) => Math.max(1, ceil(num / (boxSize.value.width + gap.value)));
-// 计算行数
+/** 计算行数 */
 const getRow = (num: number) => Math.max(1, ceil(num / (boxSize.value.height + gap.value)));
 </script>
 

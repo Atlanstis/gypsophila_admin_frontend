@@ -32,6 +32,7 @@ defineOptions({
 
 const moveing = ref(false);
 const resizing = ref(false);
+const activeResizeEle = ref<HTMLElement>();
 
 const previewStyle = computed(() => {
   return {
@@ -49,6 +50,7 @@ const previewStyle = computed(() => {
   };
 });
 
+/** 开始拖拽 */
 function onDragstart(e: DragEvent) {
   const data: IDragItemMove = { ...props.data, offsetX: e.offsetX, offsetY: e.offsetY };
   dragStore.set(data);
@@ -57,23 +59,50 @@ function onDragstart(e: DragEvent) {
   unset(e.target as HTMLElement);
 }
 
+/** 拖拽结束 */
 function onDragend() {
   moveing.value = false;
   dragStore.remove();
 }
 
+/**  调整大小中 */
 function mousemoveFunc(e: MouseEvent) {
-  // console.log('mousemoveFunc');
   if (!e.target) return;
-  // console.log(e.target);
   emits('resizing', {
     width: (e.target as HTMLElement).offsetWidth || 0,
     height: (e.target as HTMLElement).offsetHeight || 0,
   });
 }
 
+/** 监听全局，鼠标释放时，重置布局 */
+function onWindowMouseup() {
+  const ele = activeResizeEle.value;
+  if (ele) {
+    onResizeEnd(ele);
+    activeResizeEle.value = undefined;
+    window.removeEventListener('mouseup', onWindowMouseup);
+  }
+}
+
+/** 调整大小时，离开调整区域 */
+function mouseleaveFunc(e: MouseEvent) {
+  activeResizeEle.value = e.target as HTMLElement;
+  window.addEventListener('mouseup', onWindowMouseup);
+}
+
+/** 离开目标区域后，游重新进入目标区域 */
+function mouseenterFunc() {
+  activeResizeEle.value = undefined;
+  window.removeEventListener('mouseup', onWindowMouseup);
+}
+
+/** 释放鼠标，重置布局 */
 function mouseupFunc(e: MouseEvent) {
-  const target = e.target as HTMLElement;
+  onResizeEnd(e.target as HTMLElement);
+}
+
+/** 大小调整结束 */
+function onResizeEnd(target: HTMLElement) {
   unset(target);
   emits('resize-end');
   target.style.width = '100%';
@@ -81,22 +110,26 @@ function mouseupFunc(e: MouseEvent) {
   dragStore.remove();
 }
 
+/** 开始调整大小 */
 function onMousedown(e: MouseEvent) {
-  // console.log('onMousedown');
-  // console.log(e.target);
   dragStore.set({ ...props.data });
   emits('resize-start');
   resizing.value = true;
   const target = e.target as HTMLElement;
   if (!target) return;
   target.addEventListener('mousemove', mousemoveFunc);
+  target.addEventListener('mouseleave', mouseleaveFunc);
+  target.addEventListener('mouseenter', mouseenterFunc);
   target.addEventListener('mouseup', mouseupFunc);
 }
 
+/** 解除调整大小相关事件 */
 const unset = (target: HTMLElement) => {
   resizing.value = false;
   if (!target) return;
   target.removeEventListener('mousemove', mousemoveFunc);
+  target.removeEventListener('mouseleave', mouseleaveFunc);
+  target.addEventListener('mouseenter', mouseenterFunc);
   target.removeEventListener('mouseup', mouseupFunc);
 };
 </script>
