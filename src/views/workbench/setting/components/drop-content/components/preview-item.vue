@@ -16,8 +16,8 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import type { IDragItem, IDragItemMove } from './types';
-import { dragStore } from './hooks';
+import type { IDragItem, IDragItemMove } from '../types';
+import { dragStore } from '../utils';
 
 const emits = defineEmits<{
   (e: 'resize-start'): void;

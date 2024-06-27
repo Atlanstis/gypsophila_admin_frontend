@@ -39,11 +39,10 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
-import { dragStore, useBoxSize } from './hooks';
-import { isOverlap, type ICoordinate } from './utils';
+import { useBoxSize } from './hooks';
+import { isOverlap, type ICoordinate, dragStore } from './utils';
 import type { IDragItem, IMoveMask } from './types';
-import PreviewItem from './preview-item.vue';
-import MoveMask from './move-mask.vue';
+import { PreviewItem, MoveMask } from './components';
 
 defineOptions({
   name: 'DropContent',

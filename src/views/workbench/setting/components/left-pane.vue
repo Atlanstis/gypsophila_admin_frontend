@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import DragItem from './drop-content/drag-item.vue';
+import { DragItem } from './drop-content/components';
 defineOptions({
   name: 'LeftPane',
 });

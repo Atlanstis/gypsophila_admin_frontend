@@ -8,8 +8,8 @@
 </template>
 
 <script setup lang="ts">
-import type { IDragItem } from './types';
-import { dragStore } from './hooks';
+import type { IDragItem } from '../types';
+import { dragStore } from '../utils';
 
 const data: IDragItem = {
   id: 4,

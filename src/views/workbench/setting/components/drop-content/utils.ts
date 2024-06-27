@@ -1,3 +1,5 @@
+import type { IDragItemMove } from './types';
+
 export type ICoordinate = [x1: number, x2: number, x3: number, x4: number];
 
 /**
@@ -17,3 +19,21 @@ export function isOverlap(rect1: ICoordinate, rect2: ICoordinate) {
   // 如果 x 轴和 y 轴都有交集，则长方形重合
   return xOverlap && yOverlap;
 }
+
+class DragStore {
+  private moveItem: null | IDragItemMove = null;
+
+  get() {
+    return this.moveItem;
+  }
+
+  set(item: IDragItemMove | null) {
+    this.moveItem = item;
+  }
+
+  remove() {
+    this.set(null);
+  }
+}
+
+export const dragStore = new DragStore();
