@@ -12,3 +12,5 @@ export type IDragItemMove = IDragItem & {
 };
 
 export type IMoveMask = IDragItem & { show: boolean };
+
+export type IGaps = [columnGap: number, rowGap: number];

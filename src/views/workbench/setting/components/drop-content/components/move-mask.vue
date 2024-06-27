@@ -5,6 +5,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { useThemeStore } from '@/stores';
+import { type IGaps } from '../types';
 
 defineOptions({
   name: 'MoveMask',
@@ -16,7 +17,7 @@ const props = defineProps<{
   /** 容器格子高 */
   height: number;
   /** 格子间隔 */
-  gap: number;
+  gaps: IGaps;
   /** 拖拽元素列数 */
   column: number;
   /** 拖拽元素行数 */
@@ -32,12 +33,12 @@ const props = defineProps<{
 const theme = useThemeStore();
 
 const styles = computed(() => {
-  const { gap, height, width, y, x, column, row } = props;
-  const transformY = height * y + y * gap;
-  const transformX = width * x + x * gap;
+  const { gaps, height, width, y, x, column, row } = props;
+  const transformY = height * y + y * gaps[1];
+  const transformX = width * x + x * gaps[0];
   return {
-    width: `${width * column + (column - 1) * gap}px`,
-    height: `${height * row + (row - 1) * gap}px`,
+    width: `${width * column + (column - 1) * gaps[0]}px`,
+    height: `${height * row + (row - 1) * gaps[1]}px`,
     transform: `translate(${transformX}px,${transformY}px)`,
     backgroundColor: props.canDrop ? theme.otherColor.info : theme.otherColor.error,
   };

@@ -2,16 +2,17 @@
   <div ref="DropContentRef" class="drop-content">
     <div
       class="drop-content__drop-container"
+      :style="gridStyles"
       @dragenter="onDragenter"
       @dragover="onDragover"
       @dragleave="onDragleave"
       @drop="onDrop"
     >
-      <template v-for="x in row">
-        <div class="bg-column" v-for="y in column" :key="`${x}-${y}`"></div>
+      <template v-for="x in rows">
+        <div class="bg-column" v-for="y in columns" :key="`${x}-${y}`"></div>
       </template>
     </div>
-    <div class="drop-content__preview">
+    <div class="drop-content__preview" :style="gridStyles">
       <PreviewItem
         v-for="item in list"
         :key="item.id"
@@ -29,7 +30,7 @@
         v-bind="mask"
         :width="boxSize.width"
         :height="boxSize.height"
-        :gap="gap"
+        :gaps="props.gaps"
         :canDrop="canDrop"
       >
       </MoveMask>
@@ -39,18 +40,29 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
-import { useBoxSize } from './hooks';
 import { isOverlap, type ICoordinate, dragStore } from './utils';
-import type { IDragItem, IMoveMask } from './types';
+import type { IDragItem, IGaps, IMoveMask } from './types';
 import { PreviewItem, MoveMask } from './components';
+import { useElementSize } from '@vueuse/core';
 
 defineOptions({
   name: 'DropContent',
 });
 
-const gap = ref(8);
-const column = ref(12);
-const row = ref(8);
+const props = withDefaults(
+  defineProps<{
+    columns?: number;
+    rows?: number;
+    gaps?: IGaps;
+    height?: number;
+  }>(),
+  {
+    columns: 12,
+    rows: 8,
+    gaps: () => [8, 8],
+    height: 80,
+  },
+);
 
 const list = reactive<IDragItem[]>([
   { id: 1, x: 1, y: 1, row: 1, column: 1 },
@@ -64,6 +76,17 @@ const mask = reactive<IMoveMask>({
   y: 0,
   column: 0,
   row: 0,
+});
+
+const gridStyles = computed(() => {
+  const [columnGap, rowGap] = props.gaps;
+  return {
+    display: 'grid',
+    'row-gap': `${rowGap}px`,
+    'column-gap': `${columnGap}px`,
+    'grid-template-columns': `repeat(${props.columns}, ${boxSize.value.width}px)`,
+    'grid-template-rows': `repeat(${props.rows}, ${boxSize.value.height}px)`,
+  };
 });
 
 /** 模块是否可放置 */
@@ -81,7 +104,14 @@ const canDrop = computed(() => {
 });
 
 const DropContentRef = ref<HTMLElement>();
-const boxSize = useBoxSize(DropContentRef, column.value, row.value, gap.value);
+const { width: contentWidth } = useElementSize(DropContentRef);
+
+const boxSize = computed(() => {
+  return {
+    width: (contentWidth.value - (props.columns - 1) * props.gaps[0]) / props.columns,
+    height: props.height,
+  };
+});
 
 /** 拖拽进入布局 */
 function onDragenter(e: DragEvent) {
@@ -104,8 +134,8 @@ function onDragover(e: DragEvent) {
   if (dragData) {
     const x = getX(e.offsetX) - getX(dragData.offsetX ?? 0);
     const y = getY(e.offsetY) - getY(dragData.offsetY ?? 0);
-    mask.x = x < 0 ? 0 : x + mask.column > column.value ? column.value - mask.column : x;
-    mask.y = y < 0 ? 0 : y + mask.row > row.value ? row.value - mask.row : y;
+    mask.x = x < 0 ? 0 : x + mask.column > props.columns ? props.columns - mask.column : x;
+    mask.y = y < 0 ? 0 : y + mask.row > props.rows ? props.rows - mask.row : y;
   }
 }
 
@@ -174,17 +204,17 @@ const onResizeEnd = async () => {
 };
 
 /** 计算 x 坐标 */
-const getX = (num: number) => Math.floor(num / (boxSize.value.width + gap.value));
+const getX = (num: number) => Math.floor(num / (boxSize.value.width + props.gaps[0]));
 /** 计算 y 坐标 */
-const getY = (num: number) => Math.floor(num / (boxSize.value.height + gap.value));
+const getY = (num: number) => Math.floor(num / (boxSize.value.height + props.gaps[1]));
 
 const ceil = (num: number, min: number = 0.2) =>
   num > 1 && num % 1 > min ? Math.ceil(num) : parseInt(num.toString());
 
 /** 计算列数 */
-const getColumn = (num: number) => Math.max(1, ceil(num / (boxSize.value.width + gap.value)));
+const getColumn = (num: number) => Math.max(1, ceil(num / (boxSize.value.width + props.gaps[0])));
 /** 计算行数 */
-const getRow = (num: number) => Math.max(1, ceil(num / (boxSize.value.height + gap.value)));
+const getRow = (num: number) => Math.max(1, ceil(num / (boxSize.value.height + props.gaps[1])));
 </script>
 
 <style lang="scss" scoped>
@@ -198,11 +228,6 @@ const getRow = (num: number) => Math.max(1, ceil(num / (boxSize.value.height + g
 
   &__preview,
   &__drop-container {
-    display: grid;
-    row-gap: v-bind("gap+'px'");
-    column-gap: v-bind("gap+'px'");
-    grid-template-columns: repeat(v-bind('column'), v-bind("boxSize.width+'px'"));
-    grid-template-rows: repeat(v-bind('row'), v-bind("boxSize.height+'px'"));
     .bg-column {
       border: 1px dashed #ccc;
       border-radius: 6px;
