@@ -55,19 +55,22 @@ const props = withDefaults(
     rows?: number;
     gaps?: IGaps;
     height?: number;
+    list: IDragItem[];
   }>(),
   {
     columns: 12,
     rows: 8,
     gaps: () => [8, 8],
     height: 80,
+    list: () => [],
   },
 );
 
-const list = reactive<IDragItem[]>([
-  { id: 1, x: 1, y: 1, row: 1, column: 1 },
-  { id: 2, x: 2, y: 2, row: 2, column: 4 },
-]);
+export type Emits = {
+  (e: 'update:list', list: IDragItem[]): void;
+};
+
+const emit = defineEmits<Emits>();
 
 const mask = reactive<IMoveMask>({
   show: false,
@@ -92,7 +95,7 @@ const gridStyles = computed(() => {
 /** 模块是否可放置 */
 const canDrop = computed(() => {
   const dragCoordinate: ICoordinate = [mask.x, mask.y, mask.x + mask.column, mask.y + mask.row];
-  const coordinates = list
+  const coordinates = props.list
     .filter((item) => item.id !== mask.id)
     .map((item) => {
       const coordinate: ICoordinate = [item.x, item.y, item.x + item.column, item.y + item.row];
@@ -153,19 +156,22 @@ function onDrop(e: DragEvent) {
   const dragData = dragStore.get();
   if (!canDrop.value) return;
   if (dragData && dragData.id) {
-    const item = list.find((item) => item.id === dragData.id);
+    const item = props.list.find((item) => item.id === dragData.id);
     if (item) {
       item.x = mask.x;
       item.y = mask.y;
     } else {
       const { id, x, y, column, row } = mask;
-      list.push({
-        id,
-        x,
-        y,
-        column,
-        row,
-      });
+      emit('update:list', [
+        ...props.list,
+        {
+          id,
+          x,
+          y,
+          column,
+          row,
+        },
+      ]);
     }
   }
 }
@@ -195,7 +201,7 @@ const onResizeEnd = async () => {
   const dragData = dragStore.get();
   if (!canDrop.value) return;
   if (dragData && dragData.id) {
-    const item = list.find((item) => item.id === dragData.id);
+    const item = props.list.find((item) => item.id === dragData.id);
     if (item) {
       item.column = mask.column;
       item.row = mask.row;
