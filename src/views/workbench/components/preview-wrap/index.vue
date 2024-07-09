@@ -8,26 +8,31 @@
     @mousedown.self="onMousedown"
   >
     <div class="preview-item__default">
-      <NCard :bordered="false" class="h-full"></NCard>
-      <IconLocalRightBottom class="absolute right-0 bottom-0 text-20px color-primary" />
+      <ModuleRender v-if="data.type" :type="data.type" class="h-full z-0" />
+      <IconCarbonCloseFilled
+        class="icon absolute top-4px right-4px text-20px cursor-pointer"
+        @click="onDelete"
+      ></IconCarbonCloseFilled>
+      <IconLocalRightBottom class="icon absolute right-0 bottom-0 text-20px" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
-import type { IDragItem, IDragItemMove } from '../types';
-import { dragStore } from '../utils';
+import type { WorkbenchCardMove, WorkbenchCard } from '@/typings';
+import { dragStore, ModuleRender } from '@/views/workbench';
 
 const emits = defineEmits<{
   (e: 'resize-start'): void;
   (e: 'resizing', size: { height: number; width: number }): void;
   (e: 'resize-end'): void;
+  (e: 'delete', id: WorkbenchCard['id']): void;
 }>();
 
-const props = defineProps<{ data: IDragItem }>();
+const props = defineProps<{ data: WorkbenchCard }>();
 defineOptions({
-  name: 'DropItem',
+  name: 'PreviewWrap',
 });
 
 const moveing = ref(false);
@@ -50,9 +55,14 @@ const previewStyle = computed(() => {
   };
 });
 
+/** 删除 */
+function onDelete() {
+  emits('delete', props.data.id);
+}
+
 /** 开始拖拽 */
 function onDragstart(e: DragEvent) {
-  const data: IDragItemMove = { ...props.data, offsetX: e.offsetX, offsetY: e.offsetY };
+  const data: WorkbenchCardMove = { ...props.data, offsetX: e.offsetX, offsetY: e.offsetY };
   dragStore.set(data);
   // 拖拽开始立刻设置 opacity: 0 会导致拖拽默认样式也会为 opacity: 0 , 需要延迟设置
   setTimeout(() => (moveing.value = true));
@@ -160,10 +170,17 @@ const unset = (target: HTMLElement) => {
     border-radius: 6px;
     background-color: #fff;
     border: 2px solid rgb(var(--primary-color-hover));
+    transition: all 0.2s;
+
+    .icon {
+      color: rgb(var(--primary-color-hover));
+      &:hover {
+        color: rgb(var(--primary-color));
+      }
+    }
 
     &:hover {
       border-color: rgb(var(--primary-color));
-      transition: all 0.2s;
     }
   }
 }

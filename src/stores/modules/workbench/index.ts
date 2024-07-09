@@ -1,11 +1,17 @@
-import type { SettingConfig, SettingFormModel } from '@/typings';
+import {
+  type WorkbenchSetting,
+  type SettingFormModel,
+  type WorkbenchCard,
+  EnumWorkbenchCard,
+} from '@/typings';
 import { defineStore } from 'pinia';
 
 interface WorkbenchState {
   /** 工作台布局设置抽屉显示状态 */
   settingDrawerShow: boolean;
   /** 布局配置 */
-  layoutConfig: SettingConfig;
+  layoutConfig: WorkbenchSetting;
+  cardList: WorkbenchCard[];
 }
 
 export const useWorkbenchStore = defineStore('workbench-store', {
@@ -23,6 +29,7 @@ export const useWorkbenchStore = defineStore('workbench-store', {
         gaps: [0, 50],
       },
     },
+    cardList: [{ id: 1, x: 0, y: 0, column: 4, row: 3, type: EnumWorkbenchCard.PlayStationTrophy }],
   }),
 
   actions: {

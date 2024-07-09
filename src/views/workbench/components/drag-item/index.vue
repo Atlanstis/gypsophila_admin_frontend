@@ -8,15 +8,16 @@
 </template>
 
 <script setup lang="ts">
-import type { IDragItem } from '../types';
-import { dragStore } from '../utils';
+import { EnumWorkbenchCard, type WorkbenchCard } from '@/typings';
+import { dragStore } from '@/views/workbench';
 
-const data: IDragItem = {
+const data: WorkbenchCard = {
   id: 4,
   x: 0,
   y: 0,
   column: 2,
   row: 1,
+  type: EnumWorkbenchCard.PlayStationTrophy,
 };
 
 const onDragstart = () => {

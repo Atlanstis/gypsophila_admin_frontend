@@ -5,10 +5,10 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { useThemeStore } from '@/stores';
-import { type IGaps } from '../types';
+import { type Gaps } from '@/typings';
 
 defineOptions({
-  name: 'MoveMask',
+  name: 'CardMask',
 });
 
 const props = defineProps<{
@@ -17,7 +17,7 @@ const props = defineProps<{
   /** 容器格子高 */
   height: number;
   /** 格子间隔 */
-  gaps: IGaps;
+  gaps: Gaps;
   /** 拖拽元素列数 */
   column: number;
   /** 拖拽元素行数 */

@@ -1,5 +1,5 @@
 <template>
-  <div ref="DropContentRef" class="drop-content">
+  <div ref="dropContentRef" class="drop-content">
     <div
       class="drop-content__drop-container"
       :style="gridStyles"
@@ -8,12 +8,12 @@
       @dragleave="onDragleave"
       @drop="onDrop"
     >
-      <template v-for="x in rows">
-        <div class="bg-column" v-for="y in columns" :key="`${x}-${y}`"></div>
+      <template v-for="x in dropConfig.rows">
+        <div class="bg-column" v-for="y in dropConfig.columns" :key="`${x}-${y}`"></div>
       </template>
     </div>
     <div class="drop-content__preview" :style="gridStyles">
-      <PreviewItem
+      <PreviewWrap
         v-for="item in list"
         :key="item.id"
         :data="item"
@@ -23,73 +23,69 @@
         @resize-start="onResizeStart"
         @resizing="onResizeing"
         @resize-end="onResizeEnd"
+        @delete="onDelete"
       >
-      </PreviewItem>
-      <MoveMask
+      </PreviewWrap>
+      <CardMask
         v-show="mask.show"
         v-bind="mask"
-        :width="boxSize.width"
-        :height="boxSize.height"
-        :gaps="props.gaps"
+        :width="cellSize.width"
+        :height="cellSize.height"
+        :gaps="dropConfig.gaps"
         :canDrop="canDrop"
       >
-      </MoveMask>
+      </CardMask>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
-import { isOverlap, type ICoordinate, dragStore } from './utils';
-import type { IDragItem, IGaps, IMoveMask } from './types';
-import { PreviewItem, MoveMask } from './components';
-import { useElementSize } from '@vueuse/core';
+import { isOverlap, type ICoordinate, dragStore, PreviewWrap, CardMask } from '@/views/workbench';
+import type { WorkbenchCard, WorkbenchCardMask } from '@/typings';
+import { useWorkbench } from '@/views/workbench/hooks';
+import { useWorkbenchStore } from '@/stores';
 
 defineOptions({
-  name: 'DropContent',
+  name: 'SettingContent',
 });
 
 const props = withDefaults(
   defineProps<{
-    columns?: number;
-    rows?: number;
-    gaps?: IGaps;
-    height?: number;
-    list: IDragItem[];
+    list: WorkbenchCard[];
   }>(),
   {
-    columns: 12,
-    rows: 8,
-    gaps: () => [8, 8],
-    height: 80,
     list: () => [],
   },
 );
 
+const workbenchStore = useWorkbenchStore();
+
+const dropConfig = computed(() => {
+  const {
+    layoutConfig: { columns, rows, gaps, cellHeight },
+  } = workbenchStore;
+  return {
+    columns,
+    rows,
+    gaps,
+    height: cellHeight,
+  };
+});
+
 export type Emits = {
-  (e: 'update:list', list: IDragItem[]): void;
+  (e: 'update:list', list: WorkbenchCard[]): void;
 };
 
 const emit = defineEmits<Emits>();
 
-const mask = reactive<IMoveMask>({
+const mask = reactive<WorkbenchCardMask>({
   show: false,
-  id: '',
+  id: 0,
   x: 0,
   y: 0,
   column: 0,
   row: 0,
-});
-
-const gridStyles = computed(() => {
-  const [columnGap, rowGap] = props.gaps;
-  return {
-    display: 'grid',
-    'row-gap': `${rowGap}px`,
-    'column-gap': `${columnGap}px`,
-    'grid-template-columns': `repeat(${props.columns}, ${boxSize.value.width}px)`,
-    'grid-template-rows': `repeat(${props.rows}, ${boxSize.value.height}px)`,
-  };
 });
 
 /** 模块是否可放置 */
@@ -106,15 +102,8 @@ const canDrop = computed(() => {
   });
 });
 
-const DropContentRef = ref<HTMLElement>();
-const { width: contentWidth } = useElementSize(DropContentRef);
-
-const boxSize = computed(() => {
-  return {
-    width: (contentWidth.value - (props.columns - 1) * props.gaps[0]) / props.columns,
-    height: props.height,
-  };
-});
+const dropContentRef = ref<HTMLElement>();
+const { gridStyles, cellSize } = useWorkbench(dropContentRef, 'setting');
 
 /** 拖拽进入布局 */
 function onDragenter(e: DragEvent) {
@@ -130,6 +119,14 @@ function onDragenter(e: DragEvent) {
   }
 }
 
+function onDelete(id: WorkbenchCard['id']) {
+  const index = props.list.findIndex((item) => item.id === id);
+  if (index > -1) {
+    const list = props.list.filter((item) => item.id !== id);
+    emit('update:list', [...list]);
+  }
+}
+
 /** 拖拽进行中 */
 function onDragover(e: DragEvent) {
   e.preventDefault();
@@ -137,8 +134,14 @@ function onDragover(e: DragEvent) {
   if (dragData) {
     const x = getX(e.offsetX) - getX(dragData.offsetX ?? 0);
     const y = getY(e.offsetY) - getY(dragData.offsetY ?? 0);
-    mask.x = x < 0 ? 0 : x + mask.column > props.columns ? props.columns - mask.column : x;
-    mask.y = y < 0 ? 0 : y + mask.row > props.rows ? props.rows - mask.row : y;
+    mask.x =
+      x < 0
+        ? 0
+        : x + mask.column > dropConfig.value.columns
+        ? dropConfig.value.columns - mask.column
+        : x;
+    mask.y =
+      y < 0 ? 0 : y + mask.row > dropConfig.value.rows ? dropConfig.value.rows - mask.row : y;
   }
 }
 
@@ -146,7 +149,7 @@ function onDragover(e: DragEvent) {
 function onDragleave(e: DragEvent) {
   e.preventDefault();
   mask.show = false;
-  mask.id = '';
+  mask.id = 0;
 }
 
 /** 拖拽放置组件 */
@@ -161,7 +164,7 @@ function onDrop(e: DragEvent) {
       item.x = mask.x;
       item.y = mask.y;
     } else {
-      const { id, x, y, column, row } = mask;
+      const { id, x, y, column, row, type } = mask;
       emit('update:list', [
         ...props.list,
         {
@@ -170,6 +173,7 @@ function onDrop(e: DragEvent) {
           y,
           column,
           row,
+          type,
         },
       ]);
     }
@@ -210,17 +214,19 @@ const onResizeEnd = async () => {
 };
 
 /** 计算 x 坐标 */
-const getX = (num: number) => Math.floor(num / (boxSize.value.width + props.gaps[0]));
+const getX = (num: number) => Math.floor(num / (cellSize.value.width + dropConfig.value.gaps[0]));
 /** 计算 y 坐标 */
-const getY = (num: number) => Math.floor(num / (boxSize.value.height + props.gaps[1]));
+const getY = (num: number) => Math.floor(num / (cellSize.value.height + dropConfig.value.gaps[1]));
 
 const ceil = (num: number, min: number = 0.2) =>
   num > 1 && num % 1 > min ? Math.ceil(num) : parseInt(num.toString());
 
 /** 计算列数 */
-const getColumn = (num: number) => Math.max(1, ceil(num / (boxSize.value.width + props.gaps[0])));
+const getColumn = (num: number) =>
+  Math.max(1, ceil(num / (cellSize.value.width + dropConfig.value.gaps[0])));
 /** 计算行数 */
-const getRow = (num: number) => Math.max(1, ceil(num / (boxSize.value.height + props.gaps[1])));
+const getRow = (num: number) =>
+  Math.max(1, ceil(num / (cellSize.value.height + dropConfig.value.gaps[1])));
 </script>
 
 <style lang="scss" scoped>

@@ -17,7 +17,7 @@
         <div class="flex-1-hidden">
           <NCard :size="cardSize" class="h-full" content-style="height: 100%;">
             <ScrollContainer>
-              <DropContent v-model:list="list" v-bind="dropConfig" />
+              <SettingContent v-model:list="list" />
             </ScrollContainer>
           </NCard>
         </div>
@@ -27,10 +27,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import type { WorkbenchCard } from '@/typings';
 import { useWorkbenchStore } from '@/stores';
-import { DragItem, DropContent, ToolBar, type IDragItem } from './components';
-
+import { SettingContent, DragItem } from '@/views/workbench/components';
+import { ToolBar } from './components';
+import { ref, onMounted } from 'vue';
 defineOptions({
   name: 'WorkBenchSetting',
 });
@@ -39,19 +40,11 @@ const cardSize = 'small';
 
 const workbenchStore = useWorkbenchStore();
 
-const dropConfig = computed(() => {
-  const {
-    layoutConfig: { columns, rows, gaps, cellHeight },
-  } = workbenchStore;
-  return {
-    columns,
-    rows,
-    gaps,
-    height: cellHeight,
-  };
-});
+const list = ref<WorkbenchCard[]>([]);
 
-const list = ref<IDragItem[]>([]);
+onMounted(() => {
+  list.value = workbenchStore.cardList.map((item) => ({ ...item }));
+});
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,6 +1,6 @@
-import type { IDragItemMove } from './types';
+import type { WorkbenchCardMove } from '@/typings';
 
-export type ICoordinate = [x1: number, x2: number, x3: number, x4: number];
+export type ICoordinate = [x1: number, y1: number, x2: number, y2: number];
 
 /**
  * 判断是否重合
@@ -21,13 +21,13 @@ export function isOverlap(rect1: ICoordinate, rect2: ICoordinate) {
 }
 
 class DragStore {
-  private moveItem: null | IDragItemMove = null;
+  private moveItem: null | WorkbenchCardMove = null;
 
   get() {
     return this.moveItem;
   }
 
-  set(item: IDragItemMove | null) {
+  set(item: WorkbenchCardMove | null) {
     this.moveItem = item;
   }
 
