@@ -28,18 +28,6 @@ declare namespace PageRoute {
   /** PlayStation 路由名 */
   type AllPlayStationName = PlayStationNoPageName | PlayStationName;
 
-  /** 梦幻西游 无对应页面路由名 */
-  type MhxyNoPageName = 'Mhxy';
-  /** 梦幻西游 有对应页面路由名 */
-  type MhxyName =
-    | 'Mhxy_Account'
-    | 'Mhxy_Gold_Record'
-    | 'Mhxy_Gold_Transfer'
-    | 'Mhxy_Prop_Category'
-    | 'Mhxy_Channel';
-  /** 梦幻西游 路由名 */
-  type AllMhxyName = MhxyNoPageName | MhxyName;
-
   /** 系统管理 */
   type ManagementNoPageName = 'Management';
   type ManagementName = 'Management_User' | 'Management_Role' | 'Management_Menu';
@@ -62,6 +50,6 @@ declare namespace PageRoute {
   /** 全部有对应页面的路由名  */
   type HasPageRoute = Exclude<
     AllRouteName,
-    RootName | PlayStationNoPageName | MhxyNoPageName | ManagementNoPageName | SettingNoPageName
+    RootName | PlayStationNoPageName | ManagementNoPageName | SettingNoPageName
   >;
 }

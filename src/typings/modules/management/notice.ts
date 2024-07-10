@@ -16,10 +16,7 @@ export enum EnumNoticeStatus {
   Expire = 'Expire',
 }
 
-export enum EnumNoticeCategory {
-  /** Mhxy 转金 */
-  MhxyTransfer = 'MhxyTransfer',
-}
+export enum EnumNoticeCategory {}
 
 export interface Notice<T extends EnumNoticeCategory = any> {
   id: number;
@@ -32,7 +29,7 @@ export interface Notice<T extends EnumNoticeCategory = any> {
   /** 种类 */
   category: T;
   /** 关联信息 */
-  link: NoticeLink<T>;
+  link: NoticeLink;
   /** 状态 */
   status: EnumNoticeStatus;
   /** 过期时间 */
@@ -41,14 +38,4 @@ export interface Notice<T extends EnumNoticeCategory = any> {
   createTime: Date;
 }
 
-/**  */
-type NoticeLink<Type extends EnumNoticeCategory> = Type extends EnumNoticeCategory.MhxyTransfer
-  ? NoticeMhxyTransferLink
-  : Record<string, any>;
-
-/** Mhxy 转金关联信息 */
-export interface NoticeMhxyTransferLink {
-  account: ApiMhxy.Account;
-  propCategory: ApiMhxy.PropCategory;
-  fromAccountId?: ApiMhxy.Account['id'];
-}
+type NoticeLink = Record<string, any>;

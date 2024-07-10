@@ -3,12 +3,7 @@
     <div v-if="list.length" class="h-full">
       <ScrollContainer>
         <div v-for="item in list" :key="item.id">
-          <HoverContainer class="p-x-10px">
-            <CardMhxyTransfer
-              v-if="item.category === EnumNoticeCategory.MhxyTransfer"
-              :notice="item"
-            ></CardMhxyTransfer>
-          </HoverContainer>
+          <HoverContainer class="p-x-10px"> </HoverContainer>
         </div>
       </ScrollContainer>
     </div>
@@ -19,8 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { EnumNoticeCategory, type Notice } from '@/typings';
-import { CardMhxyTransfer } from './components';
+import { type Notice } from '@/typings';
 
 defineOptions({
   name: 'TodoTab',
