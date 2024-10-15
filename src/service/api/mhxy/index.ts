@@ -5,3 +5,4 @@ export * from './account-gold-transfer';
 export * from './channel';
 export * from './account-group';
 export * from './gold-transfer-policy';
+export * from './area';

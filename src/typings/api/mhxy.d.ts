@@ -180,4 +180,10 @@ declare namespace ApiMhxy {
     nextExecuteTime: string;
     status: 'open' | 'close';
   }
+
+  interface Area {
+    id: number;
+    name: string;
+    openDate: Date;
+  }
 }

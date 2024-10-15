@@ -58,6 +58,24 @@ export const mhxyRoutes: AuthRoute.Route[] = [
           icon: 'clarity:two-way-arrows-line',
         },
       },
+      {
+        name: RouteEnum.MhxyArea,
+        path: '/mhxy/area',
+        component: getRouteView(RouteEnum.MhxyArea),
+        meta: {
+          title: '区服管理',
+          icon: 'clarity:two-way-arrows-line',
+        },
+      },
+      {
+        name: RouteEnum.MhxyAreaPrice,
+        path: '/mhxy/area-price',
+        component: getRouteView(RouteEnum.MhxyAreaPrice),
+        meta: {
+          title: '区服物价',
+          icon: 'clarity:two-way-arrows-line',
+        },
+      },
     ],
   },
 ];

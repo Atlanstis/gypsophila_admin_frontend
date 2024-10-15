@@ -36,7 +36,9 @@ declare namespace PageRoute {
     | 'Mhxy_Gold_Record'
     | 'Mhxy_Gold_Transfer'
     | 'Mhxy_Prop_Category'
-    | 'Mhxy_Channel';
+    | 'Mhxy_Channel'
+    | 'Mhxy_Area'
+    | 'Mhxy_Area_Price';
   /** 梦幻西游 路由名 */
   type AllMhxyName = MhxyNoPageName | MhxyName;
 

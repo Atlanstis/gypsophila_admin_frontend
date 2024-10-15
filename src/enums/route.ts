@@ -31,6 +31,8 @@ export enum RouteEnum {
   MhxyPropCategory = 'Mhxy_Prop_Category',
   /** 梦幻西游 途径  */
   MhxyChannel = 'Mhxy_Channel',
+  MhxyArea = 'Mhxy_Area',
+  MhxyAreaPrice = 'Mhxy_Area_Price',
   /** 系统管理 */
   Management = 'Management',
   /** 用户管理 */
