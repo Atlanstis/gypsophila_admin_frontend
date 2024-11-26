@@ -21,3 +21,5 @@ export function decrypt(cipherText: string) {
   const text = bytes.toString(CryptoJS.enc.Utf8);
   return text ? JSON.parse(text) : null;
 }
+
+export * from './hybrid-encrypt';

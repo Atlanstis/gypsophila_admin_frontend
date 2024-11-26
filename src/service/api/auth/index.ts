@@ -5,7 +5,7 @@ import { request } from '@/service';
  * @param username - 用户名
  * @param password - 密码
  */
-export function authLogin(username: string, password: string) {
+export function authLogin(username: string, password: Common.EncryptData) {
   return request.post<ApiAuth.Token>('/auth/login', { username, password });
 }
 

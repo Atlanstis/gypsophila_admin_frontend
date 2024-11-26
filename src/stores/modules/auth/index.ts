@@ -1,5 +1,5 @@
 import { authLogin } from '@/service';
-import { localStorage } from '@/utils';
+import { hybridEncrypt, localStorage } from '@/utils';
 import { LocalKeyEnum } from '@/enums';
 import { defineStore } from 'pinia';
 import { useRouteStore } from '@/stores';
@@ -14,6 +14,8 @@ interface AuthState {
   /** 认证 token */
   token: string;
   userInfo?: ApiAuth.UserInfo;
+  /** 加密-publicKey */
+  publicKey: string;
 }
 
 export const useAuthStore = defineStore('auth-store', {
@@ -21,6 +23,13 @@ export const useAuthStore = defineStore('auth-store', {
     loginLoading: false,
     token: getToken(),
     userInfo: undefined,
+    publicKey: `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwxXMU/GhDjjkhtdmsRjQ
+Qy2/H1xD1QeZOsx49hzxj3DMf94VEnaKEIxrl0eYdVx2hq9wMN0p00MaqsNGQsVJ
+liUS3LrmwY1AUThhfVb5zgCaZ6WTobwoqisiuwWAoRWC0tORnwSphuOhtPCP6PWo
+aAbgiV8IonlwbWf1y4jxv1QerQwBbA/Hi+7QO/mYaeNT+UrTpdDiBNi2h7NMtIJj
+UgIK693ZRg/yXCT2hAtjYNga+aAXLMr3nt5+X+ouZXbRcqPw/+oJEW3kztYL3fRT
+sfqCFeLn+sZzuG6Gky0rNwB4CRL7knVKTl7SMn3Rr8+i3g3UjGbdGqqrqgFUDNds
+KwIDAQAB`,
   }),
 
   getters: {
@@ -56,11 +65,20 @@ export const useAuthStore = defineStore('auth-store', {
      */
     async login(username: string, password: string) {
       this.loginLoading = true;
-      const { error, data } = await authLogin(username, password);
+      const passwordEncrypted = await this.encrypt(password);
+      const { error, data } = await authLogin(username, passwordEncrypted);
       if (!error) {
         await this.handleActionAfterLogin(data);
       }
       this.loginLoading = false;
+    },
+
+    /**
+     * 混合加密
+     * @param str 需加密数据
+     */
+    async encrypt(str: string) {
+      return await hybridEncrypt(str, this.publicKey);
     },
 
     /**

@@ -19,4 +19,11 @@ declare namespace Common {
 
   /** 组件/异步组件 */
   type Component = import('vue-router').RouteComponent | AsyncComponent;
+
+  /** 加密数据 */
+  interface EncryptData {
+    data: string;
+    iv: string;
+    key: string;
+  }
 }
