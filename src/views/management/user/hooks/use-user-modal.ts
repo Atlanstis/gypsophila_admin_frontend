@@ -15,12 +15,11 @@ export function useUserModal() {
 
   function setEditData(data: ApiManagement.User) {
     const { id, username, nickname, roles } = data;
-    const role = roles[0].id;
     editData.value = {
       id: id,
       username: username,
       nickname: nickname,
-      role,
+      role: roles.map((role) => role.id),
     };
   }
 

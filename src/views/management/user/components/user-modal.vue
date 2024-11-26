@@ -24,8 +24,18 @@
       <NFormItem label="昵称" path="nickname">
         <NInput v-model:value="formModel.nickname" placeholder="请输入昵称" />
       </NFormItem>
-      <NFormItem v-if="formModel.role !== BusinessRoleEnum.SuperAdmin" label="角色" path="role">
-        <NSelect v-model:value="formModel.role" :options="roleList" placeholder="请选择角色" />
+      <NFormItem
+        v-if="!formModel.role.includes(BusinessRoleEnum.SuperAdmin)"
+        label="角色"
+        path="role"
+      >
+        <NSelect
+          v-model:value="formModel.role"
+          :options="roleList"
+          multiple
+          max-tag-count="responsive"
+          placeholder="请选择角色"
+        />
       </NFormItem>
       <NFormItem v-if="type === 'add'" label="密码" path="password">
         <NInput
@@ -52,6 +62,7 @@ import { computed, ref, reactive } from 'vue';
 import { roleListAssignable, userAdd, userEdit } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { BusinessRoleEnum } from '@/enums';
+import { useAuthStore } from '@/stores';
 
 defineOptions({
   name: 'UserModal',
@@ -99,7 +110,7 @@ function createFormModel(): FormModel {
     nickname: '',
     id: '',
     password: '',
-    role: null,
+    role: [],
   };
 }
 
@@ -111,8 +122,10 @@ const formRules: Record<string, FormItemRule | FormItemRule[]> = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-  role: [{ required: true, type: 'number', message: '请选择角色', trigger: 'change' }],
+  role: [{ required: true, type: 'array', max: 3, message: '请选择角色', trigger: 'change' }],
 };
+
+const authStore = useAuthStore();
 
 function handleUpdateFormModelByFormType() {
   const handlers: Record<Modal.Type, () => void> = {
@@ -137,7 +150,13 @@ async function formSubmit() {
   await formRef.value?.validate();
   showLoading();
   const api = props.type === 'add' ? userAdd : userEdit;
-  const { error } = await api({ ...formModel });
+  const params: Record<string, any> = {
+    ...formModel,
+  };
+  if (props.type === 'add' && formModel.password) {
+    params.password = await authStore.encrypt(formModel.password);
+  }
+  const { error } = await api(params);
   if (!error) {
     const title = `${props.type === 'add' ? '新增' : '编辑'}成功`;
     window.$message?.success(title, { duration: DEFAULT_MESSAGE_DURATION });

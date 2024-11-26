@@ -13,7 +13,7 @@ export function userList(page: number, size: number) {
  * 新增用户
  * @param user 用户数据
  */
-export function userAdd(user: BusinessManagement.UserModel) {
+export function userAdd(user: any) {
   return request.post<null>('/user/add', user);
 }
 
@@ -21,7 +21,7 @@ export function userAdd(user: BusinessManagement.UserModel) {
  * 编辑用户
  * @param user 用户数据
  */
-export function userEdit(user: BusinessManagement.UserModel) {
+export function userEdit(user: any) {
   return request.post<null>('/user/edit', user);
 }
 

@@ -1,5 +1,5 @@
 import { PopoverBtn } from '@/components';
-import { BusinessRoleEnum, ButtonIconEnum } from '@/enums';
+import { ButtonIconEnum } from '@/enums';
 import { useBoolean, usePagination } from '@/hooks';
 import { userList } from '@/service';
 import { NTag, type DataTableColumns, NPopconfirm, NSpace, NButton } from 'naive-ui';
@@ -8,7 +8,6 @@ import { useIconRender } from '@/composables';
 
 /** 有关列表的操作 */
 export function useTable(
-  operation: Ref<System.OperationPermission>,
   handleEdit: (row: ApiManagement.User) => void,
   handleDelete: (id: string) => void,
 ) {
@@ -61,22 +60,17 @@ export function useTable(
               ),
           },
         );
-        /** 超级管理员账号，及无删除权限的无法进行删除操作 */
-        const canDel =
-          !row.roles.some((role) => role.id === BusinessRoleEnum.SuperAdmin) &&
-          operation.value.canDelete;
 
         const editBtn = h(PopoverBtn, {
           msg: '编辑',
           icon: ButtonIconEnum.edit,
           onClick: () => handleEdit(row),
         });
-        const canEdit = operation.value.canEdit;
         return h(
           NSpace,
           { justify: 'center' },
           {
-            default: () => [canEdit ? editBtn : null, canDel ? delConfirm : null],
+            default: () => [editBtn, delConfirm],
           },
         );
       },

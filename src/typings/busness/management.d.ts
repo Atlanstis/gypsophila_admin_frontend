@@ -4,7 +4,7 @@ declare namespace BusinessManagement {
     /**密码 */
     password?: string;
     /**角色 Id */
-    role: number | null;
+    role: number[];
   };
 
   /** 菜单-权限控制 */
