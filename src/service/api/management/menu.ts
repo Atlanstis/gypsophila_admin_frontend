@@ -20,7 +20,7 @@ export function menuListTop() {
  * 新增菜单
  * @param menu 菜单数据
  */
-export function menuAdd(menu: Pick<ApiManagement.Menu, 'name' | 'key' | 'parentId'>) {
+export function menuAdd(menu: any) {
   return request.post('/menu/add', menu);
 }
 
@@ -28,7 +28,7 @@ export function menuAdd(menu: Pick<ApiManagement.Menu, 'name' | 'key' | 'parentI
  * 编辑菜单
  * @param menu 菜单数据
  */
-export function menuEdit(menu: Pick<ApiManagement.Menu, 'name' | 'key' | 'parentId' | 'id'>) {
+export function menuEdit(menu: any) {
   return request.post('/menu/edit', menu);
 }
 
@@ -52,12 +52,7 @@ export function menuPermissionList(menuId: number) {
  * 新增菜单下的权限
  * @param permission 权限
  */
-export function menuPermissionAdd(
-  permission: Pick<ApiManagement.Permission, 'name' | 'key'> & {
-    id: number | null;
-    menuId: number;
-  },
-) {
+export function menuPermissionAdd(permission: any) {
   return request.post('/menu/permission/add', permission);
 }
 
@@ -65,12 +60,7 @@ export function menuPermissionAdd(
  * 编辑菜单下的权限
  * @param permission 权限
  */
-export function menuPermissionEdit(
-  permission: Pick<ApiManagement.Permission, 'name' | 'key'> & {
-    id: number | null;
-    menuId: number;
-  },
-) {
+export function menuPermissionEdit(permission: any) {
   return request.post('/menu/permission/edit', permission);
 }
 

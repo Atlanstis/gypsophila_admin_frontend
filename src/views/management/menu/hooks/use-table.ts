@@ -1,15 +1,14 @@
 import { useBoolean, usePagination } from '@/hooks';
 import { NTag, type DataTableColumns, NPopconfirm, NButton, NSpace } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
-import { PARENT_FLAG } from '../constants';
+import { MenuTypeEnum } from '../constants';
 import { menuList } from '@/service';
 import { useIconRender } from '@/composables';
 import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
 
 export function useTable(
-  operation: Ref<System.OperationPermission>,
-  handleAdd: (parentId?: number) => void,
+  handleAdd: (parentId: number | null) => void,
   handleEdit: (row: ApiManagement.Menu) => void,
   handleDelete: (id: number) => void,
   handlePermission: (row: ApiManagement.Menu) => void,
@@ -35,8 +34,7 @@ export function useTable(
       title: '类型',
       align: 'center',
       render: (row) => {
-        const isParent = row.parentId === PARENT_FLAG;
-        const isMenu = isParent && row.children;
+        const isMenu = row.type === MenuTypeEnum.menu;
         return h(
           NTag,
           { type: isMenu ? 'warning' : 'success' },
@@ -49,9 +47,6 @@ export function useTable(
       title: '操作',
       align: 'center',
       render: (row) => {
-        const hasDel = !row.children && operation.value.canDelete;
-        const hasAdd = row.parentId === PARENT_FLAG && operation.value.canAdd;
-        const hasPermission = !row.children && operation.value.canAllocation;
         const delBtn = h(
           NPopconfirm,
           { onPositiveClick: () => handleDelete(row.id), trigger: 'hover' },
@@ -85,17 +80,11 @@ export function useTable(
           icon: ButtonIconEnum.edit,
           onClick: () => handleEdit(row),
         });
-        const canEdit = operation.value.canEdit;
         return h(
           NSpace,
           { justify: 'center' },
           {
-            default: () => [
-              hasAdd ? addBtn : null,
-              canEdit ? editBtn : null,
-              hasPermission ? permissionBtn : null,
-              hasDel ? delBtn : null,
-            ],
+            default: () => [addBtn, editBtn, permissionBtn, delBtn],
           },
         );
       },

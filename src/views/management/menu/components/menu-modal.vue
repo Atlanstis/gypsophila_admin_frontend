@@ -14,7 +14,7 @@
       require-mark-placement="left"
       :rules="formRules"
     >
-      <NFormItem v-if="props.parentId !== PARENT_FLAG" label="上级菜单" path="parentId">
+      <NFormItem v-if="props.parentId" label="上级菜单" path="parentId">
         <NSelect v-model:value="formModel.parentId" disabled :options="menuTopOpt" />
       </NFormItem>
       <NFormItem label="菜单名称" path="name">
@@ -22,6 +22,16 @@
       </NFormItem>
       <NFormItem label="菜单 Key" path="key">
         <NInput v-model:value="formModel.key" placeholder="请输入菜单 Key" />
+      </NFormItem>
+      <NFormItem label="类型" path="type">
+        <NRadioGroup v-model:value="formModel.type" :disabled="props.type === 'edit'">
+          <NRadio
+            v-for="type in MenuTypeOpts"
+            :key="type.value"
+            :value="type.value"
+            :label="type.label"
+          />
+        </NRadioGroup>
       </NFormItem>
     </NForm>
     <template #footer>
@@ -39,8 +49,8 @@ import { computed, ref, reactive } from 'vue';
 import { menuAdd, menuEdit, menuListTop } from '@/service';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import type { Ref } from 'vue';
-import { PARENT_FLAG } from '../constants';
 import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
+import { MenuTypeEnum, MenuTypeOpts } from '../constants';
 
 defineOptions({
   name: 'MenuModal',
@@ -51,7 +61,7 @@ type FormModel = BusinessManagement.MenuFormModal;
 export interface Props {
   type?: Modal.Type;
   editData?: FormModel | null;
-  parentId: number;
+  parentId: number | null;
 }
 
 interface Emits {
@@ -62,7 +72,7 @@ const props = withDefaults(defineProps<Props & ModalProps>(), {
   visible: false,
   type: 'add',
   editData: null,
-  parentId: PARENT_FLAG,
+  parentId: null,
 });
 
 const emits = defineEmits<Emits & ModalEmits>();
@@ -89,7 +99,8 @@ function createFormModel(): FormModel {
     id: 0,
     key: '',
     name: '',
-    parentId: props.parentId || PARENT_FLAG,
+    type: MenuTypeEnum.menu,
+    parentId: props.parentId || null,
   };
 }
 

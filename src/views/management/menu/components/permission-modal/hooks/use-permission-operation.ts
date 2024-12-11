@@ -14,7 +14,7 @@ export function usePermissionOperation() {
   const operationEditData = ref<ApiManagement.Permission | null>(null);
 
   function setOperationEditData(data: ApiManagement.Permission) {
-    operationEditData.value = data;
+    operationEditData.value = { ...data };
   }
 
   return {

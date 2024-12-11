@@ -17,11 +17,14 @@
       <NFormItem label="权限名称" path="name">
         <NInput v-model:value="formModel.name" placeholder="请输入权限名称" />
       </NFormItem>
-      <NFormItem label="权限 Key" path="key">
-        <NInput v-model:value="formModel.key" placeholder="请输入权限 Key" />
+      <NFormItem label="权限标识" path="key">
+        <NInput v-model:value="formModel.key" placeholder="请输入权限标识" />
       </NFormItem>
-      <NFormItem label="类型" path="type">
-        <NSelect v-model:value="formModel.type" :options="PermissionTypeOpts" />
+      <NFormItem label="权限别名" path="alias">
+        <NInput v-model:value="formModel.alias" placeholder="请输入权限别名" />
+      </NFormItem>
+      <NFormItem label="排序" path="order">
+        <NInputNumber v-model:value="formModel.order" :min="0" :max="99" :precision="0" />
       </NFormItem>
     </NForm>
     <template #footer>
@@ -39,7 +42,6 @@ import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
 import { menuPermissionAdd, menuPermissionEdit } from '@/service';
 import type { FormInst, FormItemRule } from 'naive-ui';
 import { computed, reactive, ref } from 'vue';
-import { PermissionTypeMenu, PermissionTypeOpts } from '@/views/management/menu/constants';
 
 defineOptions({
   name: 'PermissionOperateModal',
@@ -72,7 +74,7 @@ const { modalVisible, closeModal, submitLoading, showLoading, closeLoading } = u
 
 const title = computed(() => {
   const titleMap: Record<Modal.Type, string> = {
-    add: '添加权限',
+    add: '新增权限',
     edit: '编辑权限',
   };
   return titleMap[props.type];
@@ -89,15 +91,17 @@ function createFormModel(): FormModel {
     id: null,
     name: '',
     key: '',
-    type: PermissionTypeMenu.Other,
+    alias: '',
+    order: 0,
   };
 }
 
 const formModel = reactive<FormModel>(createFormModel());
 
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
-  name: [{ required: true, message: '请输入权限名称', trigger: 'blur' }],
-  key: [{ required: true, message: '请输入权限 Key', trigger: 'blur' }],
+  name: [{ required: true, message: '请输入权限名称', trigger: 'change' }],
+  key: [{ required: true, message: '请输入权限标识', trigger: 'change' }],
+  alias: [{ required: true, message: '请输入权限 Key', trigger: 'change' }],
 };
 
 function handleUpdateFormModelByFormType() {

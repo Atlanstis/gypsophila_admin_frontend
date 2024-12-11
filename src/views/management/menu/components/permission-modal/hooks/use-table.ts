@@ -1,9 +1,8 @@
 import { menuPermissionList } from '@/service';
-import { NSpace, type DataTableColumns, NButton, NPopconfirm, NTag } from 'naive-ui';
+import { NSpace, type DataTableColumns, NButton, NPopconfirm } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
 import type { Props } from '../index.vue';
 import { useBoolean } from '@/hooks';
-import { PermissionTypeOpts } from '@/views/management/menu/constants';
 import { useIconRender } from '@/composables';
 import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
@@ -24,23 +23,24 @@ export function useTable(
 
   const columns: Ref<DataTableColumns<ApiManagement.Permission>> = ref([
     {
+      key: 'order',
+      title: '排序',
+      align: 'center',
+    },
+    {
       key: 'name',
       title: '权限名称',
       align: 'center',
     },
     {
       key: 'key',
-      title: '权限 Key',
+      title: '权限标识',
       align: 'center',
     },
     {
-      key: 'type',
-      title: '类型',
+      key: 'alias',
+      title: '权限别名',
       align: 'center',
-      render: ({ type }) => {
-        const item = PermissionTypeOpts.find((opt) => opt.value === type);
-        return item ? h(NTag, { bordered: false, type: 'primary' }, () => item.label) : null;
-      },
     },
     {
       key: 'actions',

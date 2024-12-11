@@ -1,6 +1,5 @@
 import { useBoolean } from '@/hooks';
 import { ref } from 'vue';
-import { PARENT_FLAG } from '../constants';
 
 /** 有关菜单 modal 的操作 */
 export function useMenuModal() {
@@ -15,18 +14,20 @@ export function useMenuModal() {
   const editData = ref<BusinessManagement.MenuFormModal | null>(null);
 
   function setEditData(data: ApiManagement.Menu) {
+    const { id, key, name, parentId, type } = data;
     editData.value = {
-      id: data.id,
-      key: data.key,
-      name: data.name,
-      parentId: data.parentId,
+      id,
+      key,
+      name,
+      parentId,
+      type,
     };
   }
 
-  const defaultParentId = ref<number>(PARENT_FLAG);
+  const defaultParentId = ref<number | null>(null);
 
-  function setDefaultParentId(val: number | undefined) {
-    defaultParentId.value = val !== undefined ? val : PARENT_FLAG;
+  function setDefaultParentId(val: number | null) {
+    defaultParentId.value = val;
   }
 
   return {

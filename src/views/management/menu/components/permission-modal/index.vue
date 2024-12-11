@@ -34,6 +34,7 @@ import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
 import { usePermissionOperation, useTable } from './hooks';
 import PermissionOperateModal from './components/permission-operate-modal.vue';
 import { menuPermissionDelete } from '@/service';
+import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
   name: 'PermissionModal',
@@ -52,12 +53,7 @@ const emits = defineEmits<ModalEmits>();
 
 /** 处理数据的编辑 */
 function handleEdit(editData: ApiManagement.Permission) {
-  setOperationEditData({
-    id: editData.id,
-    name: editData.name,
-    key: editData.key,
-    type: editData.type,
-  });
+  setOperationEditData(editData);
   setOperationModalType('edit');
   openOpetationModal();
 }
@@ -66,6 +62,7 @@ function handleEdit(editData: ApiManagement.Permission) {
 async function handleDelete(id: number) {
   const { error } = await menuPermissionDelete(id);
   if (!error) {
+    window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
     getTableData();
   }
 }

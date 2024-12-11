@@ -2,7 +2,7 @@
   <div>
     <TableContainer>
       <template #header>
-        <NSpace v-if="operation.canAdd" class="pb-12px" justify="space-between">
+        <NSpace class="pb-12px" justify="space-between">
           <NSpace>
             <NButton type="primary" @click="handleAdd()">
               <icon-ic-round-plus class="mr-4px text-20px" />
@@ -33,7 +33,7 @@
       :type="modalType"
       :edit-data="editData"
       :parent-id="defaultParentId"
-      @on-success="getMenuTableData"
+      @on-success="getTableData"
     ></MenuModal>
     <PermissionModal
       v-model:visible="permissionModalVisible"
@@ -49,17 +49,11 @@ import { menuDelete } from '@/service';
 import MenuModal from './components/menu-modal.vue';
 import { PermissionModal } from './components';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
-import { usePageOperationPermission } from '@/hooks';
 import { usePermissionModal, useMenuModal, useTable } from './hooks';
-import { useRoute } from 'vue-router';
 
 defineOptions({
   name: 'MenuManagementView',
 });
-
-const route = useRoute();
-
-const { operation, getOperationPermission } = usePageOperationPermission(route, getMenuTableData);
 
 const { permissionModalVisible, permissionMenuId, openPermissionModal, setPermissionMenuId } =
   usePermissionModal();
@@ -77,20 +71,19 @@ const {
 
 const {
   loading,
-  endLoading,
   columns,
   getTableData,
   expandedRowKeys,
   onExpandedRowKeys,
   pagination,
   tableData,
-} = useTable(operation, handleAdd, handleEdit, handleDelete, handlePermission);
+} = useTable(handleAdd, handleEdit, handleDelete, handlePermission);
 
 /**
  * 处理新增菜单
  * @param parentId 父菜单 Id
  */
-function handleAdd(parentId?: number) {
+function handleAdd(parentId: number | null = null) {
   setModalType('add');
   setDefaultParentId(parentId);
   openModal();
@@ -127,19 +120,8 @@ function handlePermission(row: ApiManagement.Menu) {
   openPermissionModal();
 }
 
-/**
- * 当存在列表权限时，获取列表数据
- */
-function getMenuTableData() {
-  if (operation.value.canList) {
-    getTableData();
-  } else {
-    endLoading();
-  }
-}
-
 onMounted(() => {
-  getOperationPermission();
+  getTableData();
 });
 </script>
 

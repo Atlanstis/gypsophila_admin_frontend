@@ -14,5 +14,7 @@ declare namespace BusinessManagement {
   };
 
   /** 菜单-新增编辑 */
-  type MenuFormModal = Omit<ApiManagement.Menu, 'children'>;
+  type MenuFormModal = Omit<ApiManagement.Menu, 'children' | 'parent'> & {
+    parentId: ApiManagement.Menu['id'] | null;
+  };
 }

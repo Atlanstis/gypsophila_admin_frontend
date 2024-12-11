@@ -2,7 +2,7 @@ declare namespace ApiManagement {
   interface Role {
     id: number;
     name: string;
-    isDefault: 1 | 0;
+    desc: string;
   }
 
   interface User {
@@ -18,14 +18,16 @@ declare namespace ApiManagement {
     id: number;
     key: string;
     name: string;
-    parentId: number;
+    type: string;
     children: Menu[];
+    parentId: number | null;
   }
 
   interface Permission {
     id: number;
     key: string;
     name: string;
-    type: number;
+    alias: string;
+    order: number;
   }
 }
