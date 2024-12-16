@@ -40,8 +40,7 @@ export function roleDelete(role: Pick<ApiManagement.Role, 'id'>) {
  */
 export function roleMenuPermission(role: Pick<ApiManagement.Role, 'id'>) {
   return request.post<{
-    menus: string[];
-    permissions: Record<string, string[]>;
+    mps: { menuId: number; permissionIds: number[] }[];
     list: BusinessManagement.RoleMenuPermission[];
   }>('/role/menu/permission', role);
 }
@@ -50,12 +49,7 @@ export function roleMenuPermission(role: Pick<ApiManagement.Role, 'id'>) {
  * 编辑该角色可以访问的菜单及权限
  * @param params 角色id 及 菜单
  */
-export function roleMenuPermissionEdit(
-  params: Pick<ApiManagement.Role, 'id'> & {
-    menus: string[];
-    permissions: Record<string, string[]>;
-  },
-) {
+export function roleMenuPermissionEdit(params: any) {
   return request.post('/role/menu/permission/edit', params);
 }
 /**

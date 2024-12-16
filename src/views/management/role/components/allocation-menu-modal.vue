@@ -60,8 +60,8 @@ const columns = computed(() => {
           h(
             NCheckbox,
             {
-              checked: menuChecked.value[row.key],
-              'on-update:checked': (val: boolean) => handleMenuCheck(row.key, val),
+              checked: menuChecked.value[row.id],
+              'on-update:checked': (val: boolean) => handleMenuCheck(row.id, val),
             },
             {
               default: () => row.name,
@@ -82,9 +82,9 @@ const columns = computed(() => {
           h(
             NCheckbox,
             {
-              disabled: !menuChecked.value[row.key],
-              checked: menuChecked.value[item.key],
-              'on-update:checked': (val: boolean) => handleMenuCheck(item.key, val),
+              disabled: !menuChecked.value[row.id],
+              checked: menuChecked.value[item.id],
+              'on-update:checked': (val: boolean) => handleMenuCheck(item.id, val),
             },
             {
               default: () => item.name,
@@ -103,13 +103,14 @@ const columns = computed(() => {
           h(
             NCheckboxGroup,
             {
-              value: permissionMap.value[item.key],
-              disabled: !menuChecked.value[row.key] || !menuChecked.value[item.key],
-              'on-update:value': (val: string[]) => handlePermission(item.key, val),
+              value: permissionMap.value[item.id],
+              disabled: !menuChecked.value[row.id] || !menuChecked.value[item.id],
+              'on-update:value': (val: number[]) => handlePermission(item.id, val),
             },
             () =>
+              item.permissions &&
               item.permissions.map((permission) =>
-                h(NCheckbox, { value: permission.key }, () => permission.name),
+                h(NCheckbox, { value: permission.id }, () => permission.name),
               ),
           ),
         );
@@ -126,15 +127,15 @@ const rowSpanArr = ref<number[]>([]);
 const menuChecked = ref<Record<string, boolean>>({});
 
 /** 处理菜单选中状体啊  */
-function handleMenuCheck(key: string, val: boolean) {
+function handleMenuCheck(key: number, val: boolean) {
   menuChecked.value[key] = val;
 }
 
 /** 记录各级菜单权限选中状态 */
-const permissionMap = ref<Record<string, string[]>>({});
+const permissionMap = ref<Record<string, number[]>>({});
 
 /** 处理权限是否被选中 */
-function handlePermission(key: string, val: string[]) {
+function handlePermission(key: number, val: number[]) {
   permissionMap.value[key] = val;
 }
 
@@ -148,13 +149,12 @@ async function getRoleMenuPermission() {
 
   const { error, data } = await roleMenuPermission({ id: props.roleId });
   if (!error) {
-    const { menus, permissions, list } = data;
-    /** 处理菜单选中状态 */
-    menus.forEach((key) => {
-      menuChecked.value[key] = true;
-    });
-    /** 处理权限选中状态 */
-    permissionMap.value = permissions;
+    const { mps, list } = data;
+    /** 处理菜单及权限选中状态 */
+    for (const { menuId, permissionIds } of mps) {
+      menuChecked.value[menuId] = true;
+      permissionMap.value[menuId] = permissionIds || [];
+    }
     /** 处理表单数据 */
     const arr: BusinessManagement.RoleMenuPermission[] = [];
     const rowArr: number[] = [];
@@ -194,17 +194,17 @@ function clearData() {
 /** 表单提交 */
 async function formSubmit() {
   if (!props.roleId) return;
+  const mps: { menuId: number; permissionIds: number[] }[] = [];
   showLoading();
-  const menus: string[] = [];
-  Object.keys(menuChecked.value).forEach((key) => {
-    if (menuChecked.value[key]) {
-      menus.push(key);
+  Object.keys(menuChecked.value).forEach((id) => {
+    if (menuChecked.value[id]) {
+      const permissionIds = permissionMap.value[id] || [];
+      mps.push({ menuId: Number(id), permissionIds });
     }
   });
   const { error } = await roleMenuPermissionEdit({
     id: props.roleId,
-    menus,
-    permissions: permissionMap.value,
+    mps,
   });
   if (!error) {
     window.$message?.success('保存成功', { duration: DEFAULT_MESSAGE_DURATION });

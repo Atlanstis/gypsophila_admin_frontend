@@ -17,6 +17,9 @@
       <NFormItem label="角色名称" path="name">
         <NInput v-model:value="formModel.name" placeholder="请输入角色名称" />
       </NFormItem>
+      <NFormItem label="角色描述" path="desc">
+        <NInput v-model:value="formModel.desc" type="textarea" placeholder="请输入角色描述" />
+      </NFormItem>
     </NForm>
     <template #footer>
       <NSpace justify="end">
@@ -71,11 +74,12 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-type FormModel = Pick<ApiManagement.Role, 'name'>;
+type FormModel = Pick<ApiManagement.Role, 'name' | 'desc'>;
 
 function createFormModel(): FormModel {
   return {
     name: '',
+    desc: '',
   };
 }
 

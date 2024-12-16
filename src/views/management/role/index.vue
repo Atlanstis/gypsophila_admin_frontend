@@ -2,7 +2,7 @@
   <div>
     <TableContainer>
       <template #header>
-        <NSpace v-if="operation.canAdd" class="pb-12px" justify="space-between">
+        <NSpace class="pb-12px" justify="space-between">
           <NSpace>
             <nButton type="primary" @click="handleRoleAdd">
               <icon-ic-round-plus class="mr-4px text-20px" />
@@ -29,7 +29,7 @@
       v-model:visible="visible"
       :type="modalType"
       :edit-data="editData"
-      @on-success="getRoleTableData"
+      @on-success="getTableData"
     ></RoleModal>
     <AllocationMenuModal
       v-model:visible="visibleAllocationMenu"
@@ -46,24 +46,17 @@ import RoleModal from './components/role-modal.vue';
 import AllocationMenuModal from './components/allocation-menu-modal.vue';
 import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { useRoleTable, useRoleModal, useAllocationMenuModal } from './hooks';
-import { usePageOperationPermission } from '@/hooks';
-import { useRoute } from 'vue-router';
 
 defineOptions({
   name: 'RoleManagementView',
 });
-
-const route = useRoute();
-
-const { operation, getOperationPermission } = usePageOperationPermission(route, getRoleTableData);
 
 const { visible, openModal, modalType, setModalType, editData, setEditData } = useRoleModal();
 
 const { visibleAllocationMenu, openAllocationMenuModal, allocationRoleId, setAllocationRoleId } =
   useAllocationMenuModal();
 
-const { columns, tableData, getTableData, pagination, loading, endLoading } = useRoleTable(
-  operation,
+const { columns, tableData, getTableData, pagination, loading } = useRoleTable(
   handleEdit,
   handleDelete,
   handleAllocation,
@@ -92,19 +85,8 @@ function handleAllocation(row: ApiManagement.Role) {
   openAllocationMenuModal();
 }
 
-/**
- * 当存在列表权限时，获取列表数据
- */
-function getRoleTableData() {
-  if (operation.value.canList) {
-    getTableData();
-  } else {
-    endLoading();
-  }
-}
-
 onMounted(() => {
-  getOperationPermission();
+  getTableData();
 });
 </script>
 
