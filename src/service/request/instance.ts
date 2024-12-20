@@ -77,8 +77,9 @@ export default class CustomAxiosInstance {
           }
           // 长时间未操作，返回登录页
           if (RESPONSE_CODE.UNAUTHORIZED === code) {
+            const redirectUrl = window.location.pathname;
             const authStore = useAuthStore();
-            authStore.resetAuthStore();
+            authStore.resetAuthStore(redirectUrl);
           }
           const error = handleBackendError(data);
           return handleServiceResult(error, null, null);

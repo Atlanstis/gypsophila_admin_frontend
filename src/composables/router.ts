@@ -1,7 +1,6 @@
 import { useRouter, type RouteLocationRaw } from 'vue-router';
 import { router as globalRouter } from '@/router';
 import { RouteEnum } from '@/enums';
-import { useRouteStore } from '@/stores';
 import { urlRegex } from '@/constants';
 
 /**
@@ -68,13 +67,8 @@ export function useRouterPush(isInSetup = true) {
     const routeLocation: RouteLocationRaw = {
       name: RouteEnum.Login,
     };
-    let redirect = redirectUrl === undefined ? route.value.fullPath : redirectUrl;
-    const routeStore = useRouteStore();
-    // 读取因认证失败，未能正确获取 redirect 的值
-    if (redirect === '/') {
-      redirect = routeStore.redirect;
-      routeStore.setRedirect('');
-    }
+    const redirect = redirectUrl === undefined ? route.value.fullPath : redirectUrl;
+
     // 添加跳转信息
     if (redirect) {
       Object.assign(routeLocation, { query: { redirect } });

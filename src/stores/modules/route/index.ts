@@ -17,8 +17,6 @@ interface RouteState {
   isInitAuthRoute: boolean;
   /**后台页菜单 */
   adminMenus: Layout.AdminMenuOption[];
-  /** 用于记录刷新后，由于长时间未操作，导致被强制登出后，无法进入原路由，无法记录原路由的 path */
-  redirect: string;
   /** 缓存的路由名称 */
   keepAliveRouteNames: string[];
 }
@@ -27,7 +25,6 @@ export const useRouteStore = defineStore('route-store', {
   state: (): RouteState => ({
     isInitAuthRoute: false,
     adminMenus: [],
-    redirect: '',
     keepAliveRouteNames: [],
   }),
 
@@ -140,10 +137,6 @@ export const useRouteStore = defineStore('route-store', {
       if (isCached) {
         this.addKeepAliveRoute(name);
       }
-    },
-
-    setRedirect(url: string) {
-      this.redirect = url;
     },
   },
 });

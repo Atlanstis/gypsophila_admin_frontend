@@ -45,7 +45,7 @@ KwIDAQAB`,
      */
     resetAuthStore(redirect?: string) {
       const { toLogin } = useRouterPush(false);
-      const { resetRouteStore } = useRouteStore();
+      const routeStore = useRouteStore();
 
       clearAuthStorage();
       this.$reset();
@@ -53,7 +53,7 @@ KwIDAQAB`,
       toLogin(redirect);
 
       nextTick(() => {
-        resetRouteStore();
+        routeStore.resetRouteStore();
       });
     },
 
