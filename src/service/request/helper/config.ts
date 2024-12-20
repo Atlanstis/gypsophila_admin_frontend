@@ -38,3 +38,15 @@ export const ERROR_STATUS = {
 
 /** 不弹出错误信息的code */
 export const NO_ERROR_MSG_CODE: (string | number)[] = [];
+
+/** 响应状态码 */
+export const enum RESPONSE_CODE {
+  /** 访问成功 */
+  SUCCESS = 0,
+  /** 访问错误 */
+  ERROR = -1,
+  /** 未认证 */
+  UNAUTHORIZED = -2,
+  /** 认证过期，需重新认证 */
+  RE_UNAUTHORIZED = -3,
+}

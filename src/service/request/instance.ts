@@ -10,7 +10,7 @@ import {
   handleServiceResult,
 } from './helper';
 import { useAuthStore } from '@/stores';
-import { ResponseCode } from '@/typings/enums';
+import { RESPONSE_CODE } from './helper';
 
 type RefreshRequestQueue = (config: AxiosRequestConfig) => void;
 
@@ -52,11 +52,11 @@ export default class CustomAxiosInstance {
         const { status, data, config } = response;
         if (status === 200) {
           const { code, data: innerData, msg } = data;
-          if (ResponseCode.Success === code) {
+          if (RESPONSE_CODE.SUCCESS === code) {
             return handleServiceResult(null, innerData, msg);
           }
           // 尝试通过 refreshCode 刷新 token
-          if (ResponseCode.ReUnauthorized === code) {
+          if (RESPONSE_CODE.RE_UNAUTHORIZED === code) {
             // 原始请求
             const originRequest = new Promise((resolve) => {
               this.retryQueues.push((refreshConfig: AxiosRequestConfig) => {
@@ -76,9 +76,9 @@ export default class CustomAxiosInstance {
             return originRequest;
           }
           // 长时间未操作，返回登录页
-          if (ResponseCode.Unauthorized === code) {
-            const { resetAuthStore } = useAuthStore();
-            resetAuthStore();
+          if (RESPONSE_CODE.UNAUTHORIZED === code) {
+            const authStore = useAuthStore();
+            authStore.resetAuthStore();
           }
           const error = handleBackendError(data);
           return handleServiceResult(error, null, null);

@@ -3,7 +3,7 @@ import { localStorage } from '@/utils';
 import { authRefresh } from '@/service';
 import { LocalKeyEnum } from '@/enums';
 import { useAuthStore } from '@/stores';
-import { ResponseCode } from '@/typings';
+import { RESPONSE_CODE } from './config';
 
 /**
  * 刷新token
@@ -26,7 +26,7 @@ export async function handleRefreshToken(axiosConfig: AxiosRequestConfig) {
   // 重签失败
   // 当 code 为 Unauthorized 时，相应的操作在之前的拦截器中已处理，不在再次进行重置数据处理
   // 为其它时，则进行数据的重置
-  if (error.code !== ResponseCode.Unauthorized) {
+  if (error.code !== RESPONSE_CODE.UNAUTHORIZED) {
     resetAuthStore();
   }
   return null;
