@@ -62,7 +62,6 @@ import { computed } from 'vue';
 import { useRouterPush } from '@/composables';
 import { useBoolean } from '@/hooks';
 import { psnGameSync } from '@/service';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
   name: 'GameInfo',
@@ -105,7 +104,7 @@ async function onSyncGame() {
     props.info.game.link?.psnineId as ApiPsn.GameLink['psnineId'],
   );
   if (!error) {
-    window.$message?.success('同步成功', { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success('同步成功');
     emit('on-sync');
   }
   endSync();

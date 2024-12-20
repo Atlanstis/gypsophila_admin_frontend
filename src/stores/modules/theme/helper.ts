@@ -1,5 +1,5 @@
 import { addColorAlpha, getColorPalette } from '@/utils';
-import type { GlobalThemeOverrides } from 'naive-ui';
+// import type { GlobalThemeOverrides } from 'naive-ui';
 
 type ColorType = 'primary' | 'info' | 'success' | 'warning' | 'error';
 type ColorScene = '' | 'Suppl' | 'Hover' | 'Pressed' | 'Active';
@@ -33,7 +33,7 @@ function getThemeColors(colors: [ColorType, string][]) {
   return themeColor;
 }
 /** 获取naive的主题颜色 */
-export function getNaiveThemeOverrides(colors: Record<ColorType, string>): GlobalThemeOverrides {
+export function getNaiveThemeOverrides(colors: Record<ColorType, string>) {
   const { primary, success, warning, error, info } = colors;
 
   const themeColors = getThemeColors([

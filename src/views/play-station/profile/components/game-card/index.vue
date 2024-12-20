@@ -65,7 +65,6 @@
 <script lang="ts" setup>
 import { ButtonIconEnum, RouteEnum } from '@/enums';
 import { psnGameFavor } from '@/service';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { useBoolean } from '@/hooks';
 import { useRouterPush } from '@/composables';
 import { calcCompleteRate } from '@/utils';
@@ -99,7 +98,7 @@ async function onGameFavor(id: string) {
   const { error } = await psnGameFavor(id);
   if (!error) {
     emit('refresh', props.i);
-    window.$message?.success('操作成功', { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success('操作成功');
   }
   setFavorFalse();
 }

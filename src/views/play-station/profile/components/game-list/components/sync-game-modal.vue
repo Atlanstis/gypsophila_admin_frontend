@@ -45,7 +45,6 @@ import { PlatformColorMap } from '@/constants';
 import { ButtonIconEnum } from '@/enums';
 import { useRouterPush } from '@/composables';
 import { TrophyNumText, PlaystationLoading, PopoverBtn } from '@/components';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 type SyncGame = Psnine.SyncGame & {
   /** 同步中 */
@@ -206,7 +205,7 @@ async function onGameSync(row: SyncGame) {
   const { error } = await psnGameSync(row.id);
   if (!error) {
     setHasSyncTrue();
-    window.$message?.success('同步成功', { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success('同步成功');
   }
   getSynchronizeableGame();
   row.__IN_SYNC__ = false;

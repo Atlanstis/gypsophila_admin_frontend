@@ -35,7 +35,6 @@ import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
 import type { FormInst, FormItemRule } from 'naive-ui';
 import { computed, ref, reactive } from 'vue';
 import { roleAdd, roleEdit } from '@/service';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
   name: 'RoleModal',
@@ -127,7 +126,7 @@ async function formSubmit() {
   const { error } = await api(params);
   if (!error) {
     const title = `${props.type === 'add' ? '新增' : '编辑'}成功`;
-    window.$message?.success(title, { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success(title);
     closeModal();
     emitSucess();
   }

@@ -6,7 +6,6 @@ import { useRouteStore } from '@/stores';
 import { clearAuthStorage, getToken } from './helper';
 import { useRouterPush } from '@/composables';
 import { nextTick } from 'vue';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 interface AuthState {
   /** 登录加载中 */
@@ -100,7 +99,7 @@ KwIDAQAB`,
 
       // 登录成功弹出提示
       if (route.isInitAuthRoute) {
-        window.$message?.success('登录成功', { duration: DEFAULT_MESSAGE_DURATION });
+        window.$message?.success('登录成功');
       }
     },
 

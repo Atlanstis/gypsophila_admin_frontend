@@ -38,7 +38,6 @@ import { NSpace } from 'naive-ui';
 import { onMounted } from 'vue';
 import { userDelete } from '@/service';
 import UserModal from './components/user-modal.vue';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { useTable, useUserModal } from './hooks';
 
 defineOptions({
@@ -66,7 +65,7 @@ function handleEdit(row: ApiManagement.User) {
 async function handleDelete(id: string) {
   const { error } = await userDelete({ id });
   if (error) return;
-  window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
+  window.$message?.success('删除成功');
   getTableData();
 }
 

@@ -31,7 +31,6 @@ import { GuideModal } from './components';
 import { useGuideModal } from './hooks';
 import { useGudieTable } from './hooks/use-guide-table';
 import { psnProfileGameGuideDelete } from '@/service';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
   name: 'GuideInfo',
@@ -59,7 +58,7 @@ function onEditGuide(row: ApiPsn.ProfileGameGuide) {
 async function onDeleteGuide(id: ApiPsn.ProfileGameGuide['id']) {
   const { error } = await psnProfileGameGuideDelete(id, props.ppgId);
   if (!error) {
-    window.$message?.success(`删除成功`, { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success(`删除成功`);
     getList();
   }
 }

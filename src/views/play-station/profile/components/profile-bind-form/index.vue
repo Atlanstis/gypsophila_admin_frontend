@@ -30,7 +30,6 @@ import { ref } from 'vue';
 import { useBoolean } from '@/hooks';
 import { NFormItem, type FormItemRule, type FormInst } from 'naive-ui';
 import { psnProfileBind } from '@/service';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
   name: 'ProfileBindForm',
@@ -66,7 +65,7 @@ async function onBind() {
   startSaveLoading();
   const { error } = await psnProfileBind(formModel.value.psnId);
   if (!error) {
-    window.$message?.success('绑定成功', { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success('绑定成功');
     emit('binded');
   }
   endSaveLoading();

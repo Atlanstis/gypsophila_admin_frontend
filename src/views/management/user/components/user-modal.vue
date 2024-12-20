@@ -60,7 +60,6 @@ import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
 import type { FormInst, FormItemRule, SelectOption } from 'naive-ui';
 import { computed, ref, reactive } from 'vue';
 import { roleListAssignable, userAdd, userEdit } from '@/service';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { BusinessRoleEnum } from '@/enums';
 import { useAuthStore } from '@/stores';
 
@@ -159,7 +158,7 @@ async function formSubmit() {
   const { error } = await api(params);
   if (!error) {
     const title = `${props.type === 'add' ? '新增' : '编辑'}成功`;
-    window.$message?.success(title, { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success(title);
     closeModal();
     emitSucess();
   }

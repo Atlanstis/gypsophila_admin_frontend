@@ -26,7 +26,6 @@
 </template>
 
 <script lang="ts" setup>
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { useModal, type ModalProps, type ModalEmits, useBoolean } from '@/hooks';
 import { roleMenuPermission, roleMenuPermissionEdit } from '@/service';
 import { NCheckbox, type DataTableColumns, NSpace, NCheckboxGroup } from 'naive-ui';
@@ -207,7 +206,7 @@ async function formSubmit() {
     mps,
   });
   if (!error) {
-    window.$message?.success('保存成功', { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success('保存成功');
     closeModal();
   }
   closeLoading();

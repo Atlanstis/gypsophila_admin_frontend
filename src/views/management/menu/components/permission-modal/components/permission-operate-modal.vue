@@ -37,7 +37,6 @@
 </template>
 
 <script lang="ts" setup>
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
 import { menuPermissionAdd, menuPermissionEdit } from '@/service';
 import type { FormInst, FormItemRule } from 'naive-ui';
@@ -143,7 +142,7 @@ async function formSubmit() {
   const { error } = await api({ ...formModel, menuId: props.menuId });
   if (!error) {
     const title = props.type === 'add' ? '新增成功' : '编辑成功';
-    window.$message?.success(title, { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success(title);
     closeModal();
     emitSucess();
   }

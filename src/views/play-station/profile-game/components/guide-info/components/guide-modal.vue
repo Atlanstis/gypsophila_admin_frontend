@@ -51,7 +51,6 @@ import { computed, ref, reactive } from 'vue';
 import { ProfileGameGuideTypeEnum, ProfileGameGuideTypeOpt } from '@/enums';
 import { isURL } from 'class-validator';
 import { psnProfileGameGuideAdd, psnProfileGameGuideEdit } from '@/service';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
   name: 'GuideModal',
@@ -146,7 +145,7 @@ async function formSubmit() {
   const api = props.type === 'add' ? psnProfileGameGuideAdd : psnProfileGameGuideEdit;
   const { error } = await api({ ...formModel, ppgId: props.ppgId });
   if (!error) {
-    window.$message?.success(`${title.value}成功`, { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success(`${title.value}成功`);
     closeModal();
     emitSucess();
   }

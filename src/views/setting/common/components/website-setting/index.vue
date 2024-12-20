@@ -35,7 +35,6 @@ import type { FormInst, FormItemRule } from 'naive-ui';
 import { ref, watchEffect } from 'vue';
 import { useBoolean } from '@/hooks';
 import { updateWebsiteInfo } from '@/service';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
   name: 'WebsiteSetting',
@@ -73,7 +72,7 @@ async function onClickSave() {
   startLoading();
   const { error } = await updateWebsiteInfo({ ...formModel.value });
   if (!error) {
-    window.$message?.success('更新成功', { duration: DEFAULT_MESSAGE_DURATION });
+    window.$message?.success('更新成功');
     appStore.getWebsiteInfo();
   }
   endLoading();

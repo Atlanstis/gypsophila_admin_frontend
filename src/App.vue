@@ -5,9 +5,7 @@
     :date-locale="dateZhCN"
     class="h-full"
   >
-    <NaiveProvider>
-      <RouterView />
-    </NaiveProvider>
+    <RouterView />
   </NConfigProvider>
 </template>
 

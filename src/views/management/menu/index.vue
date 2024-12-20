@@ -48,7 +48,6 @@ import { onMounted } from 'vue';
 import { menuDelete } from '@/service';
 import MenuModal from './components/menu-modal.vue';
 import { PermissionModal } from './components';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { usePermissionModal, useMenuModal, useTable } from './hooks';
 
 defineOptions({
@@ -107,7 +106,7 @@ function handleEdit(row: ApiManagement.Menu) {
 async function handleDelete(id: number) {
   const { error } = await menuDelete({ id });
   if (error) return;
-  window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
+  window.$message?.success('删除成功');
   getTableData();
 }
 

@@ -3,7 +3,6 @@ import { router as globalRouter } from '@/router';
 import { RouteEnum } from '@/enums';
 import { useRouteStore } from '@/stores';
 import { urlRegex } from '@/constants';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 /**
  * 路由跳转
@@ -18,7 +17,7 @@ export function useRouterPush(isInSetup = true) {
     if (urlRegex.test(url)) {
       window.open(url);
     } else {
-      window.$message?.error(`该地址(${url})不符合格式`, { duration: DEFAULT_MESSAGE_DURATION });
+      window.$message?.error(`该地址(${url})不符合格式`);
     }
   }
 

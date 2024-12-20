@@ -1,7 +1,5 @@
-import { useRouterPush } from '@/composables';
-import { RouteEnum } from '@/enums';
 import { ApiNoticePolymeric } from '@/service';
-import { EnumNoticeCategory, EnumNoticeType, type Notice } from '@/typings';
+import { EnumNoticeType, type Notice } from '@/typings';
 import { exeStrategyActions } from '@/utils';
 import { defineStore } from 'pinia';
 
@@ -62,19 +60,8 @@ export const useNoticeStore = defineStore('notice-store', {
     /** 待办处理 */
     async onTodoHandle(notice: Notice) {
       if (notice.type !== EnumNoticeType.Todo) return;
-      const { route, routerPush } = useRouterPush(false);
       this.activeTodo = notice;
-      const actions: Common.StrategyAction[] = [
-        [
-          notice.category === EnumNoticeCategory.MhxyTransfer,
-          async () => {
-            if (route.value.name !== RouteEnum.MhxyGoldTransfer) {
-              await routerPush({ name: RouteEnum.MhxyGoldTransfer });
-            }
-            this.setVisible(false);
-          },
-        ],
-      ];
+      const actions: Common.StrategyAction[] = [];
       await exeStrategyActions(actions);
     },
 

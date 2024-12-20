@@ -44,7 +44,6 @@ import { onMounted } from 'vue';
 import { roleDelete } from '@/service';
 import RoleModal from './components/role-modal.vue';
 import AllocationMenuModal from './components/allocation-menu-modal.vue';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 import { useRoleTable, useRoleModal, useAllocationMenuModal } from './hooks';
 
 defineOptions({
@@ -76,7 +75,7 @@ function handleEdit(row: ApiManagement.Role) {
 async function handleDelete(id: number) {
   const { error } = await roleDelete({ id });
   if (error) return;
-  window.$message?.success('删除成功', { duration: DEFAULT_MESSAGE_DURATION });
+  window.$message?.success('删除成功');
   getTableData();
 }
 

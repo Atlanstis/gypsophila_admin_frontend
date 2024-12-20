@@ -2,10 +2,10 @@
   <NDropdown :options="options" @select="handleDropdown">
     <template v-if="userInfo">
       <hover-container class="px-12px">
-        <NAvatar v-if="!userInfo.avatar" class="w-32px h-32px b-rd-3px">
+        <NAvatar class="w-32px h-32px b-rd-3px">
           {{ userInfo.nickname }}
         </NAvatar>
-        <NImage v-else :src="userInfo.avatar" class="w-32px h-32px b-rd-3px" preview-disabled />
+        <!-- <NImage v-else :src="userInfo.avatar" class="w-32px h-32px b-rd-3px" preview-disabled /> -->
         <span class="pl-8px text-16px font-medium">{{ userInfo.nickname }}</span>
       </hover-container>
     </template>
@@ -17,7 +17,6 @@ import { type DropdownOption } from 'naive-ui';
 import { useIconRender } from '@/composables';
 import { useAuthStore } from '@/stores';
 import { authLogout } from '@/service';
-import { DEFAULT_MESSAGE_DURATION } from '@/config';
 
 defineOptions({
   name: 'UserAvatar',
@@ -51,7 +50,7 @@ function handleDropdown(key: string) {
         const { error } = await authLogout();
         if (!error) {
           auth.resetAuthStore('');
-          window.$message?.success('退出成功', { duration: DEFAULT_MESSAGE_DURATION });
+          window.$message?.success('退出成功');
         }
       },
     });
