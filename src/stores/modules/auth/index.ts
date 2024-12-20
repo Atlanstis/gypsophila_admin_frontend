@@ -65,8 +65,9 @@ KwIDAQAB`,
     async login(username: string, password: string) {
       this.loginLoading = true;
       const passwordEncrypted = await this.encrypt(password);
-      const { error, data } = await authLogin(username, passwordEncrypted);
+      const { error, data, msg } = await authLogin(username, passwordEncrypted);
       if (!error) {
+        window.$message?.success(msg);
         await this.handleActionAfterLogin(data.accessToken, data.refreshToken);
       }
       this.loginLoading = false;
@@ -96,11 +97,6 @@ KwIDAQAB`,
       const { toLoginRedirect } = useRouterPush(false);
       // 跳转登录后的地址
       toLoginRedirect();
-
-      // 登录成功弹出提示
-      if (route.isInitAuthRoute) {
-        window.$message?.success('登录成功');
-      }
     },
 
     /** 设置用户信息 */

@@ -33,6 +33,7 @@ declare namespace Service {
     error: RequestError;
     /** 请求数据 */
     data: null;
+    msg: null;
   }
 
   /** 自定义的请求结果 */

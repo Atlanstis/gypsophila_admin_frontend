@@ -47,10 +47,10 @@ function handleDropdown(key: string) {
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: async () => {
-        const { error } = await authLogout();
+        const { error, msg } = await authLogout();
         if (!error) {
           auth.resetAuthStore('');
-          window.$message?.success('退出成功');
+          window.$message?.success(msg);
         }
       },
     });
