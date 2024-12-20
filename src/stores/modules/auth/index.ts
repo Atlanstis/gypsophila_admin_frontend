@@ -13,7 +13,7 @@ interface AuthState {
   loginLoading: boolean;
   /** 认证 token */
   token: string;
-  userInfo?: ApiAuth.UserInfo;
+  userInfo?: ResAuth.User;
   /** 加密-publicKey */
   publicKey: string;
 }
@@ -68,7 +68,7 @@ KwIDAQAB`,
       const passwordEncrypted = await this.encrypt(password);
       const { error, data } = await authLogin(username, passwordEncrypted);
       if (!error) {
-        await this.handleActionAfterLogin(data);
+        await this.handleActionAfterLogin(data.accessToken, data.refreshToken);
       }
       this.loginLoading = false;
     },
@@ -85,10 +85,10 @@ KwIDAQAB`,
      * 处理登录后成功或失败的逻辑
      * @param token 认证 token
      */
-    async handleActionAfterLogin(data: ApiAuth.Token) {
-      localStorage.set(LocalKeyEnum.Token, data.accessToken);
-      localStorage.set(LocalKeyEnum.RefreshToken, data.refreshToken);
-      this.token = data.accessToken;
+    async handleActionAfterLogin(accessToken: string, refreshToken: string) {
+      localStorage.set(LocalKeyEnum.Token, accessToken);
+      localStorage.set(LocalKeyEnum.RefreshToken, refreshToken);
+      this.token = accessToken;
 
       // 获取授权路由
       const route = useRouteStore();
@@ -105,7 +105,7 @@ KwIDAQAB`,
     },
 
     /** 设置用户信息 */
-    setUserInfo(userInfo: ApiAuth.UserInfo) {
+    setUserInfo(userInfo: ResAuth.User) {
       this.userInfo = userInfo;
     },
   },

@@ -41,7 +41,7 @@ export function createRequest(axiosConfig: AxiosRequestConfig) {
    * @param data = 请求参数
    * @param config - axios配置
    */
-  function get<T>(url: string, data?: any, config?: AxiosRequestConfig) {
+  function get<T = null>(url: string, data?: any, config?: AxiosRequestConfig) {
     return asyncRequest<T>({ url, method: 'get', data, axiosConfig: config });
   }
 
@@ -51,7 +51,7 @@ export function createRequest(axiosConfig: AxiosRequestConfig) {
    * @param data - 请求的body的data
    * @param config - axios配置
    */
-  function post<T>(url: string, data?: any, config?: AxiosRequestConfig) {
+  function post<T = null>(url: string, data?: any, config?: AxiosRequestConfig) {
     return asyncRequest<T>({ url, method: 'post', data, axiosConfig: config });
   }
 
@@ -61,7 +61,7 @@ export function createRequest(axiosConfig: AxiosRequestConfig) {
    * @param data - 请求的body的data
    * @param config - axios配置
    */
-  function put<T>(url: string, data?: any, config?: AxiosRequestConfig) {
+  function put<T = null>(url: string, data?: any, config?: AxiosRequestConfig) {
     return asyncRequest<T>({ url, method: 'put', data, axiosConfig: config });
   }
 
@@ -70,7 +70,7 @@ export function createRequest(axiosConfig: AxiosRequestConfig) {
    * @param url - 请求地址
    * @param config - axios配置
    */
-  function handleDelete<T>(url: string, config?: AxiosRequestConfig) {
+  function handleDelete<T = null>(url: string, config?: AxiosRequestConfig) {
     return asyncRequest<T>({ url, method: 'delete', axiosConfig: config });
   }
   return {

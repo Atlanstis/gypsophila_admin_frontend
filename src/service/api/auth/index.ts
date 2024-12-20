@@ -6,7 +6,7 @@ import { request } from '@/service';
  * @param password - 密码
  */
 export function authLogin(username: string, password: Common.EncryptData) {
-  return request.post<ApiAuth.Token>('/auth/login', { username, password });
+  return request.post<ResAuth.Token>('/auth/login', { username, password });
 }
 
 /**
@@ -14,19 +14,19 @@ export function authLogin(username: string, password: Common.EncryptData) {
  * @param refreshToken - token
  */
 export function authRefresh(refreshToken: string) {
-  return request.post<ApiAuth.Token>('/auth/refresh', { refreshToken });
+  return request.post<ResAuth.Token>('/auth/refresh', { refreshToken });
 }
 
 /**
  * 获取已登录用户信息
  */
 export function authInfo() {
-  return request.get<ApiAuth.UserInfo>('/auth/info');
+  return request.get<ResAuth.User>('/auth/info');
 }
 
 /**
  * 退出登录
  */
 export function authLogout() {
-  return request.get<null>('/auth/logout');
+  return request.get('/auth/logout');
 }
