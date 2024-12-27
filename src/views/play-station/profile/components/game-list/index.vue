@@ -18,7 +18,7 @@
       </div>
       <template v-else>
         <div v-if="!gameList.length" class="flex-center">
-          <GhostPlaceholder :text="'暂无游戏'" />
+          <GhostPlaceholder />
         </div>
         <NGrid v-else cols="1 540:2 800:3 1200:4" x-gap="16" y-gap="16" item-responsive>
           <NGridItem v-for="(info, i) of gameList" :key="info.id">

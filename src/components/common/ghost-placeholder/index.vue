@@ -22,11 +22,9 @@
             <div></div>
           </div>
         </div>
-        <div class="box__ghost-shadow"></div>
       </div>
       <div class="box__description">
         <div class="box__description-container">
-          <div class="box__description-title">Whoops!</div>
           <div class="box__description-text">{{ text }}</div>
         </div>
       </div>
@@ -44,11 +42,19 @@ defineOptions({
 });
 
 interface Props {
-  text: string;
+  type: 'default' | 'auth';
 }
 
-withDefaults(defineProps<Props>(), {
-  text: '暂无数据',
+const props = withDefaults(defineProps<Props>(), {
+  type: 'default',
+});
+
+const text = computed(() => {
+  const textMap = {
+    default: '暂无数据',
+    auth: '暂无查看权限',
+  };
+  return textMap[props.type];
 });
 
 const { width: pageX, height: pageY } = useWindowSize();
@@ -58,11 +64,12 @@ const eyesCss = computed(() => {
   let mouseY = y.value;
   let mouseX = x.value / -pageX.value;
 
-  const yAxis = ((pageY.value / 2 - mouseY) / pageY.value) * 300;
+  let yAxis = ((pageY.value / 2 - mouseY) / pageY.value) * 300;
+  yAxis = yAxis < 0 ? 0 : yAxis;
   const xAxis = -mouseX * 100 - 100;
 
   return {
-    transform: 'translate(' + xAxis + '%,-' + yAxis + '%)',
+    transform: `translate(${xAxis}%,-${yAxis}%)`,
   };
 });
 </script>
@@ -70,7 +77,7 @@ const eyesCss = computed(() => {
 <style lang="scss" scoped>
 .box {
   width: 300px;
-  height: 300px;
+  height: 240px;
   background: #fff;
   border-radius: 20px;
   position: relative;
@@ -258,14 +265,6 @@ const eyesCss = computed(() => {
         }
       }
     }
-
-    .box__ghost-shadow {
-      height: 20px;
-      box-shadow: 0 50px 15px 10px rgba(var(--primary-color), 1);
-      border-radius: 50%;
-      margin: 0 auto;
-      animation: smallnbig 3s ease-in-out infinite;
-    }
   }
 
   .box__description {
@@ -280,12 +279,6 @@ const eyesCss = computed(() => {
       width: 200px;
       font-size: 16px;
       margin: 0 auto;
-
-      .box__description-title {
-        font-size: 20px;
-        letter-spacing: 0.5px;
-        color: #fff;
-      }
 
       .box__description-text {
         color: rgba(var(--primary-color), 1);
