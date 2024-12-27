@@ -1,5 +1,6 @@
-import { useBoolean } from '@/hooks';
 import { ref } from 'vue';
+import { useBoolean } from '@/hooks';
+import type { UserModel } from '../typing';
 
 /** 有关用户 Modal 的操作 */
 export function useUserModal() {
@@ -11,15 +12,15 @@ export function useUserModal() {
     modalType.value = val;
   }
 
-  const editData = ref<BusinessManagement.UserModel | null>(null);
+  const editData = ref<Common.Nullable<UserModel>>(null);
 
-  function setEditData(data: ApiManagement.User) {
+  function setEditData(data: ResUser.UserListData) {
     const { id, username, nickname, roles } = data;
     editData.value = {
       id: id,
       username: username,
       nickname: nickname,
-      role: roles.map((role) => role.id),
+      roleIds: roles.map((role) => role.id),
     };
   }
 

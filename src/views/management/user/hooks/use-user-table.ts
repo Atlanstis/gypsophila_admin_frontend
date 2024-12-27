@@ -1,19 +1,19 @@
+import { NTag, type DataTableColumns, NPopconfirm, NSpace, NButton } from 'naive-ui';
+import { h, ref, type Ref } from 'vue';
 import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
 import { useBoolean, usePagination } from '@/hooks';
-import { userList } from '@/service';
-import { NTag, type DataTableColumns, NPopconfirm, NSpace, NButton } from 'naive-ui';
-import { h, ref, type Ref } from 'vue';
 import { useIconRender } from '@/composables';
+import { userList } from '../api';
 
 /** 有关列表的操作 */
-export function useTable(
-  handleEdit: (row: ApiManagement.User) => void,
+export function useUserTable(
+  handleEdit: (row: ResUser.UserListData) => void,
   handleDelete: (id: string) => void,
 ) {
   const { iconRender } = useIconRender();
 
-  const columns: Ref<DataTableColumns<ApiManagement.User>> = ref([
+  const columns: Ref<DataTableColumns<ResUser.UserListData>> = ref([
     {
       key: 'username',
       title: '用户名',
@@ -30,24 +30,21 @@ export function useTable(
       align: 'center',
       render: (row) => {
         const roleName = row.roles.map((role) =>
-          h(NTag, { type: 'info' }, { default: () => role.name }),
+          h(NTag, { type: 'primary' }, { default: () => role.name }),
         );
-        return h('div', roleName);
+        return h(NSpace, {}, { default: () => roleName });
       },
-    },
-    {
-      key: 'createTime',
-      title: '创建时间',
-      align: 'center',
     },
     {
       key: 'actions',
       title: '操作',
       align: 'center',
+      width: 120,
       render: (row) => {
+        const { permission, id } = row;
         const delConfirm = h(
           NPopconfirm,
-          { onPositiveClick: () => handleDelete(row.id), trigger: 'hover' },
+          { onPositiveClick: () => handleDelete(id), trigger: 'hover' },
           {
             default: () => '确认删除',
             trigger: () =>
@@ -70,7 +67,10 @@ export function useTable(
           NSpace,
           { justify: 'center' },
           {
-            default: () => [editBtn, delConfirm],
+            default: () => [
+              permission.edit ? editBtn : null,
+              permission.delete ? delConfirm : null,
+            ],
           },
         );
       },
@@ -79,7 +79,7 @@ export function useTable(
 
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
 
-  const tableData = ref<ApiManagement.User[]>([]);
+  const tableData = ref<ResUser.UserListData[]>([]);
 
   const { pagination, getPageParams } = usePagination(getTableData);
 

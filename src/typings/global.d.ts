@@ -26,4 +26,6 @@ declare namespace Common {
     iv: string;
     key: string;
   }
+
+  type Nullable<T> = T | null;
 }

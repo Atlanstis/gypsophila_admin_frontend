@@ -24,13 +24,9 @@
       <NFormItem label="昵称" path="nickname">
         <NInput v-model:value="formModel.nickname" placeholder="请输入昵称" />
       </NFormItem>
-      <NFormItem
-        v-if="!formModel.role.includes(BusinessRoleEnum.SuperAdmin)"
-        label="角色"
-        path="role"
-      >
+      <NFormItem v-if="!formModel.roleIds.includes(RoleIdEnum.Admin)" label="角色" path="roleIds">
         <NSelect
-          v-model:value="formModel.role"
+          v-model:value="formModel.roleIds"
           :options="roleList"
           multiple
           max-tag-count="responsive"
@@ -59,9 +55,10 @@
 import { useModal, type ModalEmits, type ModalProps } from '@/hooks';
 import type { FormInst, FormItemRule, SelectOption } from 'naive-ui';
 import { computed, ref, reactive } from 'vue';
-import { roleListAssignable, userAdd, userEdit } from '@/service';
-import { BusinessRoleEnum } from '@/enums';
+import { roleAssignable, userAdd, userEdit } from '@/service';
+import { RoleIdEnum } from '@/constants';
 import { useAuthStore } from '@/stores';
+import type { UserDto, UserModel } from '../typing';
 
 defineOptions({
   name: 'UserModal',
@@ -69,7 +66,7 @@ defineOptions({
 
 interface Props {
   type?: Modal.Type;
-  editData?: BusinessManagement.UserModel | null;
+  editData?: Common.Nullable<UserModel>;
 }
 
 interface Emits {
@@ -91,6 +88,8 @@ const { modalVisible, closeModal, submitLoading, showLoading, closeLoading } = u
   afterCloseModal,
 );
 
+const authStore = useAuthStore();
+
 const title = computed(() => {
   const titleMap: Record<Modal.Type, string> = {
     add: '添加用户',
@@ -101,15 +100,15 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-type FormModel = BusinessManagement.UserModel;
+type FormModel = UserModel;
 
 function createFormModel(): FormModel {
   return {
     username: '',
     nickname: '',
-    id: '',
+    id: null,
     password: '',
-    role: [],
+    roleIds: [],
   };
 }
 
@@ -118,13 +117,11 @@ const roleList = ref<SelectOption[]>([]);
 const formModel = reactive<FormModel>(createFormModel());
 
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-  role: [{ required: true, type: 'array', max: 3, message: '请选择角色', trigger: 'change' }],
+  username: [{ required: true, message: '请输入用户名', trigger: 'change' }],
+  nickname: [{ required: true, message: '请输入昵称', trigger: 'change' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'change' }],
+  roleIds: [{ required: true, type: 'array', max: 3, message: '请选择角色', trigger: 'change' }],
 };
-
-const authStore = useAuthStore();
 
 function handleUpdateFormModelByFormType() {
   const handlers: Record<Modal.Type, () => void> = {
@@ -149,16 +146,17 @@ async function formSubmit() {
   await formRef.value?.validate();
   showLoading();
   const api = props.type === 'add' ? userAdd : userEdit;
-  const params: Record<string, any> = {
+  const params: UserDto = {
     ...formModel,
   };
   if (props.type === 'add' && formModel.password) {
     params.password = await authStore.encrypt(formModel.password);
+  } else {
+    delete params.password;
   }
-  const { error } = await api(params);
+  const { error, msg } = await api(params);
   if (!error) {
-    const title = `${props.type === 'add' ? '新增' : '编辑'}成功`;
-    window.$message?.success(title);
+    window.$message?.success(msg);
     closeModal();
     emitSucess();
   }
@@ -172,7 +170,7 @@ function emitSucess() {
 /** 获取可以分配的角色 */
 async function getRoleList() {
   roleList.value = [];
-  const { data, error } = await roleListAssignable();
+  const { data, error } = await roleAssignable();
   if (!error) {
     roleList.value = data.map((role) => ({
       label: role.name,

@@ -3,42 +3,43 @@
     <TableContainer>
       <template #header>
         <NSpace class="pb-12px" justify="space-between">
-          <NSpace>
-            <NButton type="primary" @click="handleUserAdd">
-              <icon-ic-round-plus class="mr-4px text-20px" />
-              新增
-            </NButton>
-          </NSpace>
+          <NButton v-if="permission.add" type="primary" @click="handleUserAdd">
+            <icon-ic-round-plus class="mr-4px text-20px" />
+            新增
+          </NButton>
         </NSpace>
       </template>
       <template #content>
         <NDataTable
+          v-if="permission.watch"
           flex-height
           striped
           remote
           :loading="loading"
           :columns="columns"
           :data="tableData"
-          :rowKey="(user: ApiManagement.User) => user.id"
+          :rowKey="(user: ResUser.UserListData) => user.id"
           :pagination="pagination"
         ></NDataTable>
+        <NSpace v-else justify="center" align="center">
+          <GhostPlaceholder type="auth" />
+        </NSpace>
       </template>
     </TableContainer>
     <UserModal
       v-model:visible="visible"
       :type="modalType"
       :edit-data="editData"
-      @on-success="getTableData"
+      @on-success="onRefreshCanWatch"
     ></UserModal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { NSpace } from 'naive-ui';
 import { onMounted } from 'vue';
 import { userDelete } from '@/service';
 import UserModal from './components/user-modal.vue';
-import { useTable, useUserModal } from './hooks';
+import { useUserTable, useUserModal, useUserConfig } from './hooks';
 
 defineOptions({
   name: 'UserManagementView',
@@ -46,31 +47,33 @@ defineOptions({
 
 const { visible, openModal, modalType, setModalType, editData, setEditData } = useUserModal();
 
-const { columns, loading, tableData, getTableData, pagination } = useTable(
+const { columns, loading, tableData, getTableData, pagination } = useUserTable(
   handleEdit,
   handleDelete,
 );
+
+const { permission, getUserConfig, onRefreshCanWatch } = useUserConfig(getTableData);
 
 function handleUserAdd() {
   setModalType('add');
   openModal();
 }
 
-function handleEdit(row: ApiManagement.User) {
+function handleEdit(row: ResUser.UserListData) {
   setModalType('edit');
   setEditData(row);
   openModal();
 }
 
 async function handleDelete(id: string) {
-  const { error } = await userDelete({ id });
+  const { error } = await userDelete(id);
   if (error) return;
   window.$message?.success('删除成功');
-  getTableData();
+  onRefreshCanWatch();
 }
 
 onMounted(() => {
-  getTableData();
+  getUserConfig();
 });
 </script>
 

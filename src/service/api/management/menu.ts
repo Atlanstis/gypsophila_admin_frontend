@@ -71,8 +71,3 @@ export function menuPermissionEdit(permission: any) {
 export function menuPermissionDelete(id: number) {
   return request.get('/menu/permission/delete', { id });
 }
-
-/** 获取当前菜单的操作权限 */
-export function menuOperationPermission(key: string) {
-  return request.post<System.OperationPermission>('/menu/operation/permission', { key });
-}

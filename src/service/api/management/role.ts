@@ -52,10 +52,3 @@ export function roleMenuPermission(role: Pick<ApiManagement.Role, 'id'>) {
 export function roleMenuPermissionEdit(params: any) {
   return request.post('/role/menu/permission/edit', params);
 }
-/**
- * 获取除超级管理员外的角色
- * @returns 角色列表
- */
-export function roleListAssignable() {
-  return request.get<ApiManagement.Role[]>('/role/list/assignable');
-}

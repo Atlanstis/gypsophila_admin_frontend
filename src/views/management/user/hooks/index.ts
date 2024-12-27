@@ -1,2 +1,3 @@
-export * from './use-table';
+export * from './use-user-table';
 export * from './use-user-modal';
+export * from './user-user-config';
