@@ -66,9 +66,9 @@ function handleEdit(row: ResUser.UserListData) {
 }
 
 async function handleDelete(id: string) {
-  const { error } = await userDelete(id);
+  const { error, msg } = await userDelete(id);
   if (error) return;
-  window.$message?.success('删除成功');
+  window.$message?.success(msg);
   onRefreshCanWatch();
 }
 
