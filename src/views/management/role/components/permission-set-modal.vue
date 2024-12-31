@@ -1,7 +1,7 @@
 <template>
   <NModal
     v-model:show="modalVisible"
-    title="权限控制"
+    title="权限设置"
     preset="card"
     :segmented="true"
     class="w-720px"
@@ -27,9 +27,10 @@
 
 <script lang="ts" setup>
 import { useModal, type ModalProps, type ModalEmits, useBoolean } from '@/hooks';
-import { roleMenuPermission, roleMenuPermissionEdit } from '@/service';
 import { NCheckbox, type DataTableColumns, NSpace, NCheckboxGroup } from 'naive-ui';
 import { computed, h, ref } from 'vue';
+import { roleMenuPermission, roleMenuPermissionEdit } from '../api';
+import type { RoleMenuPermission } from '../typings';
 
 type Props = {
   roleId: number | null;
@@ -43,11 +44,11 @@ const props = withDefaults(defineProps<ModalProps & Props>(), {
 const emits = defineEmits<ModalEmits>();
 
 defineOptions({
-  name: 'AllocationMenuModal',
+  name: 'PermissionSetModal',
 });
 
 const columns = computed(() => {
-  const columns: DataTableColumns<BusinessManagement.RoleMenuPermission> = [
+  const columns: DataTableColumns<RoleMenuPermission> = [
     {
       key: 'Primary',
       title: '一级菜单',
@@ -139,7 +140,7 @@ function handlePermission(key: number, val: number[]) {
 }
 
 /** 列表数据 */
-const tableData = ref<BusinessManagement.RoleMenuPermission[]>([]);
+const tableData = ref<RoleMenuPermission[]>([]);
 
 /** 获取菜单及其权限 */
 async function getRoleMenuPermission() {
@@ -155,7 +156,7 @@ async function getRoleMenuPermission() {
       permissionMap.value[menuId] = permissionIds || [];
     }
     /** 处理表单数据 */
-    const arr: BusinessManagement.RoleMenuPermission[] = [];
+    const arr: RoleMenuPermission[] = [];
     const rowArr: number[] = [];
     list.forEach((menu) => {
       const childrenLength = menu.children ? menu.children.length : 1;

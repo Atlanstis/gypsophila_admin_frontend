@@ -3,48 +3,48 @@
     <TableContainer>
       <template #header>
         <NSpace class="pb-12px" justify="space-between">
-          <NSpace>
-            <nButton type="primary" @click="handleRoleAdd">
-              <icon-ic-round-plus class="mr-4px text-20px" />
-              新增
-            </nButton>
-          </NSpace>
+          <NButton v-if="permission.add" type="primary" @click="handleRoleAdd">
+            <icon-ic-round-plus class="mr-4px text-20px" />
+            新增
+          </NButton>
         </NSpace>
       </template>
       <template #content>
         <NDataTable
-          class="flex-1-hidden"
+          v-if="permission.watch"
           flex-height
           striped
           remote
           :loading="loading"
           :columns="columns"
           :data="tableData"
-          :rowKey="(role: ApiManagement.Role) => role.id"
+          :rowKey="(role: ResRole.RoleListData) => role.id"
           :pagination="pagination"
         ></NDataTable>
+        <NSpace v-else justify="center" align="center">
+          <GhostPlaceholder type="auth" />
+        </NSpace>
       </template>
     </TableContainer>
     <RoleModal
       v-model:visible="visible"
       :type="modalType"
       :edit-data="editData"
-      @on-success="getTableData"
+      @on-success="onRefreshCanWatch"
     ></RoleModal>
-    <AllocationMenuModal
-      v-model:visible="visibleAllocationMenu"
-      :role-id="allocationRoleId"
-    ></AllocationMenuModal>
+    <PermissionSetModal
+      v-model:visible="permissionSetModalVisible"
+      :role-id="permissionSetRoleId"
+    ></PermissionSetModal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { NSpace } from 'naive-ui';
 import { onMounted } from 'vue';
-import { roleDelete } from '@/service';
-import RoleModal from './components/role-modal.vue';
-import AllocationMenuModal from './components/allocation-menu-modal.vue';
-import { useRoleTable, useRoleModal, useAllocationMenuModal } from './hooks';
+import { roleDelete } from './api';
+import { RoleModal, PermissionSetModal } from './components';
+import { useRoleTable, useRoleModal, usePermissionSetModal, useRoleConfig } from './hooks';
 
 defineOptions({
   name: 'RoleManagementView',
@@ -52,8 +52,12 @@ defineOptions({
 
 const { visible, openModal, modalType, setModalType, editData, setEditData } = useRoleModal();
 
-const { visibleAllocationMenu, openAllocationMenuModal, allocationRoleId, setAllocationRoleId } =
-  useAllocationMenuModal();
+const {
+  permissionSetModalVisible,
+  openPermissionSetModal,
+  permissionSetRoleId,
+  setpermissionSetRoleId,
+} = usePermissionSetModal();
 
 const { columns, tableData, getTableData, pagination, loading } = useRoleTable(
   handleEdit,
@@ -61,31 +65,33 @@ const { columns, tableData, getTableData, pagination, loading } = useRoleTable(
   handleAllocation,
 );
 
+const { permission, getRoleConfig, onRefreshCanWatch } = useRoleConfig(getTableData);
+
 function handleRoleAdd() {
   setModalType('add');
   openModal();
 }
 
-function handleEdit(row: ApiManagement.Role) {
+function handleEdit(row: ResRole.RoleListData) {
   setModalType('edit');
   setEditData(row);
   openModal();
 }
 
 async function handleDelete(id: number) {
-  const { error } = await roleDelete({ id });
+  const { error, msg } = await roleDelete({ id });
   if (error) return;
-  window.$message?.success('删除成功');
-  getTableData();
+  window.$message?.success(msg);
+  onRefreshCanWatch();
 }
 
-function handleAllocation(row: ApiManagement.Role) {
-  setAllocationRoleId(row.id);
-  openAllocationMenuModal();
+function handleAllocation(row: ResRole.RoleListData) {
+  setpermissionSetRoleId(row.id);
+  openPermissionSetModal();
 }
 
 onMounted(() => {
-  getTableData();
+  getRoleConfig();
 });
 </script>
 

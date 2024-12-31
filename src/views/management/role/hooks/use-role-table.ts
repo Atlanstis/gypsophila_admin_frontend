@@ -1,20 +1,20 @@
 import { useIconRender } from '@/composables';
 import { ButtonIconEnum } from '@/enums';
 import { useBoolean, usePagination } from '@/hooks';
-import { roleList } from '@/service';
 import { type DataTableColumns, NButton, NSpace, NPopconfirm } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
 import { PopoverBtn } from '@/components';
+import { roleList } from '../api';
 
 /** 有关角色列表的操作 */
 export function useRoleTable(
-  handleEdit: (row: ApiManagement.Role) => void,
+  handleEdit: (row: ResRole.RoleListData) => void,
   handleDelete: (id: number) => void,
-  handleAllocation: (row: ApiManagement.Role) => void,
+  handleAllocation: (row: ResRole.RoleListData) => void,
 ) {
   const { iconRender } = useIconRender();
 
-  const columns: Ref<DataTableColumns<ApiManagement.Role>> = ref([
+  const columns: Ref<DataTableColumns<ResRole.RoleListData>> = ref([
     {
       key: 'name',
       title: '角色名',
@@ -54,8 +54,8 @@ export function useRoleTable(
           { msg: '编辑', icon: ButtonIconEnum.edit, onClick: () => handleEdit(row) },
           { default: () => '编辑' },
         );
-        const allocationBtn = h(PopoverBtn, {
-          msg: '权限控制',
+        const permissionBtn = h(PopoverBtn, {
+          msg: '权限设置',
           icon: ButtonIconEnum.setting,
           onClick: () => handleAllocation(row),
         });
@@ -63,7 +63,11 @@ export function useRoleTable(
           NSpace,
           { justify: 'center' },
           {
-            default: () => [allocationBtn, editBtn, delConfirm],
+            default: () => [
+              row.permission.permissionSet ? permissionBtn : null,
+              row.permission.edit ? editBtn : null,
+              row.permission.delete ? delConfirm : null,
+            ],
           },
         );
       },
@@ -72,9 +76,9 @@ export function useRoleTable(
 
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
 
-  const tableData = ref<ApiManagement.Role[]>([]);
+  const tableData = ref<ResRole.RoleListData[]>([]);
 
-  const { pagination, getPageParams } = usePagination(getTableData);
+  const { pagination, getPageParams, setItemCount } = usePagination(getTableData);
 
   async function getTableData() {
     startLoading();
@@ -83,7 +87,7 @@ export function useRoleTable(
     if (!error) {
       const { list, total } = data;
       tableData.value = list;
-      pagination.itemCount = total;
+      setItemCount(total);
     }
     endLoading();
   }

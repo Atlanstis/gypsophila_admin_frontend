@@ -34,15 +34,16 @@
 import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
 import type { FormInst, FormItemRule } from 'naive-ui';
 import { computed, ref, reactive } from 'vue';
-import { roleAdd, roleEdit } from '@/service';
+import { roleAdd, roleEdit } from '../api';
+import type { RoleModel } from '../typings';
 
 defineOptions({
   name: 'RoleModal',
 });
 
 export interface Props {
-  type?: 'add' | 'edit';
-  editData?: ApiManagement.Role | null;
+  type?: Modal.Type;
+  editData?: Common.Nullable<RoleModel>;
 }
 
 interface Emits {
@@ -73,10 +74,11 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-type FormModel = Pick<ApiManagement.Role, 'name' | 'desc'>;
+type FormModel = RoleModel;
 
 function createFormModel(): FormModel {
   return {
+    id: null,
     name: '',
     desc: '',
   };
@@ -85,7 +87,7 @@ function createFormModel(): FormModel {
 const formModel = reactive<FormModel>(createFormModel());
 
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
-  name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
+  name: [{ required: true, message: '请输入角色名称', trigger: 'change' }],
 };
 
 function handleUpdateFormModelByFormType() {
@@ -104,29 +106,17 @@ function handleUpdateFormModelByFormType() {
 }
 
 function handleUpdateFormModel(model: Partial<FormModel>) {
-  formModel.name = model.name || '';
+  Object.assign(formModel, model);
 }
 
 async function formSubmit() {
   await formRef.value?.validate();
   showLoading();
-  let api: any;
-  let params: any;
-  const map: Record<Modal.Type, () => void> = {
-    add: () => {
-      api = roleAdd;
-      params = { ...formModel };
-    },
-    edit: () => {
-      api = roleEdit;
-      params = { ...formModel, id: props.editData?.id };
-    },
-  };
-  map[props.type]();
-  const { error } = await api(params);
+  const api = props.type === 'add' ? roleAdd : roleEdit;
+  const params = { ...formModel };
+  const { error, msg } = await api(params);
   if (!error) {
-    const title = `${props.type === 'add' ? '新增' : '编辑'}成功`;
-    window.$message?.success(title);
+    window.$message?.success(msg);
     closeModal();
     emitSucess();
   }

@@ -13,9 +13,7 @@ export function useUserConfig(onCanWatch: () => void) {
     const { error, data } = await userConfig();
     if (!error) {
       permission.value = data.permission;
-      if (permission.value.watch) {
-        onCanWatch();
-      }
+      onRefreshCanWatch();
     }
   }
 
