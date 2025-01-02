@@ -1,10 +1,10 @@
 <template>
   <NModal
     v-model:show="modalVisible"
-    :title="'权限设置'"
+    :title="'权限管理'"
     preset="card"
     :segmented="true"
-    class="w-620px"
+    class="w-720px"
   >
     <NSpace class="pb-12px" justify="space-between">
       <NButton type="primary" @click="handlePermissionAdd">

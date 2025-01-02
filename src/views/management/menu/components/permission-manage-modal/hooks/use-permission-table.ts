@@ -46,6 +46,7 @@ export function usePermissionTable(
       key: 'actions',
       title: '操作',
       align: 'center',
+      width: 130,
       render: (row) => {
         return h(
           NSpace,

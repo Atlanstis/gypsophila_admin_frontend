@@ -70,7 +70,7 @@ export function useMenuTable(
           onClick: () => onAdd(row.id),
         });
         const permissionBtn = h(PopoverBtn, {
-          msg: '编辑权限',
+          msg: '权限管理',
           icon: ButtonIconEnum.setting,
           onClick: () => {
             onPermissionManage(row);
