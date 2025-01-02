@@ -11,6 +11,7 @@
       </template>
       <template #content>
         <NDataTable
+          v-if="permission.watch"
           flex-height
           striped
           remote
@@ -24,6 +25,9 @@
             (keys: DataTableRowKey[]) => onExpandedRowKeys(keys as number[])
           "
         ></NDataTable>
+        <NSpace v-else justify="center" align="center">
+          <GhostPlaceholder type="auth" />
+        </NSpace>
       </template>
     </TableContainer>
     <MenuModal
