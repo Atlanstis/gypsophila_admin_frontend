@@ -1,23 +1,22 @@
 import { useBoolean, usePagination } from '@/hooks';
 import { NTag, type DataTableColumns, NPopconfirm, NButton, NSpace } from 'naive-ui';
 import { h, ref, type Ref } from 'vue';
-import { MenuTypeEnum } from '../constants';
-import { menuList } from '@/service';
+import { menuList } from '../api';
 import { useIconRender } from '@/composables';
 import { PopoverBtn } from '@/components';
 import { ButtonIconEnum } from '@/enums';
 
-export function useTable(
-  handleAdd: (parentId: number | null) => void,
-  handleEdit: (row: ApiManagement.Menu) => void,
-  handleDelete: (id: number) => void,
-  handlePermission: (row: ApiManagement.Menu) => void,
+export function useMenuTable(
+  onAdd: (parentId: number | null) => void,
+  onEdit: (row: ResMenu.MenuListData) => void,
+  onDelete: (id: number) => void,
+  onPermissionManage: (row: ResMenu.MenuListData) => void,
 ) {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
 
   const { iconRender } = useIconRender();
 
-  const columns: Ref<DataTableColumns<ApiManagement.Menu>> = ref([
+  const columns: Ref<DataTableColumns<ResMenu.MenuListData>> = ref([
     {
       key: 'name',
       title: '菜单名称',
@@ -26,15 +25,16 @@ export function useTable(
     },
     {
       key: 'key',
-      title: '菜单 Key',
+      title: '菜单标识',
       align: 'center',
     },
     {
-      key: 'isParent',
+      key: 'type',
       title: '类型',
       align: 'center',
+      width: 100,
       render: (row) => {
-        const isMenu = row.type === MenuTypeEnum.menu;
+        const isMenu = row.type === 'menu';
         return h(
           NTag,
           { type: isMenu ? 'warning' : 'success' },
@@ -46,10 +46,12 @@ export function useTable(
       key: 'actions',
       title: '操作',
       align: 'center',
+      width: 220,
       render: (row) => {
+        const { permission } = row;
         const delBtn = h(
           NPopconfirm,
-          { onPositiveClick: () => handleDelete(row.id), trigger: 'hover' },
+          { onPositiveClick: () => onDelete(row.id), trigger: 'hover' },
           {
             default: () => '确认删除',
             trigger: () =>
@@ -65,35 +67,40 @@ export function useTable(
         const addBtn = h(PopoverBtn, {
           msg: '新增',
           icon: ButtonIconEnum.add,
-          onClick: () => handleAdd(row.id),
+          onClick: () => onAdd(row.id),
         });
         const permissionBtn = h(PopoverBtn, {
           msg: '编辑权限',
           icon: ButtonIconEnum.setting,
           onClick: () => {
-            handlePermission(row);
+            onPermissionManage(row);
           },
         });
 
         const editBtn = h(PopoverBtn, {
           msg: '编辑',
           icon: ButtonIconEnum.edit,
-          onClick: () => handleEdit(row),
+          onClick: () => onEdit(row),
         });
         return h(
           NSpace,
-          { justify: 'center' },
+          { justify: 'right' },
           {
-            default: () => [addBtn, editBtn, permissionBtn, delBtn],
+            default: () => [
+              permission.add ? addBtn : null,
+              permission.edit ? editBtn : null,
+              permission.permissionManage ? permissionBtn : null,
+              permission.delete ? delBtn : null,
+            ],
           },
         );
       },
     },
   ]);
 
-  const { pagination, getPageParams } = usePagination(getTableData);
+  const { pagination, getPageParams, setItemCount } = usePagination(getTableData);
 
-  const tableData = ref<ApiManagement.Menu[]>([]);
+  const tableData = ref<ResMenu.MenuListData[]>([]);
 
   const expandedRowKeys = ref<number[]>([]);
 
@@ -108,7 +115,7 @@ export function useTable(
     if (!error) {
       const { list, total } = data;
       tableData.value = list;
-      pagination.itemCount = total;
+      setItemCount(total);
 
       const expandedKeys: number[] = [];
       list.forEach((menu) => {

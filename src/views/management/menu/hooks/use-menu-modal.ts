@@ -1,5 +1,6 @@
 import { useBoolean } from '@/hooks';
 import { ref } from 'vue';
+import type { MenuModel } from '../typing';
 
 /** 有关菜单 modal 的操作 */
 export function useMenuModal() {
@@ -11,9 +12,13 @@ export function useMenuModal() {
     modalType.value = val;
   }
 
-  const editData = ref<BusinessManagement.MenuFormModal | null>(null);
+  const editData = ref<Common.Nullable<MenuModel>>(null);
 
-  function setEditData(data: ApiManagement.Menu) {
+  function setEditData(data: Common.Nullable<ResMenu.MenuListData>) {
+    if (!data) {
+      editData.value = null;
+      return;
+    }
     const { id, key, name, parentId, type } = data;
     editData.value = {
       id,
@@ -24,9 +29,9 @@ export function useMenuModal() {
     };
   }
 
-  const defaultParentId = ref<number | null>(null);
+  const defaultParentId = ref<Common.Nullable<number>>(null);
 
-  function setDefaultParentId(val: number | null) {
+  function setDefaultParentId(val: Common.Nullable<number>) {
     defaultParentId.value = val;
   }
 

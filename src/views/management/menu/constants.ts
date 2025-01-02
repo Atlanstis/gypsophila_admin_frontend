@@ -3,7 +3,7 @@ export const enum MenuTypeEnum {
   'page' = 'page',
 }
 
-export const MenuTypeLabel: Record<MenuTypeEnum, string> = {
+export const MenuTypeLabel: Record<ResMenu.Menu['type'], string> = {
   [MenuTypeEnum.menu]: '菜单',
   [MenuTypeEnum.page]: '页面',
 };

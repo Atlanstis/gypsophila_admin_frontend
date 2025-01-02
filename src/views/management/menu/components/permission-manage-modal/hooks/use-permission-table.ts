@@ -12,16 +12,16 @@ import { ButtonIconEnum } from '@/enums';
  * @param handleEdit 数据编辑操作
  * @param handleDelete 数据删除操作
  */
-export function useTable(
+export function usePermissionTable(
   props: Props,
-  handleEdit: (row: ApiManagement.Permission) => void,
+  handleEdit: (row: ResMenu.MenuPermission) => void,
   handleDelete: (id: number) => void,
 ) {
   const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(true);
 
   const { iconRender } = useIconRender();
 
-  const columns: Ref<DataTableColumns<ApiManagement.Permission>> = ref([
+  const columns: Ref<DataTableColumns<ResMenu.MenuPermission>> = ref([
     {
       key: 'order',
       title: '排序',
@@ -79,7 +79,7 @@ export function useTable(
     },
   ]);
 
-  const tableData = ref<ApiManagement.Permission[]>([]);
+  const tableData = ref<ResMenu.MenuPermission[]>([]);
 
   async function getTableData() {
     if (!props.menuId) return;

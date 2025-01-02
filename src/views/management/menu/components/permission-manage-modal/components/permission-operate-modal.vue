@@ -41,6 +41,7 @@ import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
 import { menuPermissionAdd, menuPermissionEdit } from '@/service';
 import type { FormInst, FormItemRule } from 'naive-ui';
 import { computed, reactive, ref } from 'vue';
+import type { MenuPermissionModel } from '../typing';
 
 defineOptions({
   name: 'PermissionOperateModal',
@@ -48,8 +49,8 @@ defineOptions({
 
 type Props = ModalProps & {
   type: Modal.Type;
-  menuId: number | null;
-  editData?: ApiManagement.Permission | null;
+  menuId: Common.Nullable<number>;
+  editData?: Common.Nullable<ResMenu.MenuPermission>;
 };
 
 type Emits = ModalEmits & {
@@ -81,9 +82,7 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-type FormModel = Omit<ApiManagement.Permission, 'id'> & {
-  id: number | null;
-};
+type FormModel = MenuPermissionModel;
 
 function createFormModel(): FormModel {
   return {
@@ -100,7 +99,7 @@ const formModel = reactive<FormModel>(createFormModel());
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
   name: [{ required: true, message: '请输入权限名称', trigger: 'change' }],
   key: [{ required: true, message: '请输入权限标识', trigger: 'change' }],
-  alias: [{ required: true, message: '请输入权限 Key', trigger: 'change' }],
+  alias: [{ required: true, message: '请输入权限标识', trigger: 'change' }],
 };
 
 function handleUpdateFormModelByFormType() {
@@ -139,10 +138,9 @@ async function formSubmit() {
   await formRef.value?.validate();
   showLoading();
   const api = props.type === 'add' ? menuPermissionAdd : menuPermissionEdit;
-  const { error } = await api({ ...formModel, menuId: props.menuId });
+  const { error, msg } = await api({ ...formModel, menuId: props.menuId });
   if (!error) {
-    const title = props.type === 'add' ? '新增成功' : '编辑成功';
-    window.$message?.success(title);
+    window.$message?.success(msg);
     closeModal();
     emitSucess();
   }

@@ -3,12 +3,10 @@
     <TableContainer>
       <template #header>
         <NSpace class="pb-12px" justify="space-between">
-          <NSpace>
-            <NButton type="primary" @click="handleAdd()">
-              <icon-ic-round-plus class="mr-4px text-20px" />
-              新增
-            </NButton>
-          </NSpace>
+          <NButton v-if="permission.add" type="primary" @click="onAdd(null)">
+            <icon-ic-round-plus class="mr-4px text-20px" />
+            新增
+          </NButton>
         </NSpace>
       </template>
       <template #content>
@@ -19,7 +17,7 @@
           :loading="loading"
           :columns="columns"
           :data="tableData"
-          :rowKey="(menu: ApiManagement.Menu) => menu.id"
+          :rowKey="(menu: ResMenu.MenuListData) => menu.id"
           :pagination="pagination"
           :expanded-row-keys="expandedRowKeys"
           :on-update:expanded-row-keys="
@@ -33,29 +31,28 @@
       :type="modalType"
       :edit-data="editData"
       :parent-id="defaultParentId"
-      @on-success="getTableData"
+      @on-success="onRefreshCanWatch"
     ></MenuModal>
-    <PermissionModal
+    <PermissionManageModal
       v-model:visible="permissionModalVisible"
       :menuId="permissionMenuId"
-    ></PermissionModal>
+    ></PermissionManageModal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { NSpace, NButton, type DataTableRowKey } from 'naive-ui';
 import { onMounted } from 'vue';
-import { menuDelete } from '@/service';
-import MenuModal from './components/menu-modal.vue';
-import { PermissionModal } from './components';
-import { usePermissionModal, useMenuModal, useTable } from './hooks';
+import { menuDelete } from './api';
+import { PermissionManageModal, MenuModal } from './components';
+import { usePermissionManageModal, useMenuModal, useMenuTable, useMenuConfig } from './hooks';
 
 defineOptions({
   name: 'MenuManagementView',
 });
 
 const { permissionModalVisible, permissionMenuId, openPermissionModal, setPermissionMenuId } =
-  usePermissionModal();
+  usePermissionManageModal();
 
 const {
   visible,
@@ -76,14 +73,17 @@ const {
   onExpandedRowKeys,
   pagination,
   tableData,
-} = useTable(handleAdd, handleEdit, handleDelete, handlePermission);
+} = useMenuTable(onAdd, onEdit, onDelete, onPermissionManage);
+
+const { permission, getMenuConfig, onRefreshCanWatch } = useMenuConfig(getTableData);
 
 /**
  * 处理新增菜单
  * @param parentId 父菜单 Id
  */
-function handleAdd(parentId: number | null = null) {
+function onAdd(parentId: Common.Nullable<number>) {
   setModalType('add');
+  setEditData(null);
   setDefaultParentId(parentId);
   openModal();
 }
@@ -92,7 +92,7 @@ function handleAdd(parentId: number | null = null) {
  * 处理编辑菜单
  * @param row 编辑项
  */
-function handleEdit(row: ApiManagement.Menu) {
+function onEdit(row: ResMenu.MenuListData) {
   setModalType('edit');
   setEditData(row);
   setDefaultParentId(row.parentId);
@@ -103,24 +103,24 @@ function handleEdit(row: ApiManagement.Menu) {
  * 处理删除菜单
  * @param id 菜单 Id
  */
-async function handleDelete(id: number) {
-  const { error } = await menuDelete({ id });
+async function onDelete(id: number) {
+  const { error, msg } = await menuDelete({ id });
   if (error) return;
-  window.$message?.success('删除成功');
-  getTableData();
+  window.$message?.success(msg);
+  onRefreshCanWatch();
 }
 
 /**
  * 编辑菜单权限
  * @param row 菜单项
  */
-function handlePermission(row: ApiManagement.Menu) {
+function onPermissionManage(row: ResMenu.MenuListData) {
   setPermissionMenuId(row.id);
   openPermissionModal();
 }
 
 onMounted(() => {
-  getTableData();
+  getMenuConfig();
 });
 </script>
 

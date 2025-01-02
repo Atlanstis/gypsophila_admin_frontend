@@ -2,10 +2,10 @@ import { useBoolean } from '@/hooks';
 import { ref } from 'vue';
 
 /** 有关权限 modal 的操作 */
-export function usePermissionModal() {
+export function usePermissionManageModal() {
   const { bool: permissionModalVisible, setTrue: openPermissionModal } = useBoolean(false);
 
-  const permissionMenuId = ref<number | null>(null);
+  const permissionMenuId = ref<Common.Nullable<number>>(null);
 
   function setPermissionMenuId(menuId: number) {
     permissionMenuId.value = menuId;

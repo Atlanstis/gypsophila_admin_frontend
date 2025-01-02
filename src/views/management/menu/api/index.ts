@@ -1,4 +1,12 @@
 import { request } from '@/service';
+import type { MenuModel } from '../typing';
+
+/**
+ * 菜单管理-页面配置
+ */
+export function menuConfig() {
+  return request.get<ResMenu.Config>('/menu/config');
+}
 
 /**
  * 菜单列表
@@ -6,21 +14,21 @@ import { request } from '@/service';
  * @param size - 数量
  */
 export function menuList(page: number, size: number) {
-  return request.post<ApiCommon.TableData<ApiManagement.Menu[]>>('/menu/list', { page, size });
+  return request.post<ResCommon.TableData<ResMenu.MenuListData>>('/menu/list', { page, size });
 }
 
 /**
  * 获取所有顶级菜单
  */
 export function menuListTop() {
-  return request.get<ApiManagement.Menu[]>('/menu/list/top');
+  return request.get<ResMenu.Menu[]>('/menu/list/top');
 }
 
 /**
  * 新增菜单
  * @param menu 菜单数据
  */
-export function menuAdd(menu: any) {
+export function menuAdd(menu: MenuModel) {
   return request.post('/menu/add', menu);
 }
 
@@ -28,7 +36,7 @@ export function menuAdd(menu: any) {
  * 编辑菜单
  * @param menu 菜单数据
  */
-export function menuEdit(menu: any) {
+export function menuEdit(menu: MenuModel) {
   return request.post('/menu/edit', menu);
 }
 
@@ -36,7 +44,7 @@ export function menuEdit(menu: any) {
  * 删除菜单
  * @param menu 菜单数据
  */
-export function menuDelete(menu: Pick<ApiManagement.Role, 'id'>) {
+export function menuDelete(menu: Pick<ResMenu.Menu, 'id'>) {
   return request.get('/menu/delete', menu);
 }
 
@@ -46,7 +54,7 @@ export function menuDelete(menu: Pick<ApiManagement.Role, 'id'>) {
  * @returns 权限列表
  */
 export function menuPermissionList(menuId: number) {
-  return request.post<ApiManagement.Permission[]>('/menu/permission/list', { menuId });
+  return request.post<ResMenu.MenuPermission[]>('/menu/permission/list', { menuId });
 }
 /**
  * 新增菜单下的权限

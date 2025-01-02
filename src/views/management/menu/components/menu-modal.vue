@@ -15,16 +15,19 @@
       :rules="formRules"
     >
       <NFormItem v-if="props.parentId" label="上级菜单" path="parentId">
-        <NSelect v-model:value="formModel.parentId" disabled :options="menuTopOpt" />
+        <NSelect v-model:value="formModel.parentId" disabled :options="menuTopOpts" />
       </NFormItem>
       <NFormItem label="菜单名称" path="name">
         <NInput v-model:value="formModel.name" placeholder="请输入菜单名称" />
       </NFormItem>
-      <NFormItem label="菜单 Key" path="key">
-        <NInput v-model:value="formModel.key" placeholder="请输入菜单 Key" />
+      <NFormItem label="菜单标识" path="key">
+        <NInput v-model:value="formModel.key" placeholder="请输入菜单标识" />
       </NFormItem>
       <NFormItem label="类型" path="type">
-        <NRadioGroup v-model:value="formModel.type" :disabled="props.type === 'edit'">
+        <NRadioGroup
+          v-model:value="formModel.type"
+          :disabled="props.type === 'edit' || props.parentId"
+        >
           <NRadio
             v-for="type in MenuTypeOpts"
             :key="type.value"
@@ -50,12 +53,13 @@ import { menuAdd, menuEdit, menuListTop } from '@/service';
 import type { Ref } from 'vue';
 import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
 import { MenuTypeEnum, MenuTypeOpts } from '../constants';
+import type { MenuModel } from '../typing';
 
 defineOptions({
   name: 'MenuModal',
 });
 
-type FormModel = BusinessManagement.MenuFormModal;
+type FormModel = MenuModel;
 
 export interface Props {
   type?: Modal.Type;
@@ -95,10 +99,10 @@ const formRef = ref<HTMLElement & FormInst>();
 
 function createFormModel(): FormModel {
   return {
-    id: 0,
+    id: null,
     key: '',
     name: '',
-    type: MenuTypeEnum.menu,
+    type: MenuTypeEnum.page,
     parentId: props.parentId || null,
   };
 }
@@ -106,8 +110,8 @@ function createFormModel(): FormModel {
 const formModel = reactive<FormModel>(createFormModel());
 
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
-  name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-  key: [{ required: true, message: '请输入菜单 Key', trigger: 'blur' }],
+  name: [{ required: true, message: '请输入菜单名称', trigger: 'change' }],
+  key: [{ required: true, message: '请输入菜单标识', trigger: 'change' }],
 };
 
 function handleUpdateFormModelByFormType() {
@@ -135,27 +139,27 @@ async function formSubmit() {
   await formRef.value?.validate();
   showLoading();
   const api = props.type === 'add' ? menuAdd : menuEdit;
-  const { error } = await api({ ...formModel });
+  const { error, msg } = await api({ ...formModel });
   if (!error) {
-    const title = `${props.type === 'add' ? '新增' : '编辑'}成功`;
-    window.$message?.success(title);
+    window.$message?.success(msg);
     closeModal();
     emitSucess();
   }
   closeLoading();
 }
 
-/** 执行成功后，通知上层组件 */
 function emitSucess() {
   emits('on-success');
 }
 
-const menuTopOpt: Ref<SelectOption[]> = ref([]);
+const menuTopOpts: Ref<SelectOption[]> = ref([]);
 
+/** 获取顶级菜单 */
 async function getMenuTop() {
+  if (!props.parentId) return;
   const { data, error } = await menuListTop();
   if (!error) {
-    menuTopOpt.value = data.map((menu) => ({
+    menuTopOpts.value = data.map((menu) => ({
       label: menu.name,
       value: menu.id,
     }));

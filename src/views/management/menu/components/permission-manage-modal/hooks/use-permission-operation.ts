@@ -11,9 +11,9 @@ export function usePermissionOperation() {
     operationModalType.value = type;
   }
 
-  const operationEditData = ref<ApiManagement.Permission | null>(null);
+  const operationEditData = ref<Common.Nullable<ResMenu.MenuPermission>>(null);
 
-  function setOperationEditData(data: ApiManagement.Permission) {
+  function setOperationEditData(data: ResMenu.MenuPermission) {
     operationEditData.value = { ...data };
   }
 

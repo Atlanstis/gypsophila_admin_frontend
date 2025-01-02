@@ -4,7 +4,7 @@
     :title="'权限设置'"
     preset="card"
     :segmented="true"
-    class="w-500px"
+    class="w-620px"
   >
     <NSpace class="pb-12px" justify="space-between">
       <NButton type="primary" @click="handlePermissionAdd">
@@ -31,16 +31,16 @@
 
 <script lang="ts" setup>
 import { useModal, type ModalProps, type ModalEmits } from '@/hooks';
-import { usePermissionOperation, useTable } from './hooks';
-import PermissionOperateModal from './components/permission-operate-modal.vue';
 import { menuPermissionDelete } from '@/service';
+import { usePermissionOperation, usePermissionTable } from './hooks';
+import { PermissionOperateModal } from './components';
 
 defineOptions({
   name: 'PermissionModal',
 });
 
 export type Props = {
-  menuId: null | number;
+  menuId: Common.Nullable<number>;
 } & ModalProps;
 
 const props = withDefaults(defineProps<Props>(), {
@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emits = defineEmits<ModalEmits>();
 
 /** 处理数据的编辑 */
-function handleEdit(editData: ApiManagement.Permission) {
+function handleEdit(editData: ResMenu.MenuPermission) {
   setOperationEditData(editData);
   setOperationModalType('edit');
   openOpetationModal();
@@ -59,14 +59,14 @@ function handleEdit(editData: ApiManagement.Permission) {
 
 /** 处理数据的删除 */
 async function handleDelete(id: number) {
-  const { error } = await menuPermissionDelete(id);
+  const { error, msg } = await menuPermissionDelete(id);
   if (!error) {
-    window.$message?.success('删除成功');
+    window.$message?.success(msg);
     getTableData();
   }
 }
 
-const { columns, tableData, getTableData, clearTableData, loading } = useTable(
+const { columns, tableData, getTableData, clearTableData, loading } = usePermissionTable(
   props,
   handleEdit,
   handleDelete,
