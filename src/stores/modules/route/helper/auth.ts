@@ -76,7 +76,9 @@ function filterAuthRoute(routes: AuthRoute.Route[], authMap: Record<string, bool
       }
       if (hasChildren(route.children)) {
         itemRoute.children = filterAuthRoute(route.children, authMap);
-        itemRoute.redirect = itemRoute.children[0].path;
+        if (itemRoute.children[0]) {
+          itemRoute.redirect = itemRoute.children[0].path;
+        }
       }
       authRoutes.push(itemRoute);
     }
