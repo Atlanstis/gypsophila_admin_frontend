@@ -10,8 +10,11 @@
         </NSpace>
       </template>
       <template #content>
+        <NSpace v-if="loadingPermission" justify="center" align="center">
+          <NSpin size="large" />
+        </NSpace>
         <NDataTable
-          v-if="permission.watch"
+          v-else-if="permission.watch"
           flex-height
           striped
           remote
@@ -79,7 +82,8 @@ const {
   tableData,
 } = useMenuTable(onAdd, onEdit, onDelete, onPermissionManage);
 
-const { permission, getMenuConfig, onRefreshCanWatch } = useMenuConfig(getTableData);
+const { loadingPermission, permission, getMenuConfig, onRefreshCanWatch } =
+  useMenuConfig(getTableData);
 
 /**
  * 处理新增菜单

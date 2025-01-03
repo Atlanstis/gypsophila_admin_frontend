@@ -10,8 +10,11 @@
         </NSpace>
       </template>
       <template #content>
+        <NSpace v-if="loadingPermission" justify="center" align="center">
+          <NSpin size="large" />
+        </NSpace>
         <NDataTable
-          v-if="permission.watch"
+          v-else-if="permission.watch"
           flex-height
           striped
           remote
@@ -52,7 +55,8 @@ const { columns, loading, tableData, getTableData, pagination } = useUserTable(
   handleDelete,
 );
 
-const { permission, getUserConfig, onRefreshCanWatch } = useUserConfig(getTableData);
+const { loadingPermission, permission, getUserConfig, onRefreshCanWatch } =
+  useUserConfig(getTableData);
 
 function handleUserAdd() {
   setModalType('add');

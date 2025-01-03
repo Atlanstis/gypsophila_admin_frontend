@@ -10,8 +10,11 @@
         </NSpace>
       </template>
       <template #content>
+        <NSpace v-if="loadingPermission" justify="center" align="center">
+          <NSpin size="large" />
+        </NSpace>
         <NDataTable
-          v-if="permission.watch"
+          v-else-if="permission.watch"
           flex-height
           striped
           remote
@@ -65,7 +68,8 @@ const { columns, tableData, getTableData, pagination, loading } = useRoleTable(
   handleAllocation,
 );
 
-const { permission, getRoleConfig, onRefreshCanWatch } = useRoleConfig(getTableData);
+const { loadingPermission, permission, getRoleConfig, onRefreshCanWatch } =
+  useRoleConfig(getTableData);
 
 function handleRoleAdd() {
   setModalType('add');
