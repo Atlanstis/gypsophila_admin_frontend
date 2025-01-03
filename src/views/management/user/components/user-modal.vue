@@ -24,7 +24,7 @@
       <NFormItem label="昵称" path="nickname">
         <NInput v-model:value="formModel.nickname" placeholder="请输入昵称" />
       </NFormItem>
-      <NFormItem v-if="!formModel.roleIds.includes(RoleIdEnum.Admin)" label="角色" path="roleIds">
+      <NFormItem v-if="roleFiledShow" label="角色" path="roleIds">
         <NSelect
           v-model:value="formModel.roleIds"
           :options="roleList"
@@ -89,6 +89,14 @@ const { modalVisible, closeModal, submitLoading, showLoading, closeLoading } = u
 );
 
 const authStore = useAuthStore();
+
+const roleFiledShow = computed(() => {
+  // 拥有超级管理员的角色无法修改
+  if (formModel.roleIds.includes(RoleIdEnum.Admin)) return false;
+  // 编辑时，无法修改自身角色
+  if (props.type === 'edit' && authStore.userInfo?.id === formModel.id) return false;
+  return true;
+});
 
 const title = computed(() => {
   const titleMap: Record<Modal.Type, string> = {
