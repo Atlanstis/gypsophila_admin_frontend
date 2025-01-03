@@ -19,13 +19,14 @@ export function useMenuModal() {
       editData.value = null;
       return;
     }
-    const { id, key, name, parentId, type } = data;
+    const { id, key, name, parentId, type, order } = data;
     editData.value = {
       id,
       key,
       name,
       parentId,
       type,
+      order,
     };
   }
 

@@ -36,6 +36,9 @@
           />
         </NRadioGroup>
       </NFormItem>
+      <NFormItem label="排序" path="order">
+        <NInputNumber v-model:value="formModel.order" :min="0" :max="99" :precision="0" />
+      </NFormItem>
     </NForm>
     <template #footer>
       <NSpace justify="end">
@@ -59,11 +62,9 @@ defineOptions({
   name: 'MenuModal',
 });
 
-type FormModel = MenuModel;
-
 export interface Props {
   type?: Modal.Type;
-  editData?: FormModel | null;
+  editData?: MenuModel | null;
   parentId: number | null;
 }
 
@@ -97,17 +98,18 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-function createFormModel(): FormModel {
+function createFormModel(): MenuModel {
   return {
     id: null,
     key: '',
     name: '',
     type: MenuTypeEnum.page,
     parentId: props.parentId || null,
+    order: 0,
   };
 }
 
-const formModel = reactive<FormModel>(createFormModel());
+const formModel = reactive<MenuModel>(createFormModel());
 
 const formRules: Record<string, FormItemRule | FormItemRule[]> = {
   name: [{ required: true, message: '请输入菜单名称', trigger: 'change' }],
@@ -130,7 +132,7 @@ function handleUpdateFormModelByFormType() {
 }
 
 /** 更新表单数据 */
-function handleUpdateFormModel(model: FormModel) {
+function handleUpdateFormModel(model: MenuModel) {
   Object.assign(formModel, model);
 }
 
