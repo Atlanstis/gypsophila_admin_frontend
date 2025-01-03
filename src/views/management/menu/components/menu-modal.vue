@@ -26,7 +26,7 @@
       <NFormItem label="类型" path="type">
         <NRadioGroup
           v-model:value="formModel.type"
-          :disabled="props.type === 'edit' || props.parentId"
+          :disabled="props.type === 'edit' || !!props.parentId"
         >
           <NRadio
             v-for="type in MenuTypeOpts"
