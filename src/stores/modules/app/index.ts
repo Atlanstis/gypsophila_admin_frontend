@@ -2,9 +2,10 @@ import { defineStore } from 'pinia';
 import { localStorage } from '@/utils';
 import { LocalKeyEnum } from '@/enums';
 import { nextTick } from 'vue';
-import { getWebsiteInfo } from '@/service';
+import { systemInfo } from '@/service';
 import { useTitle } from '@vueuse/core';
 import { router } from '@/router';
+import { useAuthStore } from '../auth';
 
 interface AppState {
   /** 后台页-侧边栏折叠状态 */
@@ -12,14 +13,18 @@ interface AppState {
   /** 后台页-重新加载-标识 */
   adminReloadFlag: boolean;
   /** 网站信息 */
-  websiteInfo: Partial<ApiSetting.Website>;
+  websiteInfo: ResSystem.WebsiteInfo;
 }
 
 export const useAppStore = defineStore('app-store', {
   state: (): AppState => ({
     adminSiderCollapse: localStorage.get(LocalKeyEnum.AdminMenuCollapsed) || false,
     adminReloadFlag: true,
-    websiteInfo: {},
+    websiteInfo: {
+      websiteName: '',
+      websiteRecordNumber: '',
+      webisteShowRecordNumber: false,
+    },
   }),
   getters: {},
   actions: {
@@ -29,11 +34,14 @@ export const useAppStore = defineStore('app-store', {
       localStorage.set(LocalKeyEnum.AdminMenuCollapsed, this.adminSiderCollapse);
     },
 
-    /** 获取网站信息 */
-    async getWebsiteInfo() {
-      const { data, error } = await getWebsiteInfo();
+    /** 获取系统信息 */
+    async getSystemInfo() {
+      const { data, error } = await systemInfo();
       if (!error) {
-        this.websiteInfo = data;
+        const { websiteName, websiteRecordNumber, webisteShowRecordNumber, publicKey } = data;
+        this.websiteInfo = { websiteName, websiteRecordNumber, webisteShowRecordNumber };
+        const authStore = useAuthStore();
+        authStore.setPublicKey(publicKey);
         const route = router.currentRoute.value;
         this.updateWebsiteTitle(route.meta.title);
       }
@@ -42,7 +50,7 @@ export const useAppStore = defineStore('app-store', {
     /** 更新浏览器标题 */
     updateWebsiteTitle(title: string) {
       title = title || '';
-      const base = this.websiteInfo.name || '';
+      const base = this.websiteInfo.websiteName || '';
       const hasSeparator = Boolean(title) && Boolean(base);
       useTitle(`${title}${hasSeparator ? '-' : ''}${base}`);
     },

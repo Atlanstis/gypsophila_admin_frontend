@@ -22,13 +22,7 @@ export const useAuthStore = defineStore('auth-store', {
     loginLoading: false,
     token: getToken(),
     userInfo: undefined,
-    publicKey: `MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwxXMU/GhDjjkhtdmsRjQ
-Qy2/H1xD1QeZOsx49hzxj3DMf94VEnaKEIxrl0eYdVx2hq9wMN0p00MaqsNGQsVJ
-liUS3LrmwY1AUThhfVb5zgCaZ6WTobwoqisiuwWAoRWC0tORnwSphuOhtPCP6PWo
-aAbgiV8IonlwbWf1y4jxv1QerQwBbA/Hi+7QO/mYaeNT+UrTpdDiBNi2h7NMtIJj
-UgIK693ZRg/yXCT2hAtjYNga+aAXLMr3nt5+X+ouZXbRcqPw/+oJEW3kztYL3fRT
-sfqCFeLn+sZzuG6Gky0rNwB4CRL7knVKTl7SMn3Rr8+i3g3UjGbdGqqrqgFUDNds
-KwIDAQAB`,
+    publicKey: '',
   }),
 
   getters: {
@@ -102,6 +96,11 @@ KwIDAQAB`,
     /** 设置用户信息 */
     setUserInfo(userInfo: ResAuth.User) {
       this.userInfo = userInfo;
+    },
+
+    /** 设置 publicKey */
+    setPublicKey(publicKey: string) {
+      this.publicKey = publicKey;
     },
   },
 });

@@ -24,7 +24,10 @@
         <LayoutContent />
       </main>
       <!-- 底部 -->
-      <footer :class="[style['layout-footer'], 'flex-shrink-0', leftGapClass, commonClass]">
+      <footer
+        v-if="showFooter"
+        :class="[style['layout-footer'], 'flex-shrink-0', leftGapClass, commonClass]"
+      >
         <LayoutFooter />
       </footer>
     </div>
@@ -60,6 +63,8 @@ const leftGapClass = computed(() => {
 });
 
 const commonClass = ref('transition-all-300');
+
+const showFooter = ref(false);
 </script>
 
 <style lang="scss" scoped></style>

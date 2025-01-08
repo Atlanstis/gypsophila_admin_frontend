@@ -39,7 +39,7 @@ const active = ref<string>('todo');
 const noticeStore = useNoticeStore();
 
 onMounted(() => {
-  noticeStore.getNoticePolymeric();
+  // noticeStore.getNoticePolymeric();
 });
 </script>
 

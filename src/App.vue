@@ -19,6 +19,6 @@ const appStore = useAppStore();
 
 onMounted(() => {
   subscribeStore();
-  appStore.getWebsiteInfo();
+  appStore.getSystemInfo();
 });
 </script>

@@ -1,6 +1,10 @@
 <template>
-  <a v-if="websiteInfo.showRecordNumber" class="cursor-pointer" href="https://beian.miit.gov.cn">
-    {{ websiteInfo.recordNumber }}
+  <a
+    v-if="websiteInfo.webisteShowRecordNumber"
+    class="cursor-pointer"
+    href="https://beian.miit.gov.cn"
+  >
+    {{ websiteInfo.websiteRecordNumber }}
   </a>
 </template>
 
