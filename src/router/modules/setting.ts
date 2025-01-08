@@ -27,7 +27,7 @@ export const settingRoutes: AuthRoute.Route[] = [
         component: getRouteView(RouteEnum.Setting_Common),
         meta: {
           title: '通用设置',
-          icon: 'icon-park:setting-config',
+          icon: 'icon-park-outline:setting-config',
         },
       },
     ],
