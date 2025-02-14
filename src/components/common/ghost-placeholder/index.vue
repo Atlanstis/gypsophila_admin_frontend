@@ -42,17 +42,22 @@ defineOptions({
 });
 
 interface Props {
-  type: 'default' | 'auth';
+  type?: 'default' | 'auth';
+  custom?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   type: 'default',
+  custom: '',
 });
 
 const text = computed(() => {
+  if (props.custom) {
+    return props.custom;
+  }
   const textMap = {
-    default: '暂无数据',
-    auth: '暂无查看权限',
+    default: '暂无数据 ⑉꒦ິ^꒦ິ⑉ ',
+    auth: '暂无查看权限 ⸝⸝⸝ᵒ̴̶̷̥ ⌓ ᵒ̴̶̷̣̥̀⸝⸝⸝',
   };
   return textMap[props.type];
 });
@@ -66,7 +71,8 @@ const eyesCss = computed(() => {
 
   let yAxis = ((pageY.value / 2 - mouseY) / pageY.value) * 300;
   yAxis = yAxis < 0 ? 0 : yAxis;
-  const xAxis = -mouseX * 100 - 100;
+  let xAxis = -mouseX * 100 - 100;
+  xAxis = Math.max(-80, Math.min(-20, xAxis));
 
   return {
     transform: `translate(${xAxis}%,-${yAxis}%)`,
@@ -78,7 +84,6 @@ const eyesCss = computed(() => {
 .box {
   width: 300px;
   height: 240px;
-  background: #fff;
   border-radius: 20px;
   position: relative;
 

@@ -3,16 +3,19 @@
     class="flex rd-10px p-y-16px p-x-20px"
     :style="{
       background: `${colorArr[i % colorArr.length][0]}`,
-      border: isComplete ? `2px solid ${colorArr[i % colorArr.length][1]}` : '',
+      border: isComplete
+        ? `2px solid ${colorArr[i % colorArr.length][1]}`
+        : '2px solid transparent',
     }"
   >
-    <div class="h-60px w-60px flex flex-center flex-shrink-0">
+    <div class="h-64px w-64px flex flex-center flex-shrink-0">
       <NImage
-        width="60"
-        height="60"
+        width="64"
+        height="64"
         :src="trophy.thumbnail"
         :lazy="true"
         class="flex-center rd-10px"
+        :preview-disabled="true"
       >
         <template #placeholder>
           <PlaystationLoading />
@@ -40,13 +43,15 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { PlaystationLoading, TrophyTypeImage } from '@/components';
 
 defineOptions({
   name: 'TrophyCard',
 });
 
 type Props = {
-  trophy: ApiPsn.Trophy;
+  trophy: PlayStation.Trophy;
+  profileTrophy?: PlayStation.ProfileTrophy;
   i: number;
 };
 
@@ -62,12 +67,12 @@ const colorArr = [
 ];
 
 const isComplete = computed(() => {
-  return Boolean(props.trophy.completeInfo?.completeTime);
+  return Boolean(props.profileTrophy);
 });
 
 const completeTime = computed(() => {
-  const time = props.trophy.completeInfo?.completeTime;
-  return time ? time.slice(0, 16) : '';
+  if (!props.profileTrophy || !isComplete.value) return '';
+  return props.profileTrophy.completeTime || '时间丢失';
 });
 </script>
 

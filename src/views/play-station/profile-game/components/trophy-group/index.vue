@@ -1,8 +1,15 @@
 <template>
   <NSpace vertical :size="20">
     <div class="flex">
-      <div class="h-80px w-80px flex flex-center">
-        <NImage width="80" height="80" :src="props.group.thumbnail" class="flex-center rd-10px">
+      <div class="h-64px w-64px flex flex-center">
+        <NImage
+          width="64"
+          height="64"
+          :src="props.group.thumbnail"
+          class="flex-center rd-10px"
+          :preview-disabled="true"
+          :lazy="true"
+        >
           <template #placeholder>
             <PlaystationLoading />
           </template>
@@ -11,7 +18,6 @@
       <NSpace class="h-full flex-1-hidden m-x-12px" vertical justify="space-around">
         <NSpace align="center">
           <div class="text-16px font-bold">{{ props.group.name }}</div>
-          <NTag v-if="props.group.isDLC" size="small" type="primary">DLC</NTag>
         </NSpace>
         <TrophyComplete size="small" :trophyNum="trophyNum.total" :trophy-num-got="trophyNum.got" />
       </NSpace>
@@ -28,24 +34,28 @@
     </div>
     <NGrid cols="1 550:2 1200:3" x-gap="16" y-gap="16" item-responsive>
       <NGridItem v-for="(trophy, i) of trophies" :key="trophy.id">
-        <TrophyCard :trophy="trophy" :i="i" />
+        <TrophyCard
+          :trophy="trophy"
+          :profileTrophy="props.profileTrophyMap.get(trophy.id)"
+          :i="i"
+        />
       </NGridItem>
     </NGrid>
   </NSpace>
 </template>
 
 <script lang="ts" setup>
-import { NImage, NTag, NSpace, NRadioButton } from 'naive-ui';
-import { PlaystationLoading } from '@/components';
 import { computed, ref, watchEffect } from 'vue';
 import { TrophyCard } from '..';
+import { PlaystationLoading, TrophyComplete } from '@/components';
 
 defineOptions({
   name: 'TropyGroup',
 });
 
 type Props = {
-  group: ApiPsn.TrophyGroup;
+  group: PlayStation.TrophyGroup;
+  profileTrophyMap: Map<number, PlayStation.ProfileTrophy>;
 };
 
 /** 筛选状态 */
@@ -53,20 +63,25 @@ type Status = 'all' | 'got' | 'not-got';
 
 const props = defineProps<Props>();
 
-/** 奖杯获取情况 */
+/** 该奖杯组下，奖杯数量获取情况 */
 const trophyNum = computed(() => {
-  const { platinum, gold, silver, bronze, trophies } = props.group;
-  const got = {
+  const {
+    group: { platinum, gold, silver, bronze, trophies },
+    profileTrophyMap,
+  } = props;
+  const got: PlayStation.TrophyNum = {
     bronze: 0,
     silver: 0,
     gold: 0,
     platinum: 0,
   };
-  trophies.forEach((t) => {
-    if (t.completeInfo && t.completeInfo.completeTime) {
-      got[t.type]++;
-    }
-  });
+
+  trophies &&
+    trophies.forEach((trophy) => {
+      if (profileTrophyMap.has(trophy.id)) {
+        got[trophy.type]++;
+      }
+    });
   return {
     total: { bronze, silver, gold, platinum },
     got,
@@ -86,12 +101,13 @@ const defaultStatus = ref<Status>('all');
 /** 展示的奖杯 */
 const trophies = computed(() => {
   const { trophies } = props.group;
+  if (!trophies) return [];
   if (defaultStatus.value === 'all') {
     return trophies;
   } else if (defaultStatus.value === 'got') {
-    return trophies.filter((t) => t.completeInfo && t.completeInfo.completeTime);
+    return trophies.filter((t) => props.profileTrophyMap.has(t.id));
   } else if (defaultStatus.value === 'not-got') {
-    return trophies.filter((t) => !(t.completeInfo && t.completeInfo.completeTime));
+    return trophies.filter((t) => !props.profileTrophyMap.has(t.id));
   }
   return [];
 });

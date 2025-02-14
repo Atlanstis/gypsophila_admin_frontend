@@ -18,7 +18,7 @@ export const playStationRoutes: AuthRoute.Route[] = [
         path: '/play-station/profile',
         component: getRouteView(RouteEnum.PlayStation_Profile),
         meta: {
-          title: 'PSN 概览',
+          title: '账号概览',
           icon: 'icon-park-outline:game-ps',
           keepAlive: true,
         },
@@ -39,29 +39,18 @@ export const playStationRoutes: AuthRoute.Route[] = [
         path: '/play-station/game',
         component: getRouteView(RouteEnum.PlayStation_Game),
         meta: {
-          title: 'PSN 游戏',
+          title: 'PS 游戏',
           icon: 'basil:gamepad-outline',
         },
       },
       {
-        name: RouteEnum.PlayStation_Search,
-        path: '/play-station/search',
-        component: getRouteView(RouteEnum.PlayStation_Search),
+        name: RouteEnum.PlayStation_Game_Search,
+        path: '/play-station/game/search',
+        component: getRouteView(RouteEnum.PlayStation_Game_Search),
         meta: {
           title: '游戏查找',
           iconLocal: 'psnine',
           keepAlive: true,
-        },
-      },
-      {
-        name: RouteEnum.PlayStation_Analysis,
-        path: '/play-station/analysis/:id',
-        component: getRouteView(RouteEnum.PlayStation_Analysis),
-        meta: {
-          title: '游戏分析',
-          iconLocal: 'psnine',
-          hide: true,
-          activeMenu: RouteEnum.PlayStation_Search,
         },
       },
     ],

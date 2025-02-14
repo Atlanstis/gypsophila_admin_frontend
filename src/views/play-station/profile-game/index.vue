@@ -1,50 +1,75 @@
 <template>
   <ScrollContainer>
     <NSpace vertical>
-      <GameInfo :info="game" :loading="loading" @on-sync="getProfileGame" />
-      <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
-        <TrophyInfo v-if="game" :trophy-group="game.game.trophyGroups" />
-      </Transition>
-      <GuideInfo v-if="game" :ppgId="gameId" />
+      <GameInfo
+        :game="game"
+        :profile-game="profileGame"
+        :isError="isError"
+        :loading="loading"
+        @on-sync="getProfileGame"
+      />
+      <template v-if="!isError">
+        <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
+          <TrophyTabs
+            v-if="game?.trophyGroups"
+            :trophy-groups="game?.trophyGroups"
+            :profile-trophies="profileTrophies"
+          />
+        </Transition>
+      </template>
     </NSpace>
   </ScrollContainer>
 </template>
 
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
-import { psnProfileGame } from '@/service';
-import { onMounted, ref, computed } from 'vue';
-import { useRouterPush } from '@/composables';
+import { psProfileGameInfo } from '@/service';
+import { onMounted, ref } from 'vue';
 import { useBoolean } from '@/hooks';
-import { GameInfo, TrophyInfo, GuideInfo } from './components';
+import { GameInfo, TrophyTabs } from './components';
 import { useAppStore } from '@/stores';
 
 defineOptions({
-  name: 'PlaystationProfileGameView',
+  name: 'PlaystationProfileGame',
 });
 
 const route = useRoute();
 const appStore = useAppStore();
 
-const { goBack } = useRouterPush();
-
+const { bool: isError, setTrue: setError } = useBoolean(false);
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean();
 
-const game = ref<ApiPsn.ProfileGame | null>(null);
+const game = ref<Util.Nullable<PlayStation.Game>>(null);
+const profileGame = ref<Util.Nullable<PlayStation.ProfileGame>>(null);
+const profileTrophies = ref<PlayStation.ProfileTrophy[]>([]);
 
-const gameId = computed(() => {
-  return route.params.id as ApiPsn.ProfileGame['id'];
-});
+function transferGameId() {
+  const id = route.params.id;
+  let idStr = typeof id === 'string' ? id : id[0];
+  if (idStr) {
+    const gameId = Number(idStr);
+    return isNaN(gameId) ? null : gameId;
+  }
+  return null;
+}
 
 /** 获取游戏信息 */
 async function getProfileGame() {
   startLoading();
-  const { error, data } = await psnProfileGame(gameId.value);
+  const profileGameId = transferGameId();
+  if (!profileGameId) {
+    setError();
+    endLoading();
+    return;
+  }
+  const { error, data } = await psProfileGameInfo(profileGameId);
   if (!error) {
-    appStore.updateWebsiteTitle(`${data.game.originName}-${route.meta.title}`);
-    game.value = data;
+    game.value = data.game;
+    profileGame.value = data.profileGame;
+    profileTrophies.value = data.profileTrophies;
+    appStore.updateWebsiteTitle(`${game.value.name}-${route.meta.title}`);
   } else {
-    goBack();
+    setError();
   }
   endLoading();
 }

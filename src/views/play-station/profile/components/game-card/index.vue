@@ -4,8 +4,14 @@
     :style="{ background: `${colorArr[i % colorArr.length][0]}` }"
   >
     <div class="flex-col p-y-16px p-x-20px b-b-1px b-b-#fff">
-      <div class="flex">
-        <NImage class="w-60px h-60px rd-10px" :src="info.game.thumbnail" :lazy="true">
+      <div v-if="info.game" class="flex">
+        <NImage
+          class="h-60px rd-10px"
+          :style="{ width: !isPs5 ? '113px' : '60px' }"
+          :src="info.game.thumbnail"
+          :lazy="true"
+          :preview-disabled="true"
+        >
           <template #placeholder>
             <div class="h-full w-full flex-center">
               <PlaystationLoading />
@@ -13,16 +19,16 @@
           </template>
         </NImage>
         <div class="m-l-12px flex-col flex-1-hidden justify-around">
-          <p class="font-bold text-16px text-ellipsis">{{ info.game.originName }}</p>
+          <p class="font-bold text-16px text-ellipsis">{{ info.game.name }}</p>
           <NSpace>
             <GamePlatform v-for="p of info.game.platforms" :key="p" :platform="p" />
           </NSpace>
         </div>
       </div>
       <p class="font-bold m-t-10px">完成进度</p>
-      <div class="m-t-8px m-b-12px">
+      <div v-if="info && info.game" class="m-t-8px m-b-12px">
         <NProgress
-          :percentage="calcCompleteRate(info)"
+          :percentage="calcCompleteRate(info, info.game)"
           :height="4"
           :color="`${colorArr[i % colorArr.length][1]}`"
           rail-color="#fff"
@@ -32,52 +38,40 @@
       <div class="flex-x-center w-full">
         <TrophyNum
           :trophy-num="{
-            platinum: info.platinumGot,
-            gold: info.goldGot,
-            silver: info.silverGot,
-            bronze: info.bronzeGot,
+            platinum: info.platinum,
+            gold: info.gold,
+            silver: info.silver,
+            bronze: info.bronze,
           }"
           size="small"
         ></TrophyNum>
       </div>
     </div>
-    <div class="flex-1-hidden flex-y-center p-l-20px p-r-10px justify-between">
-      <p></p>
-      <div>
-        <PopoverBtn
-          :icon="info.isFavor ? ButtonIconEnum.favoriteFilled : ButtonIconEnum.favorite"
-          msg="收藏"
-          :bordered="false"
-          :disabled="favorDisabled"
-          @click="onGameFavor(info.id)"
-        ></PopoverBtn>
-        <PopoverBtn
-          :icon="ButtonIconEnum.more"
-          msg="详情"
-          :bordered="false"
-          @click="goProfileGame"
-        ></PopoverBtn>
-      </div>
+    <div class="flex-1-hidden flex-y-center p-x-10px justify-end">
+      <PopoverBtn
+        :icon="ButtonIconEnum.more"
+        msg="详情"
+        :bordered="false"
+        @click="goProfileGame"
+      ></PopoverBtn>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { PlaystationLoading, TrophyNum, GamePlatform } from '@/components';
 import { ButtonIconEnum, RouteEnum } from '@/enums';
-import { psnGameFavor } from '@/service';
-import { useBoolean } from '@/hooks';
 import { useRouterPush } from '@/composables';
-import { calcCompleteRate } from '@/utils';
+import { calcCompleteRate } from '@/views/play-station/__util__';
+import { computed } from 'vue';
 
 defineOptions({
   name: 'GameCard',
 });
 
-const props = defineProps<{ info: ApiPsn.ProfileGame; i: number }>();
+const props = defineProps<{ info: PlayStation.ProfileGame; i: number }>();
 
-const emit = defineEmits<{
-  (e: 'refresh', i: number): void;
-}>();
+const isPs5 = computed(() => props.info.game?.platforms?.includes('PS5'));
 
 const { routerPush } = useRouterPush();
 
@@ -90,22 +84,11 @@ const colorArr = [
   ['#d5deff', '#4067f9'],
 ];
 
-const { bool: favorDisabled, setTrue: setFavorTrue, setFalse: setFavorFalse } = useBoolean();
-
-/** 处理收藏 */
-async function onGameFavor(id: string) {
-  setFavorTrue();
-  const { error } = await psnGameFavor(id);
-  if (!error) {
-    emit('refresh', props.i);
-    window.$message?.success('操作成功');
-  }
-  setFavorFalse();
-}
-
 /** 跳转至游戏概览页 */
 function goProfileGame() {
-  routerPush({ name: RouteEnum.PlayStation_Profile_Game, params: { id: props.info.id } });
+  const info = props.info;
+  if (!info) return;
+  routerPush({ name: RouteEnum.PlayStation_Profile_Game, params: { id: info.id } });
 }
 </script>
 

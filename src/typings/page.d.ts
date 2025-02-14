@@ -22,8 +22,7 @@ declare namespace PageRoute {
     | 'PlayStation_Profile'
     | 'PlayStation_Profile_Game'
     | 'PlayStation_Game'
-    | 'PlayStation_Search'
-    | 'PlayStation_Analysis';
+    | 'PlayStation_Game_Search';
 
   /** PlayStation 路由名 */
   type AllPlayStationName = PlayStationNoPageName | PlayStationName;

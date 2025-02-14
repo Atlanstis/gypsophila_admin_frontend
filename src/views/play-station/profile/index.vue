@@ -7,16 +7,13 @@
         </div>
         <div v-else>
           <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
-            <ProfileBindForm v-if="!profile" @binded="getPsnProfile(true)" />
+            <ProfileBindForm v-if="!profile" @on-binded="getPsnProfile(true)" />
             <ProfileInfo v-else :profile="profile" />
           </Transition>
         </div>
       </NCard>
       <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
-        <GameFavorList v-if="profile" ref="gameFavorList" />
-      </Transition>
-      <Transition :name="'zoom-fade'" mode="out-in" :appear="true">
-        <GameList v-if="profile" @on-refresh="getPsnProfile(false)" @on-favor="refreshFavorList" />
+        <GameList v-if="profile" @on-refresh="getPsnProfile(false)" />
       </Transition>
     </NSpace>
     <NBackTop :right="40" :bottom="50" class="z-999" />
@@ -24,13 +21,14 @@
 </template>
 
 <script lang="ts" setup>
-import { psnProfile } from '@/service';
+import { PlaystationLoading } from '@/components';
+import { psProfileInfo } from '@/service';
 import { onMounted, ref } from 'vue';
 import { useBoolean } from '@/hooks';
-import { ProfileBindForm, ProfileInfo, GameList, GameFavorList } from './components';
+import { ProfileBindForm, ProfileInfo, GameList } from './components';
 
 defineOptions({
-  name: 'PlayStationGameView',
+  name: 'PlayStationProfile',
 });
 
 const {
@@ -39,8 +37,7 @@ const {
   setFalse: endPerfileLoading,
 } = useBoolean(true);
 
-const profile = ref<ApiPsn.Profile | null>(null);
-const gameFavorList = ref<InstanceType<typeof GameFavorList>>();
+const profile = ref<ResPsProfile.Info>(null);
 
 /**
  * 获取 psn 用户信息
@@ -50,18 +47,13 @@ async function getPsnProfile(needLoading: boolean) {
   if (needLoading) {
     startProfileLoading();
   }
-  const { error, data } = await psnProfile();
+  const { error, data } = await psProfileInfo();
   if (!error && data) {
     profile.value = data;
   }
   if (needLoading) {
     endPerfileLoading();
   }
-}
-
-/** 刷新 */
-function refreshFavorList() {
-  gameFavorList.value?.getFavorList();
 }
 
 onMounted(() => {

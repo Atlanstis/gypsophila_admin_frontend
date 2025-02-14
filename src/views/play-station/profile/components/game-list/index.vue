@@ -20,19 +20,21 @@
         <div v-if="!gameList.length" class="flex-center">
           <GhostPlaceholder />
         </div>
-        <NGrid v-else cols="1 540:2 800:3 1200:4" x-gap="16" y-gap="16" item-responsive>
-          <NGridItem v-for="(info, i) of gameList" :key="info.id">
-            <GameCard :info="info" :i="i" @refresh="onGameRefresh" />
-          </NGridItem>
-        </NGrid>
-        <div class="m-t-20px flex justify-center">
-          <n-pagination
-            v-model:page="pagination.page"
-            :item-count="pagination.itemCount"
-            :page-size="pagination.pageSize"
-            :on-update:page="onPageChange"
-          />
-        </div>
+        <template v-else>
+          <NGrid cols="1 540:2 800:3 1200:4" x-gap="16" y-gap="16" item-responsive>
+            <NGridItem v-for="(info, i) of gameList" :key="info.id">
+              <GameCard :info="info" :i="i" />
+            </NGridItem>
+          </NGrid>
+          <div class="m-t-20px flex justify-center">
+            <NPagination
+              v-model:page="pagination.page"
+              :item-count="pagination.itemCount"
+              :page-size="pagination.pageSize"
+              :on-update:page="onPageChange"
+            />
+          </div>
+        </template>
       </template>
     </div>
     <SyncGameModal v-model:visible="showSyncGameModal" @on-sync="onRefreshInfo" />
@@ -40,13 +42,13 @@
 </template>
 
 <script lang="ts" setup>
+import { NGridItem } from 'naive-ui';
 import { onMounted, ref } from 'vue';
 import { ButtonIconEnum } from '@/enums';
-import { SyncGameModal } from './components';
+import { PlaystationLoading } from '@/components';
 import { useBoolean, usePaginationWithDefinePageSize } from '@/hooks';
-import { psnGameSynchronized } from '@/service';
-import { NGridItem } from 'naive-ui';
-import { GameCard } from '..';
+import { psProfileGameList } from '@/service';
+import { GameCard, SyncGameModal } from '..';
 
 defineOptions({
   name: 'GameList',
@@ -61,22 +63,17 @@ const { pagination, getPageParams, setItemCount, onPageChange } = usePaginationW
   12,
 );
 
-const gameList = ref<ApiPsn.ProfileGame[]>([]);
+const gameList = ref<PlayStation.ProfileGame[]>([]);
 
 async function getGameList() {
   startLoading();
-  const { page } = getPageParams();
-  const { error, data } = await psnGameSynchronized(page);
+  const { page, size } = getPageParams();
+  const { error, data } = await psProfileGameList(page, size);
   if (!error) {
     gameList.value = data.list;
     setItemCount(data.total);
   }
   endLoading();
-}
-
-function onGameRefresh(i: number) {
-  gameList.value[i].isFavor = !gameList.value[i].isFavor;
-  emit('on-favor');
 }
 
 /** 刷新游戏列表及个人信息 */

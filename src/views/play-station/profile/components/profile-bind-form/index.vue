@@ -1,6 +1,6 @@
 <template>
   <div class="flex-col">
-    <p class="w-320px text-center">未查询到绑定信息，请先进行绑定</p>
+    <p class="w-320px text-center">未查询到绑定信息，请先进行绑定。</p>
     <NForm
       ref="formRef"
       :model="formModel"
@@ -9,17 +9,17 @@
       label-width="80"
       require-mark-placement="left"
       :rules="formRules"
-      :disabled="saveLoading"
+      :disabled="bindLoading"
     >
-      <NFormItem label="psnId" path="psnId">
+      <NFormItem label="PSN ID" path="psnId">
         <NInput
           v-model:value="formModel.psnId"
-          placeholder="请输入 Psn Id"
+          placeholder="请输入 PSN ID"
           class="!w-240px"
         ></NInput>
       </NFormItem>
       <NFormItem label=" ">
-        <NButton type="primary" :loading="saveLoading" @click="onBind">绑定</NButton>
+        <NButton type="primary" :loading="bindLoading" @click="onBind">绑定</NButton>
       </NFormItem>
     </NForm>
   </div>
@@ -29,46 +29,46 @@
 import { ref } from 'vue';
 import { useBoolean } from '@/hooks';
 import { NFormItem, type FormItemRule, type FormInst } from 'naive-ui';
-import { psnProfileBind } from '@/service';
+import { psProfileBind } from '@/service';
 
 defineOptions({
   name: 'ProfileBindForm',
 });
 
 interface Emits {
-  (e: 'binded'): void;
+  (e: 'on-binded'): void;
 }
 
 const emit = defineEmits<Emits>();
 
-type FormModel = Pick<ApiPsn.Profile, 'psnId'>;
+type FormModel = Pick<PlayStation.Profile, 'psnId'>;
 type FormModelKey = keyof FormModel;
 
-const formRef = ref<FormInst | null>(null);
+const formRef = ref<Util.Nullable<FormInst>>(null);
 
 const formModel = ref<FormModel>({
   psnId: '',
 });
 
 const formRules: Record<FormModelKey, FormItemRule | FormItemRule[]> = {
-  psnId: [{ required: true, message: '请输入 Psn Id', trigger: 'blur' }],
+  psnId: [{ required: true, message: '请输入 PSN ID', trigger: 'change' }],
 };
 
 const {
-  bool: saveLoading,
-  setTrue: startSaveLoading,
-  setFalse: endSaveLoading,
+  bool: bindLoading,
+  setTrue: startBindLoading,
+  setFalse: endBindLoading,
 } = useBoolean(false);
 
 async function onBind() {
   await formRef.value?.validate();
-  startSaveLoading();
-  const { error } = await psnProfileBind(formModel.value.psnId);
+  startBindLoading();
+  const { error, msg } = await psProfileBind(formModel.value.psnId);
   if (!error) {
-    window.$message?.success('绑定成功');
-    emit('binded');
+    window.$message?.success(msg);
+    emit('on-binded');
   }
-  endSaveLoading();
+  endBindLoading();
 }
 </script>
 

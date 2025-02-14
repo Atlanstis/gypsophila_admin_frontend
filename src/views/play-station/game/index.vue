@@ -21,19 +21,20 @@
 </template>
 
 <script lang="ts" setup>
-import { GamePlatform, PlaystationLoading, TrophyNumText } from '@/components';
+import { GamePlatform, TrophyNumText } from '@/components';
 import { useBoolean, usePagination } from '@/hooks';
-import { psnGameList } from '@/service';
+import { psGameList } from '@/service';
 import { NImage, type DataTableColumns, NSpace } from 'naive-ui';
 import { h, ref, type Ref, onMounted } from 'vue';
+import { PlaystationLoading } from '@/components';
 
 defineOptions({
   name: 'PlayStationGameView',
 });
 
-const tableData = ref<ApiPsn.Game[]>([]);
+const tableData = ref<PlayStation.Game[]>([]);
 
-const columns: Ref<DataTableColumns<ApiPsn.Game>> = ref([
+const columns: Ref<DataTableColumns<PlayStation.Game>> = ref([
   {
     key: 'thumbnail',
     title: '缩略图',
@@ -43,7 +44,7 @@ const columns: Ref<DataTableColumns<ApiPsn.Game>> = ref([
     render: ({ name, thumbnail }) => {
       return h(
         NImage,
-        { alt: name, src: thumbnail, width: 80, height: 55, lazy: true },
+        { alt: name, src: thumbnail, width: 80, height: 55, lazy: true, previewDisabled: true },
         { placeholder: () => h(PlaystationLoading) },
       );
     },
@@ -95,7 +96,7 @@ const { pagination, getPageParams, setItemCount } = usePagination(getTableData);
 async function getTableData() {
   const { page, size } = getPageParams();
   startLoading();
-  const { data, error } = await psnGameList(page, size);
+  const { data, error } = await psGameList(page, size);
   if (!error) {
     const { list, total } = data;
     tableData.value = list;
