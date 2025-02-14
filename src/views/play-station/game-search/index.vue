@@ -38,6 +38,7 @@
 <script lang="ts" setup>
 import { useSearchTable } from './hooks';
 import { ref } from 'vue';
+import { PlaystationLoading } from '@/components';
 
 defineOptions({
   name: 'PlayStationSearchView',
