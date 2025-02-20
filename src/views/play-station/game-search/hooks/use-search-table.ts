@@ -16,9 +16,9 @@ export function useSearchTable() {
 
   const keyword = ref<string>('');
 
-  const tableData = ref<PsnineM.Game[]>([]);
+  const tableData = ref<Psnine.SearchGameItem[]>([]);
 
-  const columns: Ref<DataTableColumns<PsnineM.Game>> = ref([
+  const columns: Ref<DataTableColumns<Psnine.SearchGameItem>> = ref([
     {
       key: 'thumbnail',
       title: '缩略图',

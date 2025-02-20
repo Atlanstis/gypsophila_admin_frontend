@@ -56,7 +56,7 @@ const text = computed(() => {
     return props.custom;
   }
   const textMap = {
-    default: '暂无数据 ⑉꒦ິ^꒦ິ⑉ ',
+    default: '暂无数据 ⸝⸝⸝ᵒ̴̶̷̥ ⌓ ᵒ̴̶̷̣̥̀⸝⸝⸝',
     auth: '暂无查看权限 ⸝⸝⸝ᵒ̴̶̷̥ ⌓ ᵒ̴̶̷̣̥̀⸝⸝⸝',
   };
   return textMap[props.type];
