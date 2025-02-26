@@ -46,8 +46,7 @@ const expandedKeys = ref<string[]>([]);
 
 /** 选中菜单的回调 */
 function handleUpdateMenu(key: string) {
-  const routeName = key as PageRoute.AllRouteName;
-  routerPush({ name: routeName });
+  routerPush({ name: key });
 }
 
 /** 更改菜单展开项 */

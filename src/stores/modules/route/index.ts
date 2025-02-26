@@ -1,13 +1,8 @@
 import { defineStore } from 'pinia';
-import { routes, router, ROOT_ROUTE } from '@/router';
+import { router, ROOT_ROUTE } from '@/router';
 import { RouteEnum } from '@/enums';
 import type { RouteRecordRaw } from 'vue-router';
-import {
-  transformAuthRoute,
-  transformAuthRouteToMenus,
-  getConstantRouteName,
-  getKeepAliveRouteNames,
-} from './helper';
+import { getConstantRouteName, generateRoutes } from './helper';
 import { authInfo } from '@/service';
 import { useAppStore, useAuthStore } from '@/stores';
 import { nextTick } from 'vue';
@@ -35,20 +30,17 @@ export const useRouteStore = defineStore('route-store', {
       if (!error) {
         setUserInfo(data);
         // 生成权限路由
-        const authRoutes = await transformAuthRoute(routes, data.menus);
+        const { routes, keepAliveRouteNames, adminMenus } = generateRoutes(data.menus);
         // 获取需要 keepAlive 的路由
-        this.keepAliveRouteNames = getKeepAliveRouteNames(authRoutes);
+        this.keepAliveRouteNames = keepAliveRouteNames;
         // 生成后台菜单
-        (this.adminMenus as Layout.AdminMenuOption[]) = transformAuthRouteToMenus(
-          routes,
-          data.menus,
-        );
+        this.adminMenus = adminMenus;
         // 添加动态路由
-        authRoutes.forEach((route) => {
+        routes.forEach((route) => {
           router.addRoute(route);
         });
         // 替换 Root 路由 path
-        const rootPath = authRoutes[0]?.path || '/login';
+        const rootPath = routes[0]?.path || '/login';
         this.handleUpdateRootRedirect(rootPath);
 
         this.isInitAuthRoute = true;
@@ -72,7 +64,7 @@ export const useRouteStore = defineStore('route-store', {
       router.addRoute(rootRoute);
     },
 
-    /** 重置 AuthRoute */
+    /** 重置路由 */
     resetRouteStore() {
       this.$reset();
       this.resetRoutes();
@@ -83,14 +75,15 @@ export const useRouteStore = defineStore('route-store', {
       const routes = router.getRoutes();
       const constantNameArr = getConstantRouteName();
       routes.forEach((route) => {
-        const name = route.name as PageRoute.AllRouteName;
+        const name = route.name;
+        if (!name) return;
         const isConstant = constantNameArr.includes(name);
         if (!isConstant) {
           router.removeRoute(name);
         } else if (name === RouteEnum.Root) {
           // 将 Root 路由重新指定到登录页
           router.removeRoute(name);
-          const rootRoute = ROOT_ROUTE as RouteRecordRaw;
+          const rootRoute = ROOT_ROUTE;
           router.addRoute(rootRoute);
         }
       });
