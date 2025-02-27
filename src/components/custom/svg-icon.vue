@@ -26,7 +26,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const attrs = useAttrs();
+const attrs: Record<string, any> = useAttrs();
 
 const bindAttrs = computed(() => {
   return {

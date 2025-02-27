@@ -4,7 +4,7 @@ declare namespace ResMenu {
     key: string;
     type: 'page' | 'menu';
     name: string;
-    order?: number;
+    order: number;
     parentId: number | null;
     /** 路由路径 */
     path: string;
@@ -12,8 +12,6 @@ declare namespace ResMenu {
     icon?: string;
     /** 本地图标 */
     iconLocal?: string;
-    /** 视图组件 */
-    view?: string;
     /** 布局组件 */
     layout?: string;
     /** 是否缓存 */
@@ -37,7 +35,7 @@ declare namespace ResMenu {
     /** 路由名称 */
     name: Menu['key'];
     /** 视图组件 */
-    component?: Menu['view'];
+    component?: Menu['key'];
     /** 额外信息 */
     meta: MenuRouteMeta;
     /** 子路由 */

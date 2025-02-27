@@ -1,5 +1,6 @@
-import { useBoolean } from '@/hooks';
 import { ref } from 'vue';
+import { useBoolean } from '@/hooks';
+import { pick } from '@/utils';
 import type { MenuModel } from '../typing';
 
 /** 有关菜单 modal 的操作 */
@@ -19,15 +20,21 @@ export function useMenuModal() {
       editData.value = null;
       return;
     }
-    const { id, key, name, parentId, type, order } = data;
-    editData.value = {
-      id,
-      key,
-      name,
-      parentId,
-      type,
-      order,
-    };
+    editData.value = pick(data, [
+      'id',
+      'key',
+      'name',
+      'parentId',
+      'type',
+      'order',
+      'icon',
+      'iconLocal',
+      'keepAlive',
+      'layout',
+      'hideInMenu',
+      'path',
+      'activeMenu',
+    ]);
   }
 
   const defaultParentId = ref<Common.Nullable<number>>(null);
