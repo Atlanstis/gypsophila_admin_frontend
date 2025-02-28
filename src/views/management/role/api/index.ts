@@ -1,5 +1,5 @@
 import { request } from '@/service';
-import type { MenuPermissions, RoleMenuPermission, RoleModel } from '../typings';
+import type { RoleModel } from '../typings';
 
 /**
  * 角色-页面配置
@@ -55,16 +55,13 @@ export function roleAssignable() {
  * @returns 可以角色的菜单及权限
  */
 export function roleMenuPermission(role: Pick<ResRole.Role, 'id'>) {
-  return request.post<{
-    mps: MenuPermissions;
-    list: RoleMenuPermission[];
-  }>('/role/menu/permission', role);
+  return request.post<ResRole.MenuPermission>('/role/menu/permission', role);
 }
 
 /**
  * 编辑该角色可以访问的菜单及权限
  * @param params 角色id 及 菜单
  */
-export function roleMenuPermissionEdit(params: { id: number; mps: MenuPermissions }) {
+export function roleMenuPermissionEdit(params: { id: number; mps: ResRole.MenuPermission['mps'] }) {
   return request.post('/role/menu/permission/edit', params);
 }

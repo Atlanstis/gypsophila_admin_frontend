@@ -20,9 +20,16 @@ declare namespace ResMenu {
     hideInMenu?: boolean;
     /** 页面激活时，菜单中选中的菜单名 */
     activeMenu?: string;
+    /** 菜单权限 */
     permissions?: MenuPermission[];
   }
 
+  /** 菜单组 */
+  type MenuWithChildren = Util.RequiredProperty<Menu, 'permissions'> & {
+    children: MenuWithChildren[];
+  };
+
+  /** 路由元信息 */
   type MenuRouteMeta = Pick<
     Menu,
     'order' | 'type' | 'icon' | 'iconLocal' | 'layout' | 'keepAlive' | 'hideInMenu' | 'activeMenu'
@@ -31,6 +38,7 @@ declare namespace ResMenu {
     title: Menu['name'];
   };
 
+  /** 路由配置 */
   type MenuRouteConfig = Pick<Menu, 'path'> & {
     /** 路由名称 */
     name: Menu['key'];
@@ -42,6 +50,7 @@ declare namespace ResMenu {
     children?: MenuRouteConfig[];
   };
 
+  /** 菜单权限 */
   interface MenuPermission {
     id: number;
     key: string;
@@ -50,12 +59,12 @@ declare namespace ResMenu {
     order: number;
   }
 
-  interface MenuListData extends Menu {
+  type MenuListData = Omit<Menu, 'permissions'> & {
     children?: MenuListData[];
     permission: Pick<ConfigPermission, 'add' | 'delete' | 'edit' | 'permissionManage'>;
-  }
+  };
 
-  /** 权限配置 */
+  /** 菜单权限配置 */
   interface ConfigPermission {
     add: boolean;
     delete: boolean;
