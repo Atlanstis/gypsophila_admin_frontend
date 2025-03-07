@@ -87,8 +87,6 @@ export default defineComponent({
             'div',
             {
               style: {
-                display: 'flex',
-                alignItems: 'center',
                 padding: '8px',
                 borderRadius: '8px',
                 transition: 'background-color 0.3s',
@@ -113,10 +111,13 @@ export default defineComponent({
               ]),
               // 渲染权限选项
               menu.permissions && menu.permissions.length > 0
-                ? h('div', { style: { paddingLeft: '32px' } }, [
+                ? h('div', { style: { paddingLeft: '32px', marginTop: '6px' } }, [
                     h(
                       NText,
-                      { depth: 3, style: { fontSize: '14px', color: 'rgb(107, 114, 128)' } },
+                      {
+                        depth: 3,
+                        style: { fontSize: '14px', color: 'rgb(107, 114, 128)' },
+                      },
                       { default: () => '权限：' },
                     ),
                     renderPermissions(menu.permissions, menu.id),
