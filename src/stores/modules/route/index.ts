@@ -4,14 +4,12 @@ import { RouteEnum } from '@/enums';
 import type { RouteRecordRaw } from 'vue-router';
 import { getConstantRouteName, generateRoutes } from './helper';
 import { authInfo } from '@/service';
-import { useAppStore, useAuthStore } from '@/stores';
+import { useAdminLayoutStore, useAppStore, useAuthStore } from '@/stores';
 import { nextTick } from 'vue';
 
 interface RouteState {
   /** 路由权限是否已初始化 */
   isInitAuthRoute: boolean;
-  /**后台页菜单 */
-  adminMenus: Layout.AdminMenuOption[];
   /** 缓存的路由名称 */
   keepAliveRouteNames: string[];
 }
@@ -19,7 +17,6 @@ interface RouteState {
 export const useRouteStore = defineStore('route-store', {
   state: (): RouteState => ({
     isInitAuthRoute: false,
-    adminMenus: [],
     keepAliveRouteNames: [],
   }),
 
@@ -30,11 +27,13 @@ export const useRouteStore = defineStore('route-store', {
       if (!error) {
         setUserInfo(data);
         // 生成权限路由
-        const { routes, keepAliveRouteNames, adminMenus } = generateRoutes(data.menus);
-        // 获取需要 keepAlive 的路由
+        const { menus } = data;
+        const { routes, keepAliveRouteNames } = generateRoutes(menus);
+        // 生成后台布局菜单
+        const adminLayoutStore = useAdminLayoutStore();
+        adminLayoutStore.generateMenuBarConfig(menus);
+        // 设置 keepAlive 的路由
         this.keepAliveRouteNames = keepAliveRouteNames;
-        // 生成后台菜单
-        this.adminMenus = adminMenus;
         // 添加动态路由
         routes.forEach((route) => {
           router.addRoute(route);
@@ -45,8 +44,8 @@ export const useRouteStore = defineStore('route-store', {
 
         this.isInitAuthRoute = true;
       } else {
-        const { resetAuthStore } = useAuthStore();
-        resetAuthStore();
+        const authStore = useAuthStore();
+        authStore.resetAuthStore();
       }
     },
 

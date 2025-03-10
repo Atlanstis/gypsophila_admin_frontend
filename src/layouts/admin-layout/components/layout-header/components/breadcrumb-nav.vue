@@ -35,78 +35,69 @@
 
 <script lang="ts" setup>
 import { useRouterPush } from '@/composables';
-import { useRouteStore } from '@/stores';
+import { useAdminLayoutStore } from '@/stores';
 import { NBreadcrumbItem } from 'naive-ui';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import type { AdminBreadcrumbOpt, AdminMenuOpt } from '@/types';
 
 defineOptions({
   name: 'BreadcrumbNav',
 });
 
 const route = useRoute();
-const routeStore = useRouteStore();
+const adminLayoutStore = useAdminLayoutStore();
 const { routerPush } = useRouterPush();
 
-const breadcrumbs = computed(() => {
-  const topMenu = getTopMenu(
-    route.name as string,
-    routeStore.adminMenus as Layout.AdminMenuOption[],
-  );
-  if (topMenu) {
-    const breadcrumbs: Layout.AdminBreadcrumb[] = [];
-    const hasChildren = Boolean(topMenu.children && topMenu.children.length);
-    const children = topMenu.children as Layout.AdminMenuOption[];
-    const topBreadcrumb: Layout.AdminBreadcrumb = {
-      label: topMenu.label,
-      key: topMenu.key,
-      icon: topMenu.icon,
-      hasChildren,
-    };
-    breadcrumbs.push(topBreadcrumb);
-    if (hasChildren) {
-      const activeMenu = children.find((item) => item.key === route.name);
-      const otherMenus = children.filter((item) => item.key !== route.name);
-      topBreadcrumb.options = otherMenus.map((item) => ({
-        label: item.label,
-        key: item.key,
-        icon: item.icon,
-      }));
-      if (activeMenu) {
-        const childBreadcrumb: Layout.AdminBreadcrumb = {
-          label: activeMenu.label,
-          key: activeMenu.key,
-          icon: activeMenu.icon,
-        };
-        breadcrumbs.push(childBreadcrumb);
+const breadcrumbs = computed<AdminBreadcrumbOpt[]>(() => {
+  const { menuConfigs } = adminLayoutStore;
+  const { name: routeName } = route;
+  if (!routeName) return [];
+
+  // 存储面包屑路径
+  const breadcrumbList: AdminMenuOpt[] = [];
+
+  // 递归查找当前路由对应的菜单项及其所有父级菜单
+  const findRouteMenuPath = (menus: AdminMenuOpt[], parents: AdminMenuOpt[] = []): boolean => {
+    for (const menu of menus) {
+      // 如果找到当前路由
+      if (menu.routeName === routeName) {
+        // 添加所有父级菜单和当前菜单
+        breadcrumbList.push(...parents, menu);
+        return true;
+      }
+
+      // 如果有子菜单，递归查找
+      if (menu.children && menu.children.length) {
+        const found = findRouteMenuPath(menu.children, [...parents, menu]);
+        if (found) return true;
       }
     }
+    return false;
+  };
 
-    return breadcrumbs;
-  }
-  return [];
+  findRouteMenuPath(menuConfigs);
+
+  // 转换为面包屑所需的格式
+  return breadcrumbList.map((menu) => {
+    const hasChildren = menu.children && menu.children.length > 0;
+    return {
+      key: menu.routeName,
+      label: menu.label,
+      icon: menu.icon,
+      hasChildren,
+      options: hasChildren
+        ? menu.children!.map((child) => ({
+            key: child.routeName,
+            label: child.label,
+          }))
+        : [],
+    };
+  });
 });
 
 function onMenuSelect(key: string) {
   routerPush({ name: key });
-}
-
-/**
- * 获取顶级菜单
- * @param routeName 当前路由名
- * @param menus 菜单
- */
-function getTopMenu(
-  routeName: string,
-  menus: Layout.AdminMenuOption[],
-): Layout.AdminMenuOption | undefined {
-  return menus.find((item) => {
-    if (item.routeName === routeName) return true;
-    if (Array.isArray(item.children)) {
-      return getTopMenu(routeName, item.children);
-    }
-    return false;
-  });
 }
 </script>
 

@@ -7,7 +7,7 @@
       <ScrollContainer>
         <NMenu
           :value="activeName"
-          :options="adminMenus"
+          :options="menuConfigs"
           :collapsed="app.adminSiderCollapse"
           :collapsed-width="64"
           :collapsed-icon-size="22"
@@ -22,17 +22,19 @@
 </template>
 
 <script lang="ts" setup>
-import { useRouteStore } from '@/stores';
+import { useAdminLayoutStore } from '@/stores';
 import { useAppStore } from '@/stores';
 import { useRoute } from 'vue-router';
 import { computed, ref, watch } from 'vue';
 import { useRouterPush } from '@/composables';
+import type { AdminMenuOpt } from '@/types';
 
 defineOptions({
   name: 'AdminLayoutSider',
 });
 
-const { adminMenus } = useRouteStore();
+const adminLayoutStore = useAdminLayoutStore();
+const { menuConfigs } = adminLayoutStore;
 
 const app = useAppStore();
 const route = useRoute();
@@ -56,23 +58,29 @@ function handleUpdateExpandedKeys(keys: string[]) {
 
 /** 路由切换时，获取菜单展开项 */
 function getExpandedKeysByActiveRoute() {
-  const keys: string[] = [];
-  for (let i = 0; i < adminMenus.length; i++) {
-    const menu = adminMenus[i];
-    if (menu.children && menu.children.length > 0) {
-      const item = menu.children.find((item) => item.key === activeName.value);
-      if (item) {
-        keys.push(menu.key);
-        break;
-      }
-    } else {
+  // 递归查找激活菜单项的所有父级菜单
+  function findActiveMenuParents(menus: AdminMenuOpt[], parentKeys: string[] = []): string[] {
+    for (const menu of menus) {
+      // 当前路径
+      const currentKeys = [...parentKeys, menu.key];
+
+      // 如果当前菜单就是激活菜单
       if (menu.key === activeName.value) {
-        keys.push(menu.key);
-        break;
+        return currentKeys.slice(0, -1); // 返回所有父级菜单的key（不包括当前菜单）
+      }
+
+      // 如果有子菜单，递归查找
+      if (menu.children && menu.children.length > 0) {
+        const result = findActiveMenuParents(menu.children, currentKeys);
+        if (result.length > 0) {
+          return result;
+        }
       }
     }
+    return [];
   }
-  return keys;
+
+  return findActiveMenuParents(menuConfigs);
 }
 
 watch(

@@ -2,7 +2,7 @@ import { authLogin } from '@/service';
 import { hybridEncrypt, localStorage } from '@/utils';
 import { LocalKeyEnum } from '@/enums';
 import { defineStore } from 'pinia';
-import { useRouteStore } from '@/stores';
+import { useRouteStore, useAdminLayoutStore } from '@/stores';
 import { clearAuthStorage, getToken } from './helper';
 import { useRouterPush } from '@/composables';
 import { nextTick } from 'vue';
@@ -40,6 +40,7 @@ export const useAuthStore = defineStore('auth-store', {
     resetAuthStore(redirect?: string) {
       const { toLogin } = useRouterPush(false);
       const routeStore = useRouteStore();
+      const adminLayoutStore = useAdminLayoutStore();
 
       clearAuthStorage();
       this.$reset();
@@ -48,6 +49,7 @@ export const useAuthStore = defineStore('auth-store', {
 
       nextTick(() => {
         routeStore.resetRouteStore();
+        adminLayoutStore.resetState();
       });
     },
 
