@@ -6,18 +6,18 @@
 
 <script setup lang="ts">
 import { useBoolean } from '@/hooks';
-import { useRouteStore } from '@/stores';
+import { useAdminLayoutStore } from '@/stores';
 import { useRoute } from 'vue-router';
 
 defineOptions({ name: 'ReloadBtn' });
 
 const route = useRoute();
-const routeStore = useRouteStore();
+const adminLayoutStore = useAdminLayoutStore();
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false);
 
 async function onReload() {
   startLoading();
-  await routeStore.reloadRoute(route.name as string);
+  await adminLayoutStore.reloadRoute(route.name as string);
   setTimeout(() => {
     endLoading();
   }, 1000);

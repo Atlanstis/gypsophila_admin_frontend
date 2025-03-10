@@ -4,7 +4,7 @@ import { RouteEnum } from '@/enums';
 import type { RouteRecordRaw } from 'vue-router';
 import { getConstantRouteName, generateRoutes } from './helper';
 import { authInfo } from '@/service';
-import { useAdminLayoutStore, useAppStore, useAuthStore } from '@/stores';
+import { useAdminLayoutStore, useAuthStore } from '@/stores';
 import { nextTick } from 'vue';
 
 interface RouteState {
@@ -86,21 +86,6 @@ export const useRouteStore = defineStore('route-store', {
           router.addRoute(rootRoute);
         }
       });
-    },
-
-    async reloadRoute(name: string) {
-      const { reloadPage } = useAppStore();
-
-      const isCached = this.keepAliveRouteNames.includes(name);
-      if (isCached) {
-        this.removeKeepAliveRoute(name);
-      }
-
-      await reloadPage();
-
-      if (isCached) {
-        this.addKeepAliveRoute(name);
-      }
     },
 
     /** 从缓存路由中去除某个路由 */

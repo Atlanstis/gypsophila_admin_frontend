@@ -66,6 +66,20 @@ export const useAdminLayoutStore = defineStore('admin-layout-store', {
       }
     },
 
+    async reloadRoute(name: string) {
+      const routeStore = useRouteStore();
+      const isCached = routeStore.keepAliveRouteNames.includes(name);
+      if (isCached) {
+        routeStore.removeKeepAliveRoute(name);
+      }
+
+      await this.reloadPage();
+
+      if (isCached) {
+        routeStore.addKeepAliveRoute(name);
+      }
+    },
+
     /** 初始化页签 */
     initTabs(currentRoute: RouteLocationNormalized) {
       const tabs: AdminTab[] = [];
