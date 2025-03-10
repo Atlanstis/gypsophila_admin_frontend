@@ -111,7 +111,8 @@ const columns: Ref<DataTableColumns<SyncGame>> = ref([
     title: '已获得奖杯',
     align: 'center',
     width: 180,
-    render: ({ trophyGot }) => h(TrophyNumText, { trophyNum: trophyGot }),
+    render: ({ platinum, gold, silver, bronze }) =>
+      h(TrophyNumText, { trophyNum: { platinum, gold, silver, bronze } }),
   },
   {
     key: 'platforms',

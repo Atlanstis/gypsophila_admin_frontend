@@ -1,6 +1,14 @@
 declare namespace Psnine {
   /** 完美困难度 */
-  type PerfectDifficulty = '神作' | '极易' | '容易' | '普通' | '麻烦' | '困难' | '噩梦' | '地狱';
+  type PerfectDifficulty =
+    | '神作'
+    | '极易'
+    | '容易'
+    | '普通'
+    | '麻烦'
+    | '困难'
+    | '噩梦'
+    | '地狱';
 
   /** 游戏-基础类 */
   interface Game {
