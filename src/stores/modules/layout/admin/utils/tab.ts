@@ -1,11 +1,12 @@
 import type { RouteLocationNormalizedLoaded, RouteRecordNormalized } from 'vue-router';
+import type { AdminTab } from '@/types';
 
 /**
  * 获取该页签在多页签数据中的索引
  * @param tabs - 多页签数据
  * @param fullPath - 该页签的路径
  */
-export function getIndexInTabs(tabs: Layout.AdminTab[], fullPath: string) {
+export function getIndexInTabs(tabs: AdminTab[], fullPath: string) {
   return tabs.findIndex((tab) => tab.fullPath === fullPath);
 }
 
@@ -14,7 +15,7 @@ export function getIndexInTabs(tabs: Layout.AdminTab[], fullPath: string) {
  * @param tabs - 多页签数据
  * @param routeName - 路由名称
  */
-export function getIndexInTabsByRouteName(tabs: Layout.AdminTab[], routeName: string) {
+export function getIndexInTabsByRouteName(tabs: AdminTab[], routeName: string) {
   return tabs.findIndex((tab) => tab.name === routeName);
 }
 
@@ -23,7 +24,7 @@ export function getIndexInTabsByRouteName(tabs: Layout.AdminTab[], routeName: st
  * @param tabs - 多页签数据
  * @param fullPath - 该页签的路径
  */
-export function isInTabs(tabs: Layout.AdminTab[], fullPath: string) {
+export function isInTabs(tabs: AdminTab[], fullPath: string) {
   return getIndexInTabs(tabs, fullPath) > -1;
 }
 
@@ -39,14 +40,10 @@ export function getTabByVueRoute(route: RouteRecordNormalized | RouteLocationNor
       meta = route.matched[route.matched.length - 1].meta;
     }
   }
-  const tab: Layout.AdminTab = {
+  const tab: AdminTab = {
     name: route.name,
     fullPath,
     meta,
-    scrollPosition: {
-      left: 0,
-      top: 0,
-    },
   };
   return tab;
 }

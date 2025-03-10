@@ -1,18 +1,22 @@
 <template>
-  <HoverContainer class="h-full w-40px" @click="app.toggleAdminSiderCollapse">
-    <icon-line-md-menu-fold-right v-if="app.adminSiderCollapse" class="text-16px" />
+  <HoverContainer class="h-full w-40px" @click="onClick">
+    <icon-line-md-menu-fold-right v-if="adminLayoutStore.siderCollapse" class="text-16px" />
     <icon-line-md-menu-fold-left v-else class="text-16px" />
   </HoverContainer>
 </template>
 
 <script lang="ts" setup>
-import { useAppStore } from '@/stores';
+import { useAdminLayoutStore } from '@/stores';
 
 defineOptions({
   name: 'BtnCollapse',
 });
 
-const app = useAppStore();
+const adminLayoutStore = useAdminLayoutStore();
+
+function onClick() {
+  adminLayoutStore.toggleSiderCollapse();
+}
 </script>
 
 <style lang="scss" scoped></style>

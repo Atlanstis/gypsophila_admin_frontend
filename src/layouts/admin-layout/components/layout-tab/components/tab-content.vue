@@ -1,12 +1,12 @@
 <template>
   <div ref="tabRef" class="flex h-full pr-18px items-end">
     <ChromeTab
-      v-for="item of tab.tabs"
+      v-for="item of adminLayout.tabs"
       :key="item.fullPath"
-      :isActive="tab.activeTab === item.fullPath"
-      :closable="tab.tabs.length > 1"
-      @click="tab.handleClickTab(item.fullPath)"
-      @close="tab.removeTab(item.fullPath)"
+      :isActive="adminLayout.activeTab === item.fullPath"
+      :closable="adminLayout.tabs.length > 1"
+      @click="adminLayout.handleClickTab(item.fullPath)"
+      @close="adminLayout.removeTab(item.fullPath)"
     >
       <template #prefix>
         <svg-icon
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useTabStore } from '@/stores';
+import { useAdminLayoutStore } from '@/stores';
 import ChromeTab from './chrome-tab/index.vue';
 import { nextTick, ref, watch } from 'vue';
 
@@ -35,7 +35,7 @@ interface Emits {
 
 const emit = defineEmits<Emits>();
 
-const tab = useTabStore();
+const adminLayout = useAdminLayoutStore();
 
 const tabRef = ref<HTMLElement>();
 
@@ -43,7 +43,7 @@ const tabRef = ref<HTMLElement>();
 async function calcActiveTabClientX() {
   await nextTick();
   if (tabRef.value && tabRef.value.children.length) {
-    const activeTabElement = tabRef.value.children[tab.activeTabIndex];
+    const activeTabElement = tabRef.value.children[adminLayout.activeTabIndex];
     if (!activeTabElement) return;
     const { x, width } = activeTabElement.getBoundingClientRect();
     const clientX = x + width / 2;
@@ -54,7 +54,7 @@ async function calcActiveTabClientX() {
 }
 
 watch(
-  () => tab.activeTabIndex,
+  () => adminLayout.activeTabIndex,
   () => {
     calcActiveTabClientX();
   },

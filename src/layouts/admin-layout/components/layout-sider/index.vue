@@ -8,7 +8,7 @@
         <NMenu
           :value="activeName"
           :options="menuConfigs"
-          :collapsed="app.adminSiderCollapse"
+          :collapsed="adminLayoutStore.siderCollapse"
           :collapsed-width="64"
           :collapsed-icon-size="22"
           :indent="18"
@@ -23,7 +23,6 @@
 
 <script lang="ts" setup>
 import { useAdminLayoutStore } from '@/stores';
-import { useAppStore } from '@/stores';
 import { useRoute } from 'vue-router';
 import { computed, ref, watch } from 'vue';
 import { useRouterPush } from '@/composables';
@@ -36,7 +35,6 @@ defineOptions({
 const adminLayoutStore = useAdminLayoutStore();
 const { menuConfigs } = adminLayoutStore;
 
-const app = useAppStore();
 const route = useRoute();
 const { routerPush } = useRouterPush();
 

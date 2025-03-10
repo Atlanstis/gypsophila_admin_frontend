@@ -16,3 +16,9 @@ export type AdminBreadcrumbOpt = {
   icon?: () => import('vue').VNodeChild;
   options?: AdminBreadcrumbOpt[];
 };
+
+/** 后台页页签 Tab */
+export type AdminTab = Pick<
+  import('vue-router').RouteLocationNormalizedLoaded,
+  'name' | 'fullPath' | 'meta'
+>;

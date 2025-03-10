@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
 import { ReloadBtn, TabContent } from './components';
-import { useTabStore } from '@/stores';
+import { useAdminLayoutStore } from '@/stores';
 import { onMounted, ref, watch } from 'vue';
 import { useElementBounding } from '@vueuse/core';
 
@@ -21,7 +21,7 @@ defineOptions({
 });
 
 const route = useRoute();
-const tab = useTabStore();
+const adminLayout = useAdminLayoutStore();
 
 const bsWrapper = ref<HTMLElement>();
 const { width: bsWrapperWidth, left: bsWrapperLeft } = useElementBounding(bsWrapper);
@@ -41,14 +41,14 @@ function onContentScroll(clientX: number) {
 
 /** 初始化页签数据 */
 function initTabs() {
-  tab.initTabs(route);
+  adminLayout.initTabs(route);
 }
 
 watch(
   () => route.fullPath,
   () => {
-    tab.addTab(route);
-    tab.setActiveTab(route.fullPath);
+    adminLayout.addTab(route);
+    adminLayout.setActiveTab(route.fullPath);
   },
 );
 

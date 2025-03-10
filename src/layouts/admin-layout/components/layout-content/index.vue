@@ -4,7 +4,7 @@
       <Transition :name="'fade-slide'" mode="out-in" :appear="true">
         <KeepAlive :include="routeStore.keepAliveRouteNames">
           <component
-            v-if="appStore.adminReloadFlag"
+            v-if="adminLayoutStore.reloadFlag"
             :key="route.fullPath"
             :is="Component"
             class="h-full"
@@ -16,14 +16,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useAppStore, useRouteStore } from '@/stores';
+import { useAdminLayoutStore, useRouteStore } from '@/stores';
 
 defineOptions({
   name: 'AdminLayoutContent',
 });
 
 const routeStore = useRouteStore();
-const appStore = useAppStore();
+const adminLayoutStore = useAdminLayoutStore();
 </script>
 
 <style lang="scss" scoped></style>

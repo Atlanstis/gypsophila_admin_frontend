@@ -13,7 +13,7 @@
       <aside
         :class="[
           'absolute top-0 left-0 h-full',
-          appStore.adminSiderCollapse ? style['layout-sider_collapsed'] : style['layout-sider'],
+          adminLayoutStore.siderCollapse ? style['layout-sider_collapsed'] : style['layout-sider'],
           commonClass,
         ]"
       >
@@ -40,7 +40,7 @@ defineOptions({
 });
 
 import { computed, ref } from 'vue';
-import { useAppStore } from '@/stores';
+import { useAdminLayoutStore } from '@/stores';
 import style from './index.module.css';
 import { LayoutHeader, LayoutTab, LayoutSider, LayoutContent, LayoutFooter } from './components';
 
@@ -56,10 +56,10 @@ const cssVars = {
   '--admin-footer-z-index': 95,
 };
 
-const appStore = useAppStore();
+const adminLayoutStore = useAdminLayoutStore();
 
 const leftGapClass = computed(() => {
-  return appStore.adminSiderCollapse ? style['left-gap_collapsed'] : style['left-gap'];
+  return adminLayoutStore.siderCollapse ? style['left-gap_collapsed'] : style['left-gap'];
 });
 
 const commonClass = ref('transition-all-300');
