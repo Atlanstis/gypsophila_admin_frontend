@@ -60,8 +60,9 @@
 
 <script lang="ts" setup>
 import { PlaystationLoading, TrophyNum, GamePlatform } from '@/components';
-import { ButtonIconEnum, RouteEnum } from '@/enums';
+import { ButtonIconEnum } from '@/enums';
 import { useRouterPush } from '@/composables';
+import { Enum_Route } from '@/constants';
 import { calcCompleteRate } from '@/views/play-station/__util__';
 import { computed } from 'vue';
 
@@ -88,7 +89,7 @@ const colorArr = [
 function goProfileGame() {
   const info = props.info;
   if (!info) return;
-  routerPush({ name: RouteEnum.PlayStation_Profile_Game, params: { id: info.id } });
+  routerPush({ name: Enum_Route.PlayStation_Profile_Game, params: { id: info.id } });
 }
 </script>
 

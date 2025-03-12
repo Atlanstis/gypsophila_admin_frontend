@@ -1,4 +1,4 @@
-export enum RouteEnum {
+export enum Enum_Route {
   /** 根路由 */
   Root = 'Root',
   /** 登录页 */
@@ -19,6 +19,8 @@ export enum RouteEnum {
   PlayStation_Game = 'PlayStation_Game',
   /** PlayStation 游戏查找 */
   PlayStation_Game_Search = 'PlayStation_Game_Search',
+  /** PlayStation 设置 */
+  PlayStation_Setting = 'PlayStation_Setting',
   /** 系统管理 */
   Management = 'Management',
   /** 用户管理 */

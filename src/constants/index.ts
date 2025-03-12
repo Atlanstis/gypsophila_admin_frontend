@@ -1,6 +1,7 @@
 export * from './regex';
 export * from './schedule-task';
 export * from './icon';
+export * from './route';
 
 export * from '@/layouts';
 

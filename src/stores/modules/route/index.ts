@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { router, ROOT_ROUTE } from '@/router';
-import { RouteEnum } from '@/enums';
+import { Enum_Route } from '@/constants';
 import type { RouteRecordRaw } from 'vue-router';
 import { getConstantRouteName, generateRoutes } from './helper';
 import { authInfo } from '@/service';
@@ -59,7 +59,7 @@ export const useRouteStore = defineStore('route-store', {
         name: ROOT_ROUTE.name,
         redirect: rootPath,
       };
-      router.removeRoute(RouteEnum.Root);
+      router.removeRoute(Enum_Route.Root);
       router.addRoute(rootRoute);
     },
 
@@ -79,7 +79,7 @@ export const useRouteStore = defineStore('route-store', {
         const isConstant = constantNameArr.includes(name);
         if (!isConstant) {
           router.removeRoute(name);
-        } else if (name === RouteEnum.Root) {
+        } else if (name === Enum_Route.Root) {
           // 将 Root 路由重新指定到登录页
           router.removeRoute(name);
           const rootRoute = ROOT_ROUTE;

@@ -1,6 +1,6 @@
 import { useRouter, type RouteLocationRaw } from 'vue-router';
 import { router as globalRouter } from '@/router';
-import { RouteEnum } from '@/enums';
+import { Enum_Route } from '@/constants';
 import { urlRegex } from '@/constants';
 
 /**
@@ -44,7 +44,7 @@ export function useRouterPush(isInSetup = true) {
    * @param newTab - 是否在新的浏览器标签中打开
    */
   function toHome(newTab = false) {
-    routerPush({ name: RouteEnum.Root }, newTab);
+    routerPush({ name: Enum_Route.Root }, newTab);
   }
 
   /**
@@ -65,7 +65,7 @@ export function useRouterPush(isInSetup = true) {
    */
   function toLogin(redirectUrl?: string) {
     const routeLocation: RouteLocationRaw = {
-      name: RouteEnum.Login,
+      name: Enum_Route.Login,
     };
     const redirect = redirectUrl === undefined ? route.value.fullPath : redirectUrl;
 

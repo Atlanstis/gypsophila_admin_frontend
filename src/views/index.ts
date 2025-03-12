@@ -1,9 +1,9 @@
-import { RouteEnum } from '@/enums';
+import { Enum_Route } from '@/constants';
 
 /** 路由页面 */
 export const Views: Record<string, Common.AsyncComponent> = {
-  [RouteEnum.NotFound]: () => import('./__function__/not-found/index.vue'),
-  [RouteEnum.Login]: () => import('./login/index.vue'),
+  [Enum_Route.NotFound]: () => import('./__function__/not-found/index.vue'),
+  [Enum_Route.Login]: () => import('./login/index.vue'),
   /** 工作台 */
   Workbench: () => import('./workbench/index.vue'),
   /** PlayStation 账号概览 */

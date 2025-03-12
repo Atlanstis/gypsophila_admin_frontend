@@ -1,11 +1,11 @@
-import { RouteEnum } from '@/enums';
+import { Enum_Route } from '@/constants';
 import { getRouteView } from '@/utils';
 import type { RouteRecordRaw } from 'vue-router';
 
 /** 根路由 */
 export const ROOT_ROUTE: RouteRecordRaw = {
   path: '/',
-  name: RouteEnum.Root,
+  name: Enum_Route.Root,
   redirect: '/login',
   meta: {
     title: '根路由',
@@ -16,16 +16,16 @@ export const constantRoutes: RouteRecordRaw[] = [
   ROOT_ROUTE,
   {
     path: '/login',
-    name: RouteEnum.Login,
-    component: getRouteView(RouteEnum.Login),
+    name: Enum_Route.Login,
+    component: getRouteView(Enum_Route.Login),
     meta: {
       title: '登录',
     },
   },
   {
     path: '/:pathMatch(.*)*',
-    name: RouteEnum.NotFound,
-    component: getRouteView(RouteEnum.NotFound),
+    name: Enum_Route.NotFound,
+    component: getRouteView(Enum_Route.NotFound),
     meta: {
       title: '404',
     },
