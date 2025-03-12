@@ -89,26 +89,29 @@ export function useSearchTable() {
       key: 'perfectDiffucuity',
       title: '完美难度',
       align: 'center',
-      width: 100,
-      render: ({ perfectDifficulty }) => {
-        return h(
-          'span',
-          { style: { color: PerfectDifficultyColorMap[perfectDifficulty] } },
-          perfectDifficulty,
-        );
-      },
-    },
-    {
-      key: 'perfectRate',
-      title: '完美率',
-      align: 'center',
-      width: 100,
+      width: 120,
       render: ({ perfectDifficulty, perfectRate }) => {
-        return h(NProgress, {
-          color: PerfectDifficultyColorMap[perfectDifficulty],
-          percentage: perfectRate,
-          indicatorPlacement: 'inside',
-        });
+        return perfectRate !== 0
+          ? h('div', {}, [
+              h(
+                'div',
+                {
+                  style: {
+                    color: PerfectDifficultyColorMap[perfectDifficulty],
+                    marginBottom: '6px',
+                  },
+                },
+                `${perfectDifficulty}(${perfectRate}%)`,
+              ),
+              h('div', {}, [
+                h(NProgress, {
+                  color: PerfectDifficultyColorMap[perfectDifficulty],
+                  percentage: perfectRate,
+                  showIndicator: false,
+                }),
+              ]),
+            ])
+          : null;
       },
     },
     { key: 'players', title: '游玩人数', align: 'center', width: 100 },

@@ -16,12 +16,12 @@ export const TrophyColorMap: Record<PlayStation.TrophyType, string> = {
 
 /** 完美难度 显示颜色 */
 export const PerfectDifficultyColorMap: Record<Psnine.PerfectDifficulty, string> = {
-  神作: '#659f13',
-  极易: '#659f13',
-  容易: '#3a87ad ',
-  普通: '#3a87ad ',
-  麻烦: '#c09853',
-  困难: '#c09853',
-  地狱: '#b94a48',
-  噩梦: '#b94a48',
+  神作: '#90EE90',
+  极易: '#32CD32',
+  容易: '#9ACD32 ',
+  普通: '#87CEEB ',
+  麻烦: '#FFA500',
+  困难: '#FF4500',
+  地狱: '#B22222',
+  噩梦: '#8B0000',
 };
